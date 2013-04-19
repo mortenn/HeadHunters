@@ -25,6 +25,7 @@ public class SimpleArea {
         this.z1 = z1;
         this.z2 = z2;
         this.world = world;
+
     }
 
     public boolean pointInArea(RunsafeLocation location){
