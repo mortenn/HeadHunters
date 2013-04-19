@@ -1,10 +1,10 @@
 name: HeadHunters
 main: no.runsafe.headhunters.Plugin
 version: 1.0.@BUILD@
-authors: []
+authors: [Naxanria]
 depend: []
 description:
 commands:
   headhunters:
-    description:
+    description: Control the headhunters plugin.
     aliases: [hh]
