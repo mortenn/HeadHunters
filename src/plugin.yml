@@ -5,6 +5,6 @@ authors: []
 depend: []
 description:
 commands:
-  something:
+  headhunters:
     description:
-    aliases: []
+    aliases: [hh]
