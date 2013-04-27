@@ -54,12 +54,6 @@ public class Core implements IConfigurationChanged{
 
         this.gamestarted = false;
 
-
-
-
-
-
-
         this.worldName = config.getConfigValueAsString("world");
         if(this.worldName == null){
             worldName = "world";
@@ -246,6 +240,7 @@ public class Core implements IConfigurationChanged{
 
     public void teleportIntoWaitRoom(RunsafePlayer player){
         player.teleport(this.waitingRoomSpawn);
+        player.getInventory().clear();
     }
 
     public void teleportIntoGame(ArrayList<RunsafePlayer> players){
@@ -271,37 +266,35 @@ public class Core implements IConfigurationChanged{
 
 
     public void teleportIntoGame(RunsafePlayer player){
+        player.teleport(safeLocation());
+    }
 
-        System.out.println("!!!!!!!!!");
-        System.out.println(combatArea);
+    public RunsafeLocation safeLocation(){
         int x,y,z;
-        int ysmall, ylarge;
-        boolean success = false;
+
+        int ysmall = (int) Math.min(combatArea.getY1(), combatArea.getY2());
+        int ylarge = (int) Math.max(combatArea.getY1(), combatArea.getY2());
         int tries = 350;
-        while(!success){
+        while(tries > 0){
 
 
             x = getRandom((int) combatArea.getX1(),(int) combatArea.getX2());
             z = getRandom((int) combatArea.getZ1(),(int) combatArea.getZ2());
             RunsafeWorld world =  server.getWorld(this.worldName);
-            ysmall = (int) Math.min(combatArea.getY1(), combatArea.getY2());
-            ylarge = (int) Math.max(combatArea.getY1(), combatArea.getY2());
-            for(y = ysmall; y < ylarge && !success; y++){
-                console.write("__ " + new RunsafeLocation(world,(double) x, (double) y, (double) z).getBlock().getBlockState().getMaterialID());
+
+            for(y = ysmall; y < ylarge; y++){
+
                 if((new RunsafeLocation(world,(double) x, (double) y, (double) z).getBlock().getBlockState().getMaterialID() == 0)
                         &&
-                   (new RunsafeLocation(world,(double) x, (double) y + 1, (double) z).getBlock().getBlockState().getMaterialID() == 0)){
-                    player.teleport(new RunsafeLocation(server.getWorld(this.worldName), (double) x, (double) y, (double) z));
-                    System.out.println("_________________ teleported");
-                    success = true;
-
+                        (new RunsafeLocation(world,(double) x, (double) y + 1, (double) z).getBlock().getBlockState().getMaterialID() == 0)){
+                   return new RunsafeLocation(server.getWorld(this.worldName), (double) x, (double) y, (double) z);
                 }
-                System.out.println("!!__!!");
+
 
             }
             tries--;
-            if(tries <= 0) break;
         }
+        return null;
 
     }
 
@@ -425,5 +418,9 @@ public class Core implements IConfigurationChanged{
 
 
 
+    }
+
+    public RunsafeLocation playerRespawn(RunsafePlayer player) {
+        return (ingamePlayersNames.contains(player.getName()) ? safeLocation() : null);
     }
 }

@@ -4,6 +4,7 @@ import no.runsafe.framework.RunsafeConfigurablePlugin;
 import no.runsafe.framework.command.Command;
 import no.runsafe.headhunters.command.*;
 import no.runsafe.headhunters.event.PlayerDeath;
+import no.runsafe.headhunters.event.PlayerRespawn;
 
 public class Plugin extends RunsafeConfigurablePlugin
 {
@@ -28,6 +29,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 
         //events
         this.addComponent(PlayerDeath.class);
+        this.addComponent(PlayerRespawn.class);
 
 
 
