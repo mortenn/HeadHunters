@@ -21,7 +21,6 @@ import java.util.Random;
  * Date: 19-4-13
  * Time: 16:04
  */
-
 public class Core implements IConfigurationChanged{
 
     private String worldName;
