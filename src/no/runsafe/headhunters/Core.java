@@ -8,11 +8,13 @@ import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.RunsafeWorld;
 import no.runsafe.framework.server.event.player.RunsafePlayerDeathEvent;
+import no.runsafe.framework.server.item.RunsafeItemStack;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
 import org.bukkit.GameMode;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -54,10 +56,7 @@ public class Core implements IConfigurationChanged{
 
         this.gamestarted = false;
 
-        this.worldName = config.getConfigValueAsString("world");
-        if(this.worldName == null){
-            worldName = "world";
-        }
+
 
 
         this.scheduler.startSyncRepeatingTask(
@@ -360,11 +359,14 @@ public class Core implements IConfigurationChanged{
 
         this.timer = config.getConfigValueAsInt("timer");
 
+        this.worldName = config.getConfigValueAsString("world");
+        if(this.worldName == null){
+            worldName = "world";
+        }
+
     }
     
     public void tick(){
-
-        console.fine("tick. Timer:" + timer);
 
         if(enabled)
             if(!this.gamestarted){
@@ -416,6 +418,10 @@ public class Core implements IConfigurationChanged{
 
     public void playerDeath(RunsafePlayerDeathEvent event) {
 
+        List<RunsafeItemStack> drops = event.getDrops();
+        event.setDroppedXP(0);
+        RunsafeItemStack head = new RunsafeItemStack(397, 1, (short)3);
+        drops.add(head);
 
 
     }
