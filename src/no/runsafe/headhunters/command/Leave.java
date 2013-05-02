@@ -9,23 +9,21 @@ import java.util.HashMap;
 /**
  * Created with IntelliJ IDEA.
  * User: Naxanria
- * Date: 21-4-13
- * Time: 23:08
+ * Date: 2-5-13
+ * Time: 20:04
  */
-public class DebugTeleportAll extends PlayerCommand {
-
+public class Leave extends PlayerCommand {
 
     private Core core;
-    public DebugTeleportAll(Core core){
-        super("tpa","Teleports all players","headhunters.debug-tpa");
+
+    public Leave(Core core){
+        super("leave", "Leaves the current game", null);
         this.core = core;
     }
 
     @Override
     public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters) {
-
-        core.debugTeleportAll();
-
+        core.leave(executor);
         return null;
     }
 }

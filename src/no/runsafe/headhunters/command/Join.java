@@ -18,7 +18,7 @@ public class Join extends PlayerCommand {
     Core core;
 
     public Join(Core core){
-        super("join", "Join a headhunters game", "headhunters.join");
+        super("join", "Join a headhunters game", null);
         this.core = core;
     }
 

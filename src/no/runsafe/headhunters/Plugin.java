@@ -24,9 +24,10 @@ public class Plugin extends RunsafeConfigurablePlugin
         command.addSubCommand(this.getInstance(WaitingRoom.class));
         command.addSubCommand(this.getInstance(Start.class));
         command.addSubCommand(this.getInstance(Spawn.class));
-        command.addSubCommand(this.getInstance(DebugTeleportAll.class));
         command.addSubCommand(this.getInstance(Join.class));
         command.addSubCommand(this.getInstance(showIngame.class));
+        command.addSubCommand(this.getInstance(Leave.class));
+        command.addSubCommand(this.getInstance(Stop.class));
 
         this.addComponent(command);
 

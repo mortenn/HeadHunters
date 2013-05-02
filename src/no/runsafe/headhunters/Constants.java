@@ -17,5 +17,7 @@ public class Constants {
     public static final String MSG_DISABLED = "Headhunters is disabled";
     public static final String GAME_WON = "%s " + MSG_COLOR + "claims victory in headhunters!";
     public static final String MSG_GAMESTOPPED = "%s " + MSG_COLOR + "has stopped the game";
-    public static final String MSG_GAME_START_IN = "Headhunters game will start in %d %s!";
+    public static final String MSG_GAME_START_IN = MSG_COLOR + "Headhunters game will start in %d %s!";
+    public static final String MSG_NOT_ENOUGH_PLAYERS = MSG_COLOR + "Not enough players to start; %d of %d needed.";
+    public static final String MSG_TIME_REMAINING = MSG_COLOR + "Time remaining: %d %s.";
 }
