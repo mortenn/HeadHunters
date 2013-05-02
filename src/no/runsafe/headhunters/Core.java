@@ -14,6 +14,7 @@ import no.runsafe.framework.timer.IScheduler;
 import org.bukkit.GameMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -38,11 +39,15 @@ public class Core implements IConfigurationChanged{
     private RunsafeServer server;
     private Random rand;
 
-    private int timer = -1;
+    private int countdownToStart = -1;
+    private int countdownToEnd = -1;
+    private int headsTreshHold = 50;
+    private int gameTimer = 0;
+    private HashMap<String, Integer> headsCount;
 
     private ArrayList<RunsafePlayer> ingamePlayers = new ArrayList<RunsafePlayer>();
     private ArrayList<String> ingamePlayersNames = new ArrayList<String>();
-
+    private int winAmount = 50;
 
 
     public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server) {
@@ -56,8 +61,7 @@ public class Core implements IConfigurationChanged{
 
         this.gamestarted = false;
 
-
-
+        headsCount = new HashMap<String, Integer>();
 
         this.scheduler.startSyncRepeatingTask(
                 new Runnable() {
@@ -66,8 +70,7 @@ public class Core implements IConfigurationChanged{
                         tick();
                     }
                 }, 1, 1
-            );
-
+        );
     }
 
 
@@ -181,7 +184,7 @@ public class Core implements IConfigurationChanged{
 
             if(time == 0) time = 1;
 
-            timer = time;
+            countdownToStart = time;
 
             return Constants.MSG_COLOR + "Game will start in " + time + " seconds";
         }
@@ -192,9 +195,13 @@ public class Core implements IConfigurationChanged{
     public void start(){
 
         this.ingamePlayers = this.waitingRoom.getPlayers(GameMode.SURVIVAL);
-        for(RunsafePlayer player : ingamePlayers) ingamePlayersNames.add(player.getName());
+        for(RunsafePlayer player : ingamePlayers){
+            ingamePlayersNames.add(player.getName());
+            headsCount.put(player.getName(), 0);
+        }
 
         teleportIntoGame(this.ingamePlayers);
+        this.gameTimer = 0;
         this.gamestarted = true;
 
     }
@@ -205,9 +212,12 @@ public class Core implements IConfigurationChanged{
             player.getInventory().clear();
             player.sendColouredMessage(Constants.MSG_COLOR + endMessage);
         }
+
         gamestarted = false;
         ingamePlayers.clear();
         ingamePlayersNames.clear();
+        resetWaittime();
+        resetRuntime();
 
     }
 
@@ -265,6 +275,8 @@ public class Core implements IConfigurationChanged{
 
 
     public void teleportIntoGame(RunsafePlayer player){
+        player.getInventory().clear();
+        this.equip(player);
         player.teleport(safeLocation());
     }
 
@@ -293,7 +305,7 @@ public class Core implements IConfigurationChanged{
             }
             tries--;
         }
-        return null;
+        return this.waitingRoomSpawn;
 
     }
 
@@ -330,6 +342,11 @@ public class Core implements IConfigurationChanged{
 
         this.enabled = config.getConfigValueAsBoolean("enabled");
 
+        this.worldName = config.getConfigValueAsString("world");
+        if(this.worldName == null){
+            worldName = "world";
+        }
+
         this.waitingRoomSpawn = new RunsafeLocation(
                 server.getWorld(this.worldName),
                 config.getConfigValueAsDouble("waitingroomspawn.x"),
@@ -357,13 +374,18 @@ public class Core implements IConfigurationChanged{
                 server.getWorld(this.worldName)
         );
 
-        this.timer = config.getConfigValueAsInt("timer");
+        this.countdownToStart = config.getConfigValueAsInt("waittime");
+        this.countdownToEnd = config.getConfigValueAsInt("runtime");
 
-        this.worldName = config.getConfigValueAsString("world");
-        if(this.worldName == null){
-            worldName = "world";
-        }
 
+    }
+
+    private void resetWaittime(){
+        this.countdownToStart = config.getConfigValueAsInt("waittime");
+    }
+
+    private void resetRuntime(){
+        this.countdownToEnd = config.getConfigValueAsInt("runtime");
     }
     
     public void tick(){
@@ -371,10 +393,10 @@ public class Core implements IConfigurationChanged{
         if(enabled)
             if(!this.gamestarted){
                 this.teleportIntoWaitRoom(this.combatArea.getPlayers(), GameMode.SURVIVAL);
-                timer--;
-                if(timer == 0){
+                countdownToStart--;
+                if(countdownToStart == 0){
                     start();
-                    timer = -1;
+                    countdownToStart = -1;
                 }
             }else{
                 for(RunsafePlayer player : combatArea.getPlayers()){
@@ -385,6 +407,11 @@ public class Core implements IConfigurationChanged{
                         teleportIntoWaitRoom(player);
 
                     }else{
+                        //check amount of heads in inventory
+                        int amount = 0;
+                        for(RunsafeItemStack content : (ArrayList<RunsafeItemStack>) player.getInventory().getContents()) if(content.getItemId() == 7) amount += content.getAmount();
+                        if(amount >= winAmount) winner(player);
+
 
                     }
 
@@ -397,6 +424,12 @@ public class Core implements IConfigurationChanged{
         
     }
 
+    private void winner(RunsafePlayer player) {
+
+        server.broadcastMessage(String.format(Constants.GAME_WON, player.getPrettyName()));
+        end("");
+
+    }
 
 
     public String join(RunsafePlayer executor) {
@@ -423,6 +456,17 @@ public class Core implements IConfigurationChanged{
         RunsafeItemStack head = new RunsafeItemStack(397, 1, (short)3);
         drops.add(head);
 
+
+    }
+
+    public void equip(RunsafePlayer player){
+
+        player.getInventory().setChestplate(new RunsafeItemStack(303));
+        player.getInventory().setLeggings(new RunsafeItemStack(304));
+        player.getInventory().setBoots(new RunsafeItemStack(309));
+        player.getInventory().setHelmet(new RunsafeItemStack(314));
+
+        player.getInventory().addItems(new RunsafeItemStack(267), new RunsafeItemStack(261), new RunsafeItemStack(262, 32, (short)0));
 
     }
 

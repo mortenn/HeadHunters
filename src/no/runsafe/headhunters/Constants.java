@@ -19,4 +19,5 @@ public class Constants {
 
 
     public static final String MSG_DISABLED = "Headhunters is disabled";
+    public static final String GAME_WON = "%s " + MSG_COLOR + " claims victory in headhunters!";
 }
