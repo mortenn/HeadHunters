@@ -6,8 +6,10 @@ import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.RunsafeWorld;
+import no.runsafe.framework.server.block.RunsafeBlock;
 import no.runsafe.framework.server.enchantment.RunsafeEnchantment;
 import no.runsafe.framework.server.event.player.RunsafePlayerDeathEvent;
+import no.runsafe.framework.server.event.player.RunsafePlayerPickupItemEvent;
 import no.runsafe.framework.server.event.player.RunsafePlayerQuitEvent;
 import no.runsafe.framework.server.item.RunsafeItemStack;
 import no.runsafe.framework.server.player.RunsafePlayer;
@@ -17,6 +19,8 @@ import no.runsafe.framework.timer.IScheduler;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 
 import java.util.ArrayList;
@@ -292,7 +296,9 @@ public class Core implements IConfigurationChanged{
         this.equip(player);
         player.removeBuffs();
 
-        //player.addPotionEffect(potion effect)
+
+        player.addPotionEffect(new RunsafePotionEffect(new PotionEffect(PotionEffectType.HEAL, 3, 6 )));
+
         player.teleport(safeLocation());
     }
 
@@ -564,6 +570,7 @@ public class Core implements IConfigurationChanged{
             int amount = amountHeads(event.getEntity());
             List<RunsafeItemStack> items = event.getDrops();
             items.clear();
+            if(getRandom(0, 100) > 90) items.add(new RunsafeItemStack(Material.GOLDEN_APPLE.getId()));
             event.setDrops(items);
             player.getWorld().dropItem(
                     player.getEyeLocation(),
@@ -623,6 +630,7 @@ public class Core implements IConfigurationChanged{
             player.teleport(waitingRoomSpawn);
             ingamePlayers.remove(player);
             ingamePlayersNames.remove(player.getName());
+            sendMessage(ingamePlayers, String.format(Constants.MSG_LEAVE, player.getPrettyName()));
             if(ingamePlayersNames.size() <= 1) end(null);
         }
 
@@ -630,5 +638,37 @@ public class Core implements IConfigurationChanged{
 
     public void disconnect(RunsafePlayerQuitEvent event) {
         leave(event.getPlayer());
+    }
+
+    public void rightClick(RunsafePlayer player, RunsafeItemStack usingItem, RunsafeBlock targetBlock) {
+        //special items
+
+    }
+
+    public void pickUp(RunsafePlayerPickupItemEvent event) {
+
+        console.write(String.format("%s picked up %d", event.getPlayer().getPrettyName(), event.getItem().getItemStack().getItemId()));
+        RunsafePlayer player = event.getPlayer();
+
+        if(ingamePlayersNames.contains(player.getName()))
+            if( event.getItem().getItemStack().getItemId() == Material.GOLDEN_APPLE.getId()){
+                PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 60, 2);
+                event.getItem().remove();
+                event.setCancelled(true);
+                player.addPotionEffect(new RunsafePotionEffect(regen));
+                player.getInventory().remove(Material.GOLDEN_APPLE.getId());
+            }
+
+
+    }
+
+    public void playerMove(RunsafePlayer player, RunsafeLocation to) {
+        if(ingamePlayersNames.contains(player.getName()) && !ingamePlayersNames.isEmpty()){
+            if(!combatArea.pointInArea(player.getLocation())){
+                leave(player);
+                player.sendColouredMessage(Constants.MSG_USE_LEAVE);
+            }
+        }
+
     }
 }

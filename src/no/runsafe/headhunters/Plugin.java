@@ -3,9 +3,7 @@ package no.runsafe.headhunters;
 import no.runsafe.framework.RunsafeConfigurablePlugin;
 import no.runsafe.framework.command.Command;
 import no.runsafe.headhunters.command.*;
-import no.runsafe.headhunters.event.PlayerDeath;
-import no.runsafe.headhunters.event.PlayerDisconnect;
-import no.runsafe.headhunters.event.PlayerRespawn;
+import no.runsafe.headhunters.event.*;
 
 public class Plugin extends RunsafeConfigurablePlugin
 {
@@ -36,6 +34,9 @@ public class Plugin extends RunsafeConfigurablePlugin
         this.addComponent(PlayerDeath.class);
         this.addComponent(PlayerRespawn.class);
         this.addComponent(PlayerDisconnect.class);
+        this.addComponent(PlayerItemPickUp.class);
+        this.addComponent(PlayerRightClick.class);
+        this.addComponent(PlayerMove.class);
 
 
 

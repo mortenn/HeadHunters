@@ -22,4 +22,6 @@ public class Constants {
     public static final String MSG_TIME_REMAINING = MSG_COLOR + "Time remaining: %d %s.";
     public static final String MSG_NEW_LEADER = MSG_COLOR + "%s has taken the lead with %d heads!";
     public static final String MSG_START_MESSAGE = MSG_COLOR + "Gather %d heads to win this match!";
+    public static final String MSG_USE_LEAVE = MSG_COLOR + "Use" + ChatColour.BLUE + " /hh leave " + MSG_COLOR + "instead!";
+    public static final String MSG_LEAVE = "%s has left the game.";
 }
