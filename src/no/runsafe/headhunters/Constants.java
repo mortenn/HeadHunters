@@ -21,4 +21,5 @@ public class Constants {
     public static final String MSG_NOT_ENOUGH_PLAYERS = MSG_COLOR + "Not enough players to start; %d of %d needed.";
     public static final String MSG_TIME_REMAINING = MSG_COLOR + "Time remaining: %d %s.";
     public static final String MSG_NEW_LEADER = MSG_COLOR + "%s has taken the lead with %d heads!";
+    public static final String MSG_START_MESSAGE = MSG_COLOR + "Gather %d heads to win this match!";
 }

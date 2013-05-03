@@ -2,7 +2,6 @@ package no.runsafe.headhunters;
 
 import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
-import no.runsafe.framework.output.ConsoleColors;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
@@ -14,6 +13,7 @@ import no.runsafe.framework.server.item.RunsafeItemStack;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.server.potion.RunsafePotionEffect;
 import no.runsafe.framework.timer.IScheduler;
+
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -213,6 +213,7 @@ public class Core implements IConfigurationChanged{
         }
 
         teleportIntoGame(this.ingamePlayers);
+        sendMessage(ingamePlayers, String.format(Constants.MSG_START_MESSAGE, winAmount));
         this.gamestarted = true;
 
     }
@@ -290,7 +291,8 @@ public class Core implements IConfigurationChanged{
         player.getInventory().clear();
         this.equip(player);
         player.removeBuffs();
-        //player.addPotionEffect(R)
+
+        //player.addPotionEffect(potion effect)
         player.teleport(safeLocation());
     }
 
@@ -399,14 +401,14 @@ public class Core implements IConfigurationChanged{
     
     public void tick(){
 
-        if(enabled)
-            if(!this.gamestarted){
+        if(enabled) {
+            if (!this.gamestarted) {
                 this.teleportIntoWaitRoom(this.combatArea.getPlayers(), GameMode.SURVIVAL);
 
-                if(countdownToStart % 300 == 0){ //every 5 minutes
+                if (countdownToStart % 300 == 0) { //every 5 minutes
                     server.broadcastMessage(String.format(Constants.MSG_GAME_START_IN, (countdownToStart / 300) * 5, "minutes"));
-                }else{
-                    switch(countdownToStart){
+                } else {
+                    switch (countdownToStart) {
                         case 180:
                             sendMessage(this.waitingRoom.getPlayers(), String.format(Constants.MSG_GAME_START_IN, 3, "minutes"));
                             break;
@@ -434,21 +436,27 @@ public class Core implements IConfigurationChanged{
                 }
 
                 countdownToStart--;
-                if(countdownToStart <= 0){
+                if (countdownToStart <= 0) {
                     start();
                 }
-            }else{
+            } else {
 
                 RunsafePlayer l = pickWinner();
-                if(l != leader){
+                int amount = amountHeads(l);
+                if(amount >= winAmount){
+                    winner(leader);
+                    return;
+                }
+                if (l != leader && amount > 0) {
                     leader = l;
                     sendMessage(combatArea.getPlayers(), String.format(Constants.MSG_NEW_LEADER, leader.getPrettyName(), amountHeads(leader)));
+
                 }
 
-                if(countdownToEnd % 300 == 0){
-                   sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, (countdownToEnd/300) * 5, "minutes"));
-                }else{
-                    switch (countdownToEnd){
+                if (countdownToEnd % 300 == 0) {
+                    sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, (countdownToEnd / 300) * 5, "minutes"));
+                } else {
+                    switch (countdownToEnd) {
                         case 180:
                             sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, 3, "minutes"));
                             break;
@@ -474,32 +482,25 @@ public class Core implements IConfigurationChanged{
                     }
                 }
                 this.countdownToEnd--;
-                if(countdownToEnd <= 0){
+                if (countdownToEnd <= 0) {
 
                     winner(pickWinner());
                     return;
 
                 }
 
-                if(ingamePlayers.size() == 1) winner(ingamePlayers.get(0));
+                if (ingamePlayers.size() == 1) winner(ingamePlayers.get(0));
 
-                for(RunsafePlayer player : combatArea.getPlayers()){
+                for (RunsafePlayer player : combatArea.getPlayers()) {
 
-                    if(player.getGameMode() == GameMode.CREATIVE) continue;
+                    if (player.getGameMode() == GameMode.CREATIVE) continue;
 
-                    if(!ingamePlayersNames.contains(player.getName())){
-                        teleportIntoWaitRoom(player);
+                    if (!ingamePlayersNames.contains(player.getName())) teleportIntoWaitRoom(player);
 
-                    }else{
-                        //check amount of heads in inventory
-                        int amount = amountHeads(player);
-                        if(amount >= winAmount) winner(player);
-
-
-                    }
 
                 }
             }
+        }
         else this.teleportIntoWaitRoom(this.combatArea.getPlayers(), GameMode.SURVIVAL);
 
 
