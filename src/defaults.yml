@@ -1,7 +1,8 @@
 enabled: false
 world: world
-waittime: 360
-runtime: 1800
+waittime: 120
+runtime: 900
+winamount: 50
 waitingarea:
   x1: 0
   y1: 0

@@ -9,16 +9,19 @@ import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.RunsafeWorld;
 import no.runsafe.framework.server.enchantment.RunsafeEnchantment;
 import no.runsafe.framework.server.event.player.RunsafePlayerDeathEvent;
+import no.runsafe.framework.server.event.player.RunsafePlayerQuitEvent;
 import no.runsafe.framework.server.item.RunsafeItemStack;
 import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.server.potion.RunsafePotionEffect;
 import no.runsafe.framework.timer.IScheduler;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentWrapper;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -48,8 +51,9 @@ public class Core implements IConfigurationChanged{
 
     private ArrayList<RunsafePlayer> ingamePlayers = new ArrayList<RunsafePlayer>();
     private ArrayList<String> ingamePlayersNames = new ArrayList<String>();
-    private int winAmount = 10;
+    private int winAmount = 30;
     private int minPlayers = 2;
+    private RunsafePlayer leader = null;
 
 
     public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server) {
@@ -197,10 +201,11 @@ public class Core implements IConfigurationChanged{
     public void start(){
         ArrayList<RunsafePlayer> players = waitingRoom.getPlayers(GameMode.SURVIVAL);
         if(players.size() < this.minPlayers){
-            this.countdownToStart = 300;
+            this.resetWaittime();
             sendMessage(players, String.format(Constants.MSG_NOT_ENOUGH_PLAYERS, players.size(), this.minPlayers));
             return;
         }
+        winAmount = (int) 2.5 * players.size() + 5;
         this.ingamePlayers = players;
         for(RunsafePlayer player : ingamePlayers){
             ingamePlayersNames.add(player.getName());
@@ -224,6 +229,7 @@ public class Core implements IConfigurationChanged{
         ingamePlayersNames.clear();
         resetWaittime();
         resetRuntime();
+        leader = null;
 
     }
 
@@ -240,9 +246,9 @@ public class Core implements IConfigurationChanged{
     }
 
     public void teleportIntoWaitRoom(ArrayList<RunsafePlayer> players){
-        for(RunsafePlayer player : players){
+        for(RunsafePlayer player : players)
             this.teleportIntoWaitRoom(player);
-        }
+
     }
 
     private void teleportIntoWaitRoom(ArrayList<RunsafePlayer> players, GameMode mode) {
@@ -283,6 +289,8 @@ public class Core implements IConfigurationChanged{
     public void teleportIntoGame(RunsafePlayer player){
         player.getInventory().clear();
         this.equip(player);
+        player.removeBuffs();
+        //player.addPotionEffect(R)
         player.teleport(safeLocation());
     }
 
@@ -326,8 +334,6 @@ public class Core implements IConfigurationChanged{
             config.setConfigValue("waitingroomspawn.z", executor.getLocation().getZ());
 
             config.save();
-
-
             return "Successfully set spawn";
         }
 
@@ -433,6 +439,11 @@ public class Core implements IConfigurationChanged{
                 }
             }else{
 
+                RunsafePlayer l = pickWinner();
+                if(l != leader){
+                    leader = l;
+                    sendMessage(combatArea.getPlayers(), String.format(Constants.MSG_NEW_LEADER, leader.getPrettyName(), amountHeads(leader)));
+                }
 
                 if(countdownToEnd % 300 == 0){
                    sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, (countdownToEnd/300) * 5, "minutes"));
@@ -465,14 +476,13 @@ public class Core implements IConfigurationChanged{
                 this.countdownToEnd--;
                 if(countdownToEnd <= 0){
 
-                    pickWinner();
+                    winner(pickWinner());
                     return;
 
                 }
 
-                if(ingamePlayers.size() == 1){
-                    winner(ingamePlayers.get(0));
-                }
+                if(ingamePlayers.size() == 1) winner(ingamePlayers.get(0));
+
                 for(RunsafePlayer player : combatArea.getPlayers()){
 
                     if(player.getGameMode() == GameMode.CREATIVE) continue;
@@ -482,7 +492,8 @@ public class Core implements IConfigurationChanged{
 
                     }else{
                         //check amount of heads in inventory
-                        if(amountHeads(player) >= winAmount) winner(player);
+                        int amount = amountHeads(player);
+                        if(amount >= winAmount) winner(player);
 
 
                     }
@@ -496,7 +507,7 @@ public class Core implements IConfigurationChanged{
         
     }
 
-    private void pickWinner() {
+    private RunsafePlayer pickWinner() {
         int topHeads = -1;
         RunsafePlayer winner = null;
 
@@ -513,7 +524,7 @@ public class Core implements IConfigurationChanged{
             }
         }
 
-        winner(winner);
+        return winner;
 
     }
 
@@ -544,13 +555,17 @@ public class Core implements IConfigurationChanged{
 
     public void playerDeath(RunsafePlayerDeathEvent event) {
 
-        if(this.ingamePlayersNames.contains(event.getEntity().getName())){
+        RunsafePlayer player = event.getEntity();
+
+        if(this.ingamePlayersNames.contains(player.getName())){
+
             event.setDroppedXP(0);
             int amount = amountHeads(event.getEntity());
-            event.getDrops().clear();
-            event.getEntity().getInventory().clear();
-            event.getEntity().getWorld().dropItem(
-                    event.getEntity().getEyeLocation(),
+            List<RunsafeItemStack> items = event.getDrops();
+            items.clear();
+            event.setDrops(items);
+            player.getWorld().dropItem(
+                    player.getEyeLocation(),
                     new RunsafeItemStack(Material.SKULL_ITEM.getId(), amount + 1, (short)3)
             );
         }
@@ -588,18 +603,15 @@ public class Core implements IConfigurationChanged{
 
     public void stop(RunsafePlayer executor) {
 
-        pickWinner();
+        winner(pickWinner());
         sendMessage(waitingRoom.getPlayers(), String.format(Constants.MSG_GAMESTOPPED, executor.getPrettyName()));
 
     }
 
     public int amountHeads(RunsafePlayer player){
         int amount = 0;
-        for(RunsafeItemStack content : (ArrayList<RunsafeItemStack>) player.getInventory().getContents()) if(content.getItemId() == Material.SKULL_ITEM.getId())
-            amount += content.getAmount();
+        for(RunsafeItemStack content : (ArrayList<RunsafeItemStack>) player.getInventory().getContents()) if(content.getItemId() == Material.SKULL_ITEM.getId()) amount += content.getAmount();
         return amount;
-
-
     }
 
     public void leave(RunsafePlayer player) {
@@ -610,8 +622,12 @@ public class Core implements IConfigurationChanged{
             player.teleport(waitingRoomSpawn);
             ingamePlayers.remove(player);
             ingamePlayersNames.remove(player.getName());
-            if(ingamePlayers.size() <= 1) end(null);
+            if(ingamePlayersNames.size() <= 1) end(null);
         }
 
+    }
+
+    public void disconnect(RunsafePlayerQuitEvent event) {
+        leave(event.getPlayer());
     }
 }

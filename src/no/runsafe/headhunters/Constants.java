@@ -20,4 +20,5 @@ public class Constants {
     public static final String MSG_GAME_START_IN = MSG_COLOR + "Headhunters game will start in %d %s!";
     public static final String MSG_NOT_ENOUGH_PLAYERS = MSG_COLOR + "Not enough players to start; %d of %d needed.";
     public static final String MSG_TIME_REMAINING = MSG_COLOR + "Time remaining: %d %s.";
+    public static final String MSG_NEW_LEADER = MSG_COLOR + "%s has taken the lead with %d heads!";
 }
