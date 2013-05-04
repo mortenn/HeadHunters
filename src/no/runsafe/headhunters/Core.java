@@ -8,6 +8,7 @@ import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.RunsafeWorld;
 import no.runsafe.framework.server.block.RunsafeBlock;
 import no.runsafe.framework.server.enchantment.RunsafeEnchantment;
+import no.runsafe.framework.server.entity.RunsafeEntity;
 import no.runsafe.framework.server.event.player.RunsafePlayerDeathEvent;
 import no.runsafe.framework.server.event.player.RunsafePlayerPickupItemEvent;
 import no.runsafe.framework.server.event.player.RunsafePlayerQuitEvent;
@@ -16,6 +17,7 @@ import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.server.potion.RunsafePotionEffect;
 import no.runsafe.framework.timer.IScheduler;
 
+import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -229,6 +231,10 @@ public class Core implements IConfigurationChanged{
             if(endMessage != null) player.sendColouredMessage(Constants.MSG_COLOR + endMessage);
         }
 
+        List<RunsafeEntity> entities = server.getWorld(worldName).getEntities();
+        for(RunsafeEntity entity : entities)
+            if(combatArea.pointInArea(entity.getLocation())) entity.remove();
+
         gamestarted = false;
         ingamePlayers.clear();
         ingamePlayersNames.clear();
@@ -297,7 +303,7 @@ public class Core implements IConfigurationChanged{
         player.removeBuffs();
 
 
-        player.addPotionEffect(new RunsafePotionEffect(new PotionEffect(PotionEffectType.HEAL, 3, 6 )));
+        player.addPotionEffect(new RunsafePotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 120, 2 )));
 
         player.teleport(safeLocation());
     }
@@ -570,7 +576,7 @@ public class Core implements IConfigurationChanged{
             int amount = amountHeads(event.getEntity());
             List<RunsafeItemStack> items = event.getDrops();
             items.clear();
-            if(getRandom(0, 100) > 90) items.add(new RunsafeItemStack(Material.GOLDEN_APPLE.getId()));
+            if(getRandom(0, 100) > 90) items.add(randomItem());
             event.setDrops(items);
             player.getWorld().dropItem(
                     player.getEyeLocation(),
@@ -579,6 +585,17 @@ public class Core implements IConfigurationChanged{
         }
 
 
+    }
+
+    private RunsafeItemStack randomItem() {
+
+        ArrayList<RunsafeItemStack> rItems = new ArrayList<RunsafeItemStack>();
+        rItems.add(new RunsafeItemStack(Material.GOLDEN_APPLE.getId()));
+        rItems.add(new RunsafeItemStack(Material.SLIME_BALL.getId()));
+        rItems.add(new RunsafeItemStack(Material.SUGAR.getId()));
+
+
+        return rItems.get(getRandom(0, rItems.size()));
     }
 
     public void equip(RunsafePlayer player){
@@ -604,15 +621,18 @@ public class Core implements IConfigurationChanged{
     public RunsafeLocation playerRespawn(RunsafePlayer player) {
         if(ingamePlayersNames.contains(player.getName())){
             equip(player);
+            teleportIntoGame(player);
             return safeLocation();
         }
+        if(combatArea.pointInArea(player.getLocation())) return waitingRoomSpawn;
         return  null;
     }
 
     public void stop(RunsafePlayer executor) {
-
-        winner(pickWinner());
-        sendMessage(waitingRoom.getPlayers(), String.format(Constants.MSG_GAMESTOPPED, executor.getPrettyName()));
+        if(gamestarted){
+            winner(pickWinner());
+            sendMessage(waitingRoom.getPlayers(), String.format(Constants.MSG_GAMESTOPPED, executor.getPrettyName()));
+        }
 
     }
 
@@ -642,27 +662,85 @@ public class Core implements IConfigurationChanged{
 
     public void rightClick(RunsafePlayer player, RunsafeItemStack usingItem, RunsafeBlock targetBlock) {
         //special items
+        if(ingamePlayersNames.contains(player.getName()) && usingItem != null && targetBlock != null){
+            boolean used = false;
+            if(usingItem.getItemId() == Material.SLIME_BALL.getId()){
+                RunsafePotionEffect slow = new RunsafePotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 4));
+                //visual effect...
+                server.getWorld(worldName).playEffect(targetBlock.getLocation(), Effect.POTION_BREAK, 2);
+
+                ArrayList<RunsafePlayer> hitPlayers = getPlayers(targetBlock.getLocation(), 5);
+                for(RunsafePlayer hitPlayer : hitPlayers)
+                    if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) hitPlayer.addPotionEffect(slow);
+                used = true;
+            }
+            if(used){
+
+                RunsafeItemStack stack = player.getItemInHand();
+                stack.setAmount(stack.getAmount() - 1);
+
+                player.getInventory().setItemInHand(stack);
+            }
+
+
+        }
+    }
+
+    public double distance(double x, double y){
+        if(x < y){
+            double t = x;
+            x = y;
+            y = t;
+        }
+        return (x-y);
+    }
+
+    public double distance(RunsafeLocation loc1, RunsafeLocation loc2){
+
+        return Math.sqrt(
+                Math.pow(distance(loc1.getX(), loc2.getX()), 2) +
+                Math.pow(distance(loc1.getY(), loc2.getY()), 2) +
+                Math.pow(distance(loc1.getZ(), loc2.getZ()), 2)
+        );
+    }
+
+    public ArrayList<RunsafePlayer> getPlayers(RunsafeLocation loc, int radius){
+
+        ArrayList<RunsafePlayer> players = new ArrayList<RunsafePlayer>();
+        for(RunsafePlayer player : ingamePlayers)
+            if(distance(loc, player.getLocation()) < radius) players.add(player);
+
+        return players;
 
     }
 
     public void pickUp(RunsafePlayerPickupItemEvent event) {
 
-        console.write(String.format("%s picked up %d", event.getPlayer().getPrettyName(), event.getItem().getItemStack().getItemId()));
+        console.fine(String.format("%s picked up %d", event.getPlayer().getPrettyName(), event.getItem().getItemStack().getItemId()));
         RunsafePlayer player = event.getPlayer();
 
-        if(ingamePlayersNames.contains(player.getName()))
-            if( event.getItem().getItemStack().getItemId() == Material.GOLDEN_APPLE.getId()){
+        if(ingamePlayersNames.contains(player.getName())){
+            RunsafeItemStack item = event.getItem().getItemStack();
+            boolean used = false;
+            if( item.getItemId() == Material.GOLDEN_APPLE.getId()){
                 PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 60, 2);
+                player.addPotionEffect(new RunsafePotionEffect(regen));
+                used = true;
+            }else if(item.getItemId() == Material.SUGAR.getId()){
+                PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 120, 3);
+                player.addPotionEffect(new RunsafePotionEffect(speed));
+                used = true;
+            }
+            if(used){
                 event.getItem().remove();
                 event.setCancelled(true);
-                player.addPotionEffect(new RunsafePotionEffect(regen));
-                player.getInventory().remove(Material.GOLDEN_APPLE.getId());
             }
+        }
 
 
     }
 
-    public void playerMove(RunsafePlayer player, RunsafeLocation to) {
+    public void playerMove(RunsafePlayer player) {
         if(ingamePlayersNames.contains(player.getName()) && !ingamePlayersNames.isEmpty()){
             if(!combatArea.pointInArea(player.getLocation())){
                 leave(player);

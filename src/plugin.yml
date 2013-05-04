@@ -1,6 +1,6 @@
 name: HeadHunters
 main: no.runsafe.headhunters.Plugin
-version: 1.0.@BUILD@
+version: 1.0.2b
 authors: [Naxanria]
 depend: []
 description:

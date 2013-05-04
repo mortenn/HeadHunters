@@ -21,6 +21,7 @@ public class PlayerDeath implements IPlayerDeathEvent {
 
     @Override
     public void OnPlayerDeathEvent(RunsafePlayerDeathEvent event) {
+
         core.playerDeath(event);
     }
 }
