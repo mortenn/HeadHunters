@@ -311,6 +311,7 @@ public class Core implements IConfigurationChanged{
         player.setSaturation(4f);
 
 
+
         player.teleport(safeLocation());
     }
 
@@ -589,7 +590,7 @@ public class Core implements IConfigurationChanged{
             int amount = amountHeads(event.getEntity());
             List<RunsafeItemStack> items = event.getDrops();
             items.clear();
-            if(getRandom(0, 100) > 68) items.add(randomItem());
+            if(getRandom(0, 100) > 32) items.add(randomItem());
             event.setDrops(items);
             player.getWorld().dropItem(
                     player.getEyeLocation(),
@@ -682,7 +683,10 @@ public class Core implements IConfigurationChanged{
 
         ArrayList<RunsafeItemStack> rItems = new ArrayList<RunsafeItemStack>();
         rItems.add(new RunsafeItemStack(Material.GOLDEN_APPLE.getId()));
+        rItems.add(new RunsafeItemStack(Material.GOLDEN_APPLE.getId()));
+        rItems.add(new RunsafeItemStack(Material.GOLDEN_APPLE.getId()));
         rItems.add(new RunsafeItemStack(Material.SLIME_BALL.getId()));
+        rItems.add(new RunsafeItemStack(Material.SUGAR.getId()));
         rItems.add(new RunsafeItemStack(Material.SUGAR.getId()));
 
 
@@ -814,11 +818,11 @@ public class Core implements IConfigurationChanged{
             RunsafeItemStack item = event.getItem().getItemStack();
             boolean used = false;
             if( item.getItemId() == Material.GOLDEN_APPLE.getId()){
-                PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 60, 2);
+                PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 60, 1);
                 player.addPotionEffect(new RunsafePotionEffect(regen));
                 used = true;
             }else if(item.getItemId() == Material.SUGAR.getId()){
-                PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 120, 3);
+                PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 80, 3);
                 player.addPotionEffect(new RunsafePotionEffect(speed));
                 used = true;
             }
