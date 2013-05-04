@@ -25,10 +25,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -60,6 +57,9 @@ public class Core implements IConfigurationChanged{
     private int winAmount = 30;
     private int minPlayers = 2;
     private RunsafePlayer leader = null;
+
+    private int top3 = 0;
+    private int top3Trigger = 120;
 
 
     public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server) {
@@ -211,7 +211,7 @@ public class Core implements IConfigurationChanged{
             sendMessage(players, String.format(Constants.MSG_NOT_ENOUGH_PLAYERS, players.size(), this.minPlayers));
             return;
         }
-        winAmount = (int) 2.5 * players.size() + 5;
+        winAmount = (int) 2.5 * players.size() * 2 + 5;
         this.ingamePlayers = players;
         for(RunsafePlayer player : ingamePlayers){
             ingamePlayersNames.add(player.getName());
@@ -235,6 +235,8 @@ public class Core implements IConfigurationChanged{
         for(RunsafeEntity entity : entities)
             if(combatArea.pointInArea(entity.getLocation())) entity.remove();
 
+
+        top3 = 0;
         gamestarted = false;
         ingamePlayers.clear();
         ingamePlayersNames.clear();
@@ -304,6 +306,10 @@ public class Core implements IConfigurationChanged{
 
 
         player.addPotionEffect(new RunsafePotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 120, 2 )));
+        player.setHealth(20);
+        player.setFoodLevel(20);
+        player.setSaturation(4f);
+
 
         player.teleport(safeLocation());
     }
@@ -465,6 +471,13 @@ public class Core implements IConfigurationChanged{
 
                 }
 
+                top3++;
+                if(top3 >= top3Trigger){
+                    top3 = 0;
+                    getTop3();
+                }
+
+
                 if (countdownToEnd % 300 == 0) {
                     sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, (countdownToEnd / 300) * 5, "minutes"));
                 } else {
@@ -576,7 +589,7 @@ public class Core implements IConfigurationChanged{
             int amount = amountHeads(event.getEntity());
             List<RunsafeItemStack> items = event.getDrops();
             items.clear();
-            if(getRandom(0, 100) > 90) items.add(randomItem());
+            if(getRandom(0, 100) > 68) items.add(randomItem());
             event.setDrops(items);
             player.getWorld().dropItem(
                     player.getEyeLocation(),
@@ -585,6 +598,84 @@ public class Core implements IConfigurationChanged{
         }
 
 
+    }
+
+    //le crappy code xD
+    private void getTop3(){
+
+        RunsafePlayer first = null;
+        RunsafePlayer second = null;
+        RunsafePlayer third = null;
+
+        int headsFirst = 0;
+        int headsSecond = 0;
+        int headsThird = 0;
+
+        for(RunsafePlayer player : ingamePlayers){
+            int amount = amountHeads(player);
+            if(amount == 0) continue;
+            if(first == null){
+                first = player;
+                headsFirst = amount;
+            }else if(second == null){
+
+                if(amount > headsFirst){
+                    second = first;
+                    headsSecond = headsFirst;
+
+                    first = player;
+                    headsFirst = amount;
+                }
+            }else if(third == null){
+                if(amount > headsFirst){
+                    third = second;
+                    headsThird = headsSecond;
+
+                    second = first;
+                    headsSecond = headsFirst;
+
+                    first = player;
+                    headsFirst = amount;
+                }else if(amount > headsSecond){
+                    third = second;
+                    headsThird = headsSecond;
+
+                    second = player;
+                    headsSecond = amount;
+                }else if(amount > headsThird){
+                    third = player;
+                    headsThird = amount;
+                }
+            }else{
+
+                if(amount > headsFirst){
+                    third = second;
+                    headsThird = headsSecond;
+
+                    second = first;
+                    headsSecond = headsFirst;
+
+                    first = player;
+                    headsFirst = amount;
+                }else if(amount > headsSecond){
+                    third = second;
+                    headsThird = headsSecond;
+
+                    second = player;
+                    headsSecond = amount;
+                }else if(amount > headsThird){
+                    third = player;
+                    headsThird = amount;
+                }
+            }
+        }
+
+        ArrayList<RunsafePlayer> toSendPlayers = combatArea.getPlayers();
+
+        if(first != null) sendMessage(toSendPlayers, Constants.MSG_TOP3);
+        if(first != null) sendMessage(toSendPlayers, String.format(Constants.MSG_TOP_PLAYER, first.getPrettyName(), headsFirst));
+        if(second != null) sendMessage(toSendPlayers, String.format(Constants.MSG_TOP_PLAYER, second.getPrettyName(), headsSecond));
+        if(third != null) sendMessage(toSendPlayers, String.format(Constants.MSG_TOP_PLAYER, third.getPrettyName(), headsThird));
     }
 
     private RunsafeItemStack randomItem() {
@@ -631,7 +722,7 @@ public class Core implements IConfigurationChanged{
     public void stop(RunsafePlayer executor) {
         if(gamestarted){
             winner(pickWinner());
-            sendMessage(waitingRoom.getPlayers(), String.format(Constants.MSG_GAMESTOPPED, executor.getPrettyName()));
+            sendMessage(waitingRoom.getPlayers(), String.format(Constants.MSG_GAME_STOPPED, executor.getPrettyName()));
         }
 
     }
