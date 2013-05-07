@@ -2,6 +2,7 @@ package no.runsafe.headhunters;
 
 import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
+import no.runsafe.framework.output.ChatColour;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
@@ -13,9 +14,11 @@ import no.runsafe.framework.server.event.player.RunsafePlayerDeathEvent;
 import no.runsafe.framework.server.event.player.RunsafePlayerPickupItemEvent;
 import no.runsafe.framework.server.event.player.RunsafePlayerQuitEvent;
 import no.runsafe.framework.server.item.RunsafeItemStack;
+import no.runsafe.framework.server.item.meta.RunsafeItemMeta;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.server.potion.RunsafePotionEffect;
 import no.runsafe.framework.timer.IScheduler;
+
 
 import org.bukkit.Effect;
 import org.bukkit.GameMode;
@@ -59,7 +62,7 @@ public class Core implements IConfigurationChanged{
     private RunsafePlayer leader = null;
 
     private int top3 = 0;
-    private int top3Trigger = 120;
+    private int top3Trigger = 60;
 
 
     public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server) {
@@ -91,6 +94,7 @@ public class Core implements IConfigurationChanged{
         this.config.setConfigValue("enabled", true);
         this.config.save();
         this.enabled = true;
+        end(null);
     }
 
 
@@ -205,27 +209,29 @@ public class Core implements IConfigurationChanged{
     }
 
     public void start(){
+
         ArrayList<RunsafePlayer> players = waitingRoom.getPlayers(GameMode.SURVIVAL);
         if(players.size() < this.minPlayers){
             this.resetWaittime();
             sendMessage(players, String.format(Constants.MSG_NOT_ENOUGH_PLAYERS, players.size(), this.minPlayers));
             return;
         }
-        winAmount = (int) 2.5 * players.size() * 2 + 5;
+        this.gamestarted = true;
+        winAmount = (int) ((players.size() / 2) + players.size() * 3.5);
         this.ingamePlayers = players;
         for(RunsafePlayer player : ingamePlayers){
             ingamePlayersNames.add(player.getName());
-            headsCount.put(player.getName(), 0);
+
         }
 
         teleportIntoGame(this.ingamePlayers);
         sendMessage(ingamePlayers, String.format(Constants.MSG_START_MESSAGE, winAmount));
-        this.gamestarted = true;
+
 
     }
 
     public void end(String endMessage){
-        for(RunsafePlayer player: this.combatArea.getPlayers()){
+        for(RunsafePlayer player: this.combatArea.getPlayers(GameMode.SURVIVAL)){
             teleportIntoWaitRoom(player);
             player.getInventory().clear();
             if(endMessage != null) player.sendColouredMessage(Constants.MSG_COLOR + endMessage);
@@ -251,7 +257,7 @@ public class Core implements IConfigurationChanged{
         String out = "";
 
         for(RunsafePlayer player: ingamePlayers){
-            out = out + player.getName() + " ";
+            out = out + player.getName() + ", ";
         }
 
         return out;
@@ -316,6 +322,7 @@ public class Core implements IConfigurationChanged{
     }
 
     public RunsafeLocation safeLocation(){
+        if(!gamestarted) return waitingRoomSpawn;
         int x,y,z;
 
         int ysmall = (int) Math.min(combatArea.getY1(), combatArea.getY2());
@@ -463,7 +470,7 @@ public class Core implements IConfigurationChanged{
                 RunsafePlayer l = pickWinner();
                 int amount = amountHeads(l);
                 if(amount >= winAmount){
-                    winner(leader);
+                    winner(l);
                     return;
                 }
                 if (l != leader && amount > 0) {
@@ -567,7 +574,7 @@ public class Core implements IConfigurationChanged{
 
         if(this.enabled){
 
-            if(!this.ingamePlayersNames.contains(executor.getName())){
+            if(!isIngame(executor)){
                 this.teleportIntoWaitRoom(executor);
                 executor.setGameMode(GameMode.SURVIVAL);
                 return null;
@@ -584,13 +591,13 @@ public class Core implements IConfigurationChanged{
 
         RunsafePlayer player = event.getEntity();
 
-        if(this.ingamePlayersNames.contains(player.getName())){
+        if(isIngame(player)){
 
             event.setDroppedXP(0);
             int amount = amountHeads(event.getEntity());
             List<RunsafeItemStack> items = event.getDrops();
             items.clear();
-            if(getRandom(0, 100) > 32) items.add(randomItem());
+            if(getRandom(0, 100) > -1) items.add(randomItem());
             event.setDrops(items);
             player.getWorld().dropItem(
                     player.getEyeLocation(),
@@ -671,7 +678,7 @@ public class Core implements IConfigurationChanged{
             }
         }
 
-        ArrayList<RunsafePlayer> toSendPlayers = combatArea.getPlayers();
+        ArrayList<RunsafePlayer> toSendPlayers = ingamePlayers;
 
         if(first != null) sendMessage(toSendPlayers, Constants.MSG_TOP3);
         if(first != null) sendMessage(toSendPlayers, String.format(Constants.MSG_TOP_PLAYER, first.getPrettyName(), headsFirst));
@@ -679,17 +686,51 @@ public class Core implements IConfigurationChanged{
         if(third != null) sendMessage(toSendPlayers, String.format(Constants.MSG_TOP_PLAYER, third.getPrettyName(), headsThird));
     }
 
-    private RunsafeItemStack randomItem() {
+    private RunsafeItemStack randomItem() { //should be seperate class
 
         ArrayList<RunsafeItemStack> rItems = new ArrayList<RunsafeItemStack>();
-        rItems.add(new RunsafeItemStack(Material.GOLDEN_APPLE.getId()));
-        rItems.add(new RunsafeItemStack(Material.GOLDEN_APPLE.getId()));
-        rItems.add(new RunsafeItemStack(Material.GOLDEN_APPLE.getId()));
-        rItems.add(new RunsafeItemStack(Material.SLIME_BALL.getId()));
-        rItems.add(new RunsafeItemStack(Material.SUGAR.getId()));
-        rItems.add(new RunsafeItemStack(Material.SUGAR.getId()));
+
+        RunsafeItemStack apple = new RunsafeItemStack(Material.GOLDEN_APPLE.getId());
+
+        RunsafeItemStack slimeBall = new RunsafeItemStack(Material.SLIME_BALL.getId());
+        RunsafeItemMeta slimeBallMeta = slimeBall.getItemMeta();
+        slimeBallMeta.setDisplayName("§6Slow Them Now");
+        slimeBallMeta.addLore("Right click on the ground");
+        slimeBallMeta.addLore("to slow enemies");
+        slimeBallMeta.addLore("in a 5 block radius.");
+        slimeBall.setItemMeta(slimeBallMeta);
+
+        RunsafeItemStack sugar = new RunsafeItemStack(Material.SUGAR.getId());
+
+        RunsafeItemStack magmaCream = new RunsafeItemStack(Material.MAGMA_CREAM.getId());
+        RunsafeItemMeta magmaMeta = magmaCream.getItemMeta();
+        magmaMeta.setDisplayName("§6Hot Topic");
+        magmaMeta.addLore("Right click on the ground");
+        magmaMeta.addLore("to smite enemies with lightning");
+        magmaMeta.addLore("in a 5 block radius.");
+        magmaCream.setItemMeta(magmaMeta);
+
+        RunsafeItemStack endBall = new RunsafeItemStack(Material.ENDER_PEARL.getId());
+        RunsafeItemMeta endBallMeta = endBall.getItemMeta();
+        endBallMeta.setDisplayName("§6Portal Deluxe 2000");
+        endBallMeta.addLore("Shift Right Click to teleport a random player");
+        endBall.setItemMeta(endBallMeta);
 
 
+
+        rItems.add(apple);
+        rItems.add(apple);
+        rItems.add(apple);
+        rItems.add(apple);
+        rItems.add(apple);
+        rItems.add(apple);
+        rItems.add(sugar);
+        rItems.add(sugar);
+        rItems.add(sugar);
+        rItems.add(sugar);
+        rItems.add(slimeBall);
+        rItems.add(magmaCream);
+//          rItems.add(endBall);
         return rItems.get(getRandom(0, rItems.size()));
     }
 
@@ -714,7 +755,7 @@ public class Core implements IConfigurationChanged{
     }
 
     public RunsafeLocation playerRespawn(RunsafePlayer player) {
-        if(ingamePlayersNames.contains(player.getName())){
+        if(isIngame(player)){
             equip(player);
             teleportIntoGame(player);
             return safeLocation();
@@ -739,7 +780,7 @@ public class Core implements IConfigurationChanged{
 
     public void leave(RunsafePlayer player) {
 
-        if(ingamePlayersNames.contains(player.getName())){
+        if(isIngame(player)){
             player.getWorld().dropItem(player.getEyeLocation(), new RunsafeItemStack(Material.SKULL_ITEM.getId(), amountHeads(player), (short) 3));
             player.getInventory().clear();
             player.teleport(waitingRoomSpawn);
@@ -755,20 +796,57 @@ public class Core implements IConfigurationChanged{
         leave(event.getPlayer());
     }
 
-    public void rightClick(RunsafePlayer player, RunsafeItemStack usingItem, RunsafeBlock targetBlock) {
+    public boolean rightClick(RunsafePlayer player, RunsafeItemStack usingItem, RunsafeBlock targetBlock) {
         //special items
-        if(ingamePlayersNames.contains(player.getName()) && usingItem != null && targetBlock != null){
+        if(isIngame(player)){
             boolean used = false;
-            if(usingItem.getItemId() == Material.SLIME_BALL.getId()){
-                RunsafePotionEffect slow = new RunsafePotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 4));
-                //visual effect...
-                server.getWorld(worldName).playEffect(targetBlock.getLocation(), Effect.POTION_BREAK, 2);
 
-                ArrayList<RunsafePlayer> hitPlayers = getPlayers(targetBlock.getLocation(), 5);
-                for(RunsafePlayer hitPlayer : hitPlayers)
-                    if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) hitPlayer.addPotionEffect(slow);
-                used = true;
+            if(usingItem != null && targetBlock != null){
+                int itemID = usingItem.getItemId();
+                if(itemID == Material.SLIME_BALL.getId()){
+                    RunsafePotionEffect slow = new RunsafePotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 4));
+                    RunsafePotionEffect hitSlow = new RunsafePotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 60, 4));
+                    //visual effect...
+                    server.getWorld(worldName).playEffect(targetBlock.getLocation(), Effect.POTION_BREAK, 2);
+
+                    ArrayList<RunsafePlayer> hitPlayers = getPlayers(targetBlock.getLocation(), 5);
+                    for(RunsafePlayer hitPlayer : hitPlayers)
+                        if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) {
+                            hitPlayer.addPotionEffect(slow);
+                            hitPlayer.addPotionEffect(hitSlow);
+                        }
+                    used = true;
+                }else if(itemID == Material.MAGMA_CREAM.getId()){
+
+
+
+                    ArrayList<RunsafePlayer> hitPlayers = getPlayers(targetBlock.getLocation(), 5);
+                    for(RunsafePlayer hitPlayer : hitPlayers)
+                        if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) {
+                            hitPlayer.strikeWithLightning(false);
+                        }
+                    used = true;
+
+
+                }
+
+            }else if(usingItem != null){
+                int itemID = usingItem.getItemId();
+
+                if(itemID == Material.ENDER_PEARL.getId()){
+                    used = true;
+
+                    RunsafePlayer targetPlayer = player;
+                    while(targetPlayer.getName().equalsIgnoreCase(player.getName())){
+                        targetPlayer = ingamePlayers.get(getRandom(0, ingamePlayers.size()));
+                        if(!targetPlayer.getName().equalsIgnoreCase(player.getName())) player.teleport(targetPlayer);
+                    }
+
+
+                }
+
             }
+
             if(used){
 
                 RunsafeItemStack stack = player.getItemInHand();
@@ -777,8 +855,9 @@ public class Core implements IConfigurationChanged{
                 player.getInventory().setItemInHand(stack);
             }
 
-
+            return used;
         }
+        return false;
     }
 
     public double distance(double x, double y){
@@ -814,7 +893,7 @@ public class Core implements IConfigurationChanged{
         console.fine(String.format("%s picked up %d", event.getPlayer().getPrettyName(), event.getItem().getItemStack().getItemId()));
         RunsafePlayer player = event.getPlayer();
 
-        if(ingamePlayersNames.contains(player.getName())){
+        if(isIngame(player)){
             RunsafeItemStack item = event.getItem().getItemStack();
             boolean used = false;
             if( item.getItemId() == Material.GOLDEN_APPLE.getId()){
@@ -836,12 +915,16 @@ public class Core implements IConfigurationChanged{
     }
 
     public void playerMove(RunsafePlayer player) {
-        if(ingamePlayersNames.contains(player.getName()) && !ingamePlayersNames.isEmpty()){
+        if(isIngame(player) && !ingamePlayersNames.isEmpty()){
             if(!combatArea.pointInArea(player.getLocation())){
                 leave(player);
                 player.sendColouredMessage(Constants.MSG_USE_LEAVE);
             }
         }
 
+    }
+
+    public boolean isIngame(RunsafePlayer player){
+        return (ingamePlayersNames.contains(player.getName()));
     }
 }

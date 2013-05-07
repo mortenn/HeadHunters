@@ -27,5 +27,5 @@ public class Constants {
     public static final String MSG_USE_LEAVE = MSG_COLOR + "Use" + ChatColour.BLUE + " /hh leave " + MSG_COLOR + "instead!";
     public static final String MSG_LEAVE = "%s has left the game.";
     public static final String MSG_TOP3 = MSG_COLOR + "Top 3 at the moment:";
-    public static final String MSG_TOP_PLAYER =  "%s"+  MSG_COLOR + "with %d heads.";
+    public static final String MSG_TOP_PLAYER =  "%s"+  MSG_COLOR + " with %d heads.";
 }

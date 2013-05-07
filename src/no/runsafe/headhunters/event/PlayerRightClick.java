@@ -24,9 +24,7 @@ public class PlayerRightClick implements IPlayerRightClick {
     @Override
     public boolean OnPlayerRightClick(RunsafePlayer player, RunsafeItemStack usingItem, RunsafeBlock targetBlock) {
 
-        this.core.rightClick(player, usingItem, targetBlock);
+        return !this.core.rightClick(player, usingItem, targetBlock);
 
-
-        return true;
     }
 }
