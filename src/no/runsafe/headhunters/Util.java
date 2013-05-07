@@ -10,13 +10,8 @@ import java.util.Random;
  */
 public class Util {
 
-    static Random random;
+    static Random random = new Random(System.currentTimeMillis());
 
-    public Util(){
-
-        random = new Random(System.currentTimeMillis());
-
-    }
 
     public static int getRandom(int min, int max){
 
@@ -31,6 +26,10 @@ public class Util {
         }
 
         return random.nextInt(max - min) + min;
+    }
+
+    public static boolean actPercentage(int percentage){
+        return (getRandom(0, 100) < percentage);
     }
 
 }

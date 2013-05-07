@@ -40,11 +40,12 @@ public class RandomItem  {
         magmaMeta.addLore("in a 5 block radius.");
         magmaCream.setItemMeta(magmaMeta);
 
-        RunsafeItemStack endBall = new RunsafeItemStack(Material.ENDER_PEARL.getId());
-        RunsafeItemMeta endBallMeta = endBall.getItemMeta();
-        endBallMeta.setDisplayName("§6Portal Deluxe 2000");
-        endBallMeta.addLore("Shift Right Click to teleport a random player");
-        endBall.setItemMeta(endBallMeta);
+        RunsafeItemStack star = new RunsafeItemStack(Material.NETHER_STAR.getId());
+        RunsafeItemMeta starMeta = star.getItemMeta();
+        starMeta.setDisplayName("§6Portal Deluxe 2000");
+        starMeta.addLore("Right Click to teleport a random Spot");
+        starMeta.addLore("§eUnstable device. Might blow up.");
+        star.setItemMeta(starMeta);
 
 
 
@@ -60,6 +61,7 @@ public class RandomItem  {
         items.add(sugar);
         items.add(slimeBall);
         items.add(magmaCream);
+        items.add(star);
 
     }
 

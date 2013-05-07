@@ -584,7 +584,7 @@ public class Core implements IConfigurationChanged{
             int amount = amountHeads(event.getEntity());
             List<RunsafeItemStack> items = event.getDrops();
             items.clear();
-            if(Util.getRandom(0, 100) > -1) items.add(randomItem.get());
+            if(Util.actPercentage(95)) items.add(randomItem.get());
             event.setDrops(items);
             player.getWorld().dropItem(
                     player.getEyeLocation(),
@@ -715,7 +715,8 @@ public class Core implements IConfigurationChanged{
 
     public int amountHeads(RunsafePlayer player){
         int amount = 0;
-        for(RunsafeItemStack content : (ArrayList<RunsafeItemStack>) player.getInventory().getContents()) if(content.getItemId() == Material.SKULL_ITEM.getId()) amount += content.getAmount();
+        for(RunsafeItemStack content : (ArrayList<RunsafeItemStack>) player.getInventory().getContents())
+            if(content.getItemId() == Material.SKULL_ITEM.getId()) amount += content.getAmount();
         return amount;
     }
 
@@ -769,18 +770,28 @@ public class Core implements IConfigurationChanged{
                     used = true;
 
 
+                }else if(itemID == Material.NETHER_STAR.getId()){
+                    used = true;
+
+                    if(Util.actPercentage(95)){
+                        player.teleport(safeLocation());
+                    }else{
+                        server.getWorld(worldName).createExplosion(player.getLocation(), 2f, true);
+                    }
+
+
                 }
 
             }else if(usingItem != null){
                 int itemID = usingItem.getItemId();
 
-                if(itemID == Material.ENDER_PEARL.getId()){
+                if(itemID == Material.NETHER_STAR.getId()){
                     used = true;
 
-                    RunsafePlayer targetPlayer = player;
-                    while(targetPlayer.getName().equalsIgnoreCase(player.getName())){
-                        targetPlayer = ingamePlayers.get(Util.getRandom(0, ingamePlayers.size()));
-                        if(!targetPlayer.getName().equalsIgnoreCase(player.getName())) player.teleport(targetPlayer);
+                    if(Util.getRandom(0, 100) > 95){
+                        player.teleport(safeLocation());
+                    }else{
+                        server.getWorld(worldName).createExplosion(player.getLocation(), 2f, true);
                     }
 
 
