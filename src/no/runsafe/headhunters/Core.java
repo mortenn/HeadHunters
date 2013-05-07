@@ -63,6 +63,7 @@ public class Core implements IConfigurationChanged{
 
     private int top3 = 0;
     private int top3Trigger = 60;
+    private RandomItem randomItem;
 
 
     public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server) {
@@ -73,6 +74,7 @@ public class Core implements IConfigurationChanged{
         this.server = server;
         this.rand = new Random(System.currentTimeMillis());
 
+        randomItem = new RandomItem();
 
         this.gamestarted = false;
 
@@ -289,21 +291,6 @@ public class Core implements IConfigurationChanged{
         }
     }
 
-    public int getRandom(int min, int max){
-
-        if(min > max){
-            int t = min;
-            min = max;
-            max = t;
-        }
-
-        if(min == max){
-            return 0;
-        }
-
-        return this.rand.nextInt(max - min) + min;
-    }
-
 
     public void teleportIntoGame(RunsafePlayer player){
         player.getInventory().clear();
@@ -331,8 +318,8 @@ public class Core implements IConfigurationChanged{
         while(tries > 0){
 
 
-            x = getRandom((int) combatArea.getX1(),(int) combatArea.getX2());
-            z = getRandom((int) combatArea.getZ1(),(int) combatArea.getZ2());
+            x = Util.getRandom((int) combatArea.getX1(), (int) combatArea.getX2());
+            z = Util.getRandom((int) combatArea.getZ1(), (int) combatArea.getZ2());
             RunsafeWorld world =  server.getWorld(this.worldName);
 
             for(y = ysmall; y < ylarge; y++){
@@ -597,7 +584,7 @@ public class Core implements IConfigurationChanged{
             int amount = amountHeads(event.getEntity());
             List<RunsafeItemStack> items = event.getDrops();
             items.clear();
-            if(getRandom(0, 100) > -1) items.add(randomItem());
+            if(Util.getRandom(0, 100) > -1) items.add(randomItem.get());
             event.setDrops(items);
             player.getWorld().dropItem(
                     player.getEyeLocation(),
@@ -686,53 +673,7 @@ public class Core implements IConfigurationChanged{
         if(third != null) sendMessage(toSendPlayers, String.format(Constants.MSG_TOP_PLAYER, third.getPrettyName(), headsThird));
     }
 
-    private RunsafeItemStack randomItem() { //should be seperate class
 
-        ArrayList<RunsafeItemStack> rItems = new ArrayList<RunsafeItemStack>();
-
-        RunsafeItemStack apple = new RunsafeItemStack(Material.GOLDEN_APPLE.getId());
-
-        RunsafeItemStack slimeBall = new RunsafeItemStack(Material.SLIME_BALL.getId());
-        RunsafeItemMeta slimeBallMeta = slimeBall.getItemMeta();
-        slimeBallMeta.setDisplayName("§6Slow Them Now");
-        slimeBallMeta.addLore("Right click on the ground");
-        slimeBallMeta.addLore("to slow enemies");
-        slimeBallMeta.addLore("in a 5 block radius.");
-        slimeBall.setItemMeta(slimeBallMeta);
-
-        RunsafeItemStack sugar = new RunsafeItemStack(Material.SUGAR.getId());
-
-        RunsafeItemStack magmaCream = new RunsafeItemStack(Material.MAGMA_CREAM.getId());
-        RunsafeItemMeta magmaMeta = magmaCream.getItemMeta();
-        magmaMeta.setDisplayName("§6Hot Topic");
-        magmaMeta.addLore("Right click on the ground");
-        magmaMeta.addLore("to smite enemies with lightning");
-        magmaMeta.addLore("in a 5 block radius.");
-        magmaCream.setItemMeta(magmaMeta);
-
-        RunsafeItemStack endBall = new RunsafeItemStack(Material.ENDER_PEARL.getId());
-        RunsafeItemMeta endBallMeta = endBall.getItemMeta();
-        endBallMeta.setDisplayName("§6Portal Deluxe 2000");
-        endBallMeta.addLore("Shift Right Click to teleport a random player");
-        endBall.setItemMeta(endBallMeta);
-
-
-
-        rItems.add(apple);
-        rItems.add(apple);
-        rItems.add(apple);
-        rItems.add(apple);
-        rItems.add(apple);
-        rItems.add(apple);
-        rItems.add(sugar);
-        rItems.add(sugar);
-        rItems.add(sugar);
-        rItems.add(sugar);
-        rItems.add(slimeBall);
-        rItems.add(magmaCream);
-//          rItems.add(endBall);
-        return rItems.get(getRandom(0, rItems.size()));
-    }
 
     public void equip(RunsafePlayer player){
 
@@ -838,7 +779,7 @@ public class Core implements IConfigurationChanged{
 
                     RunsafePlayer targetPlayer = player;
                     while(targetPlayer.getName().equalsIgnoreCase(player.getName())){
-                        targetPlayer = ingamePlayers.get(getRandom(0, ingamePlayers.size()));
+                        targetPlayer = ingamePlayers.get(Util.getRandom(0, ingamePlayers.size()));
                         if(!targetPlayer.getName().equalsIgnoreCase(player.getName())) player.teleport(targetPlayer);
                     }
 
