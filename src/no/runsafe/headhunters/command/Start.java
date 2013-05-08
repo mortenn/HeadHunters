@@ -17,7 +17,7 @@ public class Start extends PlayerCommand {
     Core core;
 
     public Start(Core core){
-        super("start", "Forces headhunters match to start", "headunters.force-start", "time");
+        super("startInTime", "Forces headhunters match to startInTime", "headunters.force-startInTime", "time");
         this.core = core;
 
     }
@@ -27,6 +27,6 @@ public class Start extends PlayerCommand {
 
 
 
-        return core.start(Integer.valueOf(parameters.get("time")));
+        return core.startInTime(Integer.valueOf(parameters.get("time")));
     }
 }

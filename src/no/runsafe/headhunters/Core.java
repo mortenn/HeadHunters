@@ -6,29 +6,19 @@ import no.runsafe.framework.output.ChatColour;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
-import no.runsafe.framework.server.RunsafeWorld;
-import no.runsafe.framework.server.block.RunsafeBlock;
-import no.runsafe.framework.server.enchantment.RunsafeEnchantment;
 import no.runsafe.framework.server.entity.RunsafeEntity;
-import no.runsafe.framework.server.event.player.RunsafePlayerDeathEvent;
-import no.runsafe.framework.server.event.player.RunsafePlayerPickupItemEvent;
-import no.runsafe.framework.server.event.player.RunsafePlayerQuitEvent;
 import no.runsafe.framework.server.item.RunsafeItemStack;
-import no.runsafe.framework.server.item.meta.RunsafeItemMeta;
+import no.runsafe.framework.server.material.RunsafeMaterial;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.server.potion.RunsafePotionEffect;
 import no.runsafe.framework.timer.IScheduler;
-
-
-import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,11 +39,10 @@ public class Core implements IConfigurationChanged{
     private IOutput console;
     private IScheduler scheduler;
     private RunsafeServer server;
-    private Random rand;
+
 
     private int countdownToStart = -1;
     private int countdownToEnd = -1;
-    private HashMap<String, Integer> headsCount;
 
     private ArrayList<RunsafePlayer> ingamePlayers = new ArrayList<RunsafePlayer>();
     private ArrayList<String> ingamePlayersNames = new ArrayList<String>();
@@ -63,22 +52,22 @@ public class Core implements IConfigurationChanged{
 
     private int top3 = 0;
     private int top3Trigger = 60;
-    private RandomItem randomItem;
 
 
-    public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server) {
+    public EquipmentManager equipmentManager;
+
+
+    public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, EquipmentManager equipmentManager) {
 
         this.config = config;
         this.console = console;
         this.scheduler = scheduler;
         this.server = server;
-        this.rand = new Random(System.currentTimeMillis());
 
-        randomItem = new RandomItem();
+        this.equipmentManager = equipmentManager;
+
 
         this.gamestarted = false;
-
-        headsCount = new HashMap<String, Integer>();
 
         this.scheduler.startSyncRepeatingTask(
                 new Runnable() {
@@ -154,47 +143,7 @@ public class Core implements IConfigurationChanged{
 
     }
 
-    public boolean setCombatAreaFirstPos(RunsafePlayer player) {
-
-        RunsafeLocation location = player.getLocation();
-
-        if(player.getWorld().getName().equalsIgnoreCase(this.worldName)){
-            this.config.setConfigValue("combatarea.x1",location.getX());
-            this.config.setConfigValue("combatarea.y1",location.getY());
-            this.config.setConfigValue("combatarea.z1",location.getZ());
-
-            this.combatArea.setFirstPos(location.getX(), location.getY(), location.getZ());
-
-            this.config.save();
-            return true;
-        }
-
-        return false;
-
-
-    }
-
-    public boolean setCombatAreaSecondPos(RunsafePlayer player) {
-
-        RunsafeLocation location = player.getLocation();
-
-        if(player.getWorld().getName().equalsIgnoreCase(this.worldName)){
-            this.config.setConfigValue("combatarea.x2",location.getX());
-            this.config.setConfigValue("combatarea.y2",location.getY());
-            this.config.setConfigValue("combatarea.z2",location.getZ());
-
-            this.combatArea.setSecondPos(location.getX(), location.getY(), location.getZ());
-
-            this.config.save();
-            return true;
-        }
-
-        return false;
-
-
-    }
-
-    public String start(Integer time) {
+    public String startInTime(Integer time) {
 
         if(!this.enabled) return Constants.MSG_DISABLED;
 
@@ -204,7 +153,7 @@ public class Core implements IConfigurationChanged{
 
             countdownToStart = time;
 
-            return Constants.MSG_COLOR + "Game will start in " + time + " seconds";
+            return Constants.MSG_COLOR + "Game will start in " + ChatColour.WHITE + time + Constants.MSG_COLOR + " seconds";
         }
 
         return "Game already started";
@@ -259,7 +208,7 @@ public class Core implements IConfigurationChanged{
         String out = "";
 
         for(RunsafePlayer player: ingamePlayers){
-            out = out + player.getName() + ", ";
+            out = out + player.getPrettyName() + ", ";
         }
 
         return out;
@@ -287,54 +236,26 @@ public class Core implements IConfigurationChanged{
 
     public void teleportIntoGame(ArrayList<RunsafePlayer> players){
         for(RunsafePlayer player : players){
-            teleportIntoGame(player);
+            teleportIntoGame(player, safeLocation());
         }
     }
 
 
-    public void teleportIntoGame(RunsafePlayer player){
+    public void teleportIntoGame(RunsafePlayer player, RunsafeLocation loc){
         player.getInventory().clear();
         this.equip(player);
         player.removeBuffs();
 
-
         player.addPotionEffect(new RunsafePotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 120, 2 )));
         player.setHealth(20);
         player.setFoodLevel(20);
-        player.setSaturation(4f);
+        player.setSaturation(2f);
 
-
-
-        player.teleport(safeLocation());
+        if(loc != null) player.teleport(loc);
     }
 
     public RunsafeLocation safeLocation(){
-        if(!gamestarted) return waitingRoomSpawn;
-        int x,y,z;
-
-        int ysmall = (int) Math.min(combatArea.getY1(), combatArea.getY2());
-        int ylarge = (int) Math.max(combatArea.getY1(), combatArea.getY2());
-        int tries = 350;
-        while(tries > 0){
-
-
-            x = Util.getRandom((int) combatArea.getX1(), (int) combatArea.getX2());
-            z = Util.getRandom((int) combatArea.getZ1(), (int) combatArea.getZ2());
-            RunsafeWorld world =  server.getWorld(this.worldName);
-
-            for(y = ysmall; y < ylarge; y++){
-
-                if((new RunsafeLocation(world,(double) x, (double) y, (double) z).getBlock().getBlockState().getMaterialID() == 0)
-                        &&
-                        (new RunsafeLocation(world,(double) x, (double) y + 1, (double) z).getBlock().getBlockState().getMaterialID() == 0)){
-                   return new RunsafeLocation(server.getWorld(this.worldName), (double) x, (double) y, (double) z);
-                }
-
-
-            }
-            tries--;
-        }
-        return this.waitingRoomSpawn;
+        return combatArea.safeLocation();
 
     }
 
@@ -574,27 +495,6 @@ public class Core implements IConfigurationChanged{
 
     }
 
-    public void playerDeath(RunsafePlayerDeathEvent event) {
-
-        RunsafePlayer player = event.getEntity();
-
-        if(isIngame(player)){
-
-            event.setDroppedXP(0);
-            int amount = amountHeads(event.getEntity());
-            List<RunsafeItemStack> items = event.getDrops();
-            items.clear();
-            if(Util.actPercentage(95)) items.add(randomItem.get());
-            event.setDrops(items);
-            player.getWorld().dropItem(
-                    player.getEyeLocation(),
-                    new RunsafeItemStack(Material.SKULL_ITEM.getId(), amount + 1, (short)3)
-            );
-        }
-
-
-    }
-
     //le crappy code xD
     private void getTop3(){
 
@@ -676,33 +576,7 @@ public class Core implements IConfigurationChanged{
 
 
     public void equip(RunsafePlayer player){
-
-        player.getInventory().setChestplate(new RunsafeItemStack(Material.CHAINMAIL_CHESTPLATE.getId()));
-        player.getInventory().setLeggings(new RunsafeItemStack(Material.CHAINMAIL_LEGGINGS.getId()));
-        player.getInventory().setBoots(new RunsafeItemStack(Material.IRON_BOOTS.getId()));
-        player.getInventory().setHelmet(new RunsafeItemStack(Material.GOLD_HELMET.getId()));
-
-
-        RunsafeItemStack bow = new RunsafeItemStack(Material.BOW.getId());
-        bow.addEnchantment(new RunsafeEnchantment(Enchantment.ARROW_INFINITE), 1);
-
-        player.getInventory().addItems(
-                new RunsafeItemStack(Material.IRON_SWORD.getId()),
-                bow,
-                new RunsafeItemStack(Material.ARROW.getId()),
-                new RunsafeItemStack(Material.COOKED_BEEF.getId(), 5, (short) 0)
-        );
-
-    }
-
-    public RunsafeLocation playerRespawn(RunsafePlayer player) {
-        if(isIngame(player)){
-            equip(player);
-            teleportIntoGame(player);
-            return safeLocation();
-        }
-        if(combatArea.pointInArea(player.getLocation())) return waitingRoomSpawn;
-        return  null;
+        equipmentManager.equip(player);
     }
 
     public void stop(RunsafePlayer executor) {
@@ -713,11 +587,15 @@ public class Core implements IConfigurationChanged{
 
     }
 
-    public int amountHeads(RunsafePlayer player){
+    public int amountMaterial(RunsafePlayer player, RunsafeMaterial search){
         int amount = 0;
         for(RunsafeItemStack content : (ArrayList<RunsafeItemStack>) player.getInventory().getContents())
-            if(content.getItemId() == Material.SKULL_ITEM.getId()) amount += content.getAmount();
+            if(content.getItemId() == search.getMaterialId()) amount += content.getAmount();
         return amount;
+    }
+
+    public int amountHeads(RunsafePlayer player){
+        return amountMaterial(player, new RunsafeMaterial(Material.SKULL_ITEM));
     }
 
     public void leave(RunsafePlayer player) {
@@ -729,154 +607,41 @@ public class Core implements IConfigurationChanged{
             ingamePlayers.remove(player);
             ingamePlayersNames.remove(player.getName());
             sendMessage(ingamePlayers, String.format(Constants.MSG_LEAVE, player.getPrettyName()));
-            if(ingamePlayersNames.size() <= 1) end(null);
+            if(ingamePlayersNames.size() <= 1) winner(pickWinner());
         }
 
-    }
-
-    public void disconnect(RunsafePlayerQuitEvent event) {
-        leave(event.getPlayer());
-    }
-
-    public boolean rightClick(RunsafePlayer player, RunsafeItemStack usingItem, RunsafeBlock targetBlock) {
-        //special items
-        if(isIngame(player)){
-            boolean used = false;
-
-            if(usingItem != null && targetBlock != null){
-                int itemID = usingItem.getItemId();
-                if(itemID == Material.SLIME_BALL.getId()){
-                    RunsafePotionEffect slow = new RunsafePotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 4));
-                    RunsafePotionEffect hitSlow = new RunsafePotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 60, 4));
-                    //visual effect...
-                    server.getWorld(worldName).playEffect(targetBlock.getLocation(), Effect.POTION_BREAK, 2);
-
-                    ArrayList<RunsafePlayer> hitPlayers = getPlayers(targetBlock.getLocation(), 5);
-                    for(RunsafePlayer hitPlayer : hitPlayers)
-                        if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) {
-                            hitPlayer.addPotionEffect(slow);
-                            hitPlayer.addPotionEffect(hitSlow);
-                        }
-                    used = true;
-                }else if(itemID == Material.MAGMA_CREAM.getId()){
-
-
-
-                    ArrayList<RunsafePlayer> hitPlayers = getPlayers(targetBlock.getLocation(), 5);
-                    for(RunsafePlayer hitPlayer : hitPlayers)
-                        if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) {
-                            hitPlayer.strikeWithLightning(false);
-                        }
-                    used = true;
-
-
-                }else if(itemID == Material.NETHER_STAR.getId()){
-                    used = true;
-
-                    if(Util.actPercentage(95)){
-                        player.teleport(safeLocation());
-                    }else{
-                        server.getWorld(worldName).createExplosion(player.getLocation(), 2f, true);
-                    }
-
-
-                }
-
-            }else if(usingItem != null){
-                int itemID = usingItem.getItemId();
-
-                if(itemID == Material.NETHER_STAR.getId()){
-                    used = true;
-
-                    if(Util.getRandom(0, 100) > 95){
-                        player.teleport(safeLocation());
-                    }else{
-                        server.getWorld(worldName).createExplosion(player.getLocation(), 2f, true);
-                    }
-
-
-                }
-
-            }
-
-            if(used){
-
-                RunsafeItemStack stack = player.getItemInHand();
-                stack.setAmount(stack.getAmount() - 1);
-
-                player.getInventory().setItemInHand(stack);
-            }
-
-            return used;
-        }
-        return false;
-    }
-
-    public double distance(double x, double y){
-        if(x < y){
-            double t = x;
-            x = y;
-            y = t;
-        }
-        return (x-y);
-    }
-
-    public double distance(RunsafeLocation loc1, RunsafeLocation loc2){
-
-        return Math.sqrt(
-                Math.pow(distance(loc1.getX(), loc2.getX()), 2) +
-                Math.pow(distance(loc1.getY(), loc2.getY()), 2) +
-                Math.pow(distance(loc1.getZ(), loc2.getZ()), 2)
-        );
     }
 
     public ArrayList<RunsafePlayer> getPlayers(RunsafeLocation loc, int radius){
 
         ArrayList<RunsafePlayer> players = new ArrayList<RunsafePlayer>();
         for(RunsafePlayer player : ingamePlayers)
-            if(distance(loc, player.getLocation()) < radius) players.add(player);
+            if(Util.distance(loc, player.getLocation()) < radius) players.add(player);
 
         return players;
 
     }
 
-    public void pickUp(RunsafePlayerPickupItemEvent event) {
-
-        console.fine(String.format("%s picked up %d", event.getPlayer().getPrettyName(), event.getItem().getItemStack().getItemId()));
-        RunsafePlayer player = event.getPlayer();
-
-        if(isIngame(player)){
-            RunsafeItemStack item = event.getItem().getItemStack();
-            boolean used = false;
-            if( item.getItemId() == Material.GOLDEN_APPLE.getId()){
-                PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 60, 1);
-                player.addPotionEffect(new RunsafePotionEffect(regen));
-                used = true;
-            }else if(item.getItemId() == Material.SUGAR.getId()){
-                PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 80, 3);
-                player.addPotionEffect(new RunsafePotionEffect(speed));
-                used = true;
-            }
-            if(used){
-                event.getItem().remove();
-                event.setCancelled(true);
-            }
-        }
-
-
-    }
-
-    public void playerMove(RunsafePlayer player) {
-        if(isIngame(player) && !ingamePlayersNames.isEmpty()){
-            if(!combatArea.pointInArea(player.getLocation())){
-                leave(player);
-                player.sendColouredMessage(Constants.MSG_USE_LEAVE);
-            }
-        }
-
-    }
-
     public boolean isIngame(RunsafePlayer player){
         return (ingamePlayersNames.contains(player.getName()));
+    }
+
+    public String getWorldName() {
+        return worldName;
+    }
+
+    public void setAreaPos(boolean first, String areaname, RunsafeLocation location) {
+
+        if(first) combatArea.setFirstPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        else combatArea.setSecondPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+
+
+    }
+
+    public void setWaitRoomPos(boolean first, RunsafeLocation location) {
+
+        if(first) waitingRoom.setFirstPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        else waitingRoom.setSecondPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+
     }
 }

@@ -10,6 +10,11 @@ public class Plugin extends RunsafeConfigurablePlugin
 	@Override
 	protected void PluginSetup()
 	{
+
+        this.addComponent(EquipmentManager.class);
+        this.addComponent(RandomItem.class);
+
+
 		this.addComponent(Core.class);
 
         // commands

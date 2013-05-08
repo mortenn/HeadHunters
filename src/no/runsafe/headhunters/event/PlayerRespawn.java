@@ -4,6 +4,7 @@ import no.runsafe.framework.event.player.IPlayerRespawn;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.headhunters.Core;
+import no.runsafe.headhunters.EquipmentManager;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,14 +14,22 @@ import no.runsafe.headhunters.Core;
  */
 public class PlayerRespawn implements IPlayerRespawn {
 
-    Core core;
+    private EquipmentManager manager;
+    private Core core;
 
-    public PlayerRespawn(Core core){
+    public PlayerRespawn(Core core, EquipmentManager manager){
         this.core = core;
+        this.manager = manager;
     }
 
     @Override
     public RunsafeLocation OnPlayerRespawn(RunsafePlayer player, RunsafeLocation location, boolean isBed) {
-        return core.playerRespawn(player);
+        if(core.isIngame(player)){
+            manager.equip(player);
+            core.teleportIntoGame(player, null);
+            return core.safeLocation();
+        }
+        //if(combatArea.pointInArea(player.getLocation())) return waitingRoomSpawn;
+        return  null;
     }
 }

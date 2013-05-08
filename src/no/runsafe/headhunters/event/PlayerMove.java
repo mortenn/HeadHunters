@@ -23,7 +23,7 @@ public class PlayerMove implements IPlayerMove {
     @Override
     public boolean OnPlayerMove(RunsafePlayer player, RunsafeLocation from, RunsafeLocation to) {
 
-       // core.playerMove(player);
+       // for in the future! xD
 
         return true;
     }

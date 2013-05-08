@@ -20,6 +20,6 @@ public class PlayerDisconnect implements IPlayerQuitEvent {
 
     @Override
     public void OnPlayerQuit(RunsafePlayerQuitEvent event) {
-        this.core.disconnect(event);
+        if(core.isIngame(event.getPlayer())) this.core.leave(event.getPlayer());
     }
 }

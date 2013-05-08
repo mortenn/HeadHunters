@@ -1,6 +1,7 @@
 package no.runsafe.headhunters;
 
 import no.runsafe.framework.server.RunsafeLocation;
+import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.RunsafeWorld;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.bukkit.GameMode;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
  * Time: 16:17
  */
 public class SimpleArea {
+
 
     private double x1;
     private double x2;
@@ -35,6 +37,7 @@ public class SimpleArea {
         this.world = world;
 
 
+
     }
 
     public void setFirstPos(double x, double y, double z){
@@ -52,7 +55,7 @@ public class SimpleArea {
     }
 
     public boolean pointInArea(RunsafeLocation location){
-        return pointInArea(location.getX(), location.getY(), location.getZ());
+        return pointInArea(location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
     public boolean pointInArea(double x, double y, double z){
@@ -138,5 +141,33 @@ public class SimpleArea {
     @Override
     public String toString(){
         return "x1=" + x1 + "x2=" + x2 + "y1=" + y1 + "y2=" + y2 + "z1=" + z1 + "z2=" + z2 + "world="+world.getName();
+    }
+
+    public RunsafeLocation safeLocation(){
+        int x,y,z;
+
+        int ysmall = (int) Math.min(this.getY1(), this.getY2());
+        int ylarge = (int) Math.max(this.getY1(), this.getY2());
+        int tries = 350;
+        while(tries > 0){
+
+
+            x = Util.getRandom((int) this.getX1(), (int) this.getX2());
+            z = Util.getRandom((int) this.getZ1(), (int) this.getZ2());
+
+            for(y = ysmall; y < ylarge; y++){
+
+                if((new RunsafeLocation(world,(double) x, (double) y, (double) z).getBlock().getBlockState().getMaterialID() == 0)
+                        &&
+                        (new RunsafeLocation(world,(double) x, (double) y + 1, (double) z).getBlock().getBlockState().getMaterialID() == 0)){
+                    return new RunsafeLocation(world, (double) x, (double) y, (double) z);
+                }
+
+
+            }
+            tries--;
+        }
+        return null;
+
     }
 }

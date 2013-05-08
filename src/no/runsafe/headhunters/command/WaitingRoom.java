@@ -1,9 +1,12 @@
 package no.runsafe.headhunters.command;
 
 import no.runsafe.framework.command.player.PlayerCommand;
+import no.runsafe.framework.configuration.IConfiguration;
+import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
+import no.runsafe.headhunters.Util;
 
 import java.util.HashMap;
 
@@ -15,32 +18,53 @@ import java.util.HashMap;
  */
 public class WaitingRoom extends PlayerCommand {
 
-    Core core;
+    private Core core;
+    private IConfiguration config;
 
-    public WaitingRoom(Core core){
-        super("waitroom", "Sets the waitrooms coords", "headhunters.set-room", "posnumber");
+    public WaitingRoom(Core core, IConfiguration config){
+        super("waitroom", "Sets the waitroom coords", "headhunters.set-room", "posnumber");
+        this.config = config;
         this.core = core;
         this.captureTail();
     }
 
     @Override
-    public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters) {
-        boolean firstpos = (parameters.get("posnumber").equalsIgnoreCase("1"));
+    public String OnExecute(RunsafePlayer player, HashMap<String, String> parameters) {
 
-        boolean success;
-        if(firstpos){
-            success = this.core.setWaitingRoomFirstPos(executor);
-            if(success){
-                return Constants.MSG_COLOR + "First position set succesfully at " + executor.getLocation().toString();
+        if(player.getWorld().getName().equalsIgnoreCase(core.getWorldName())){
+            if(parameters.get("posnumber").equalsIgnoreCase("pos1")){
+
+                RunsafeLocation location = player.getLocation();
+
+                this.config.setConfigValue("waitingarea.x1",location.getBlockX());
+                this.config.setConfigValue("waitingarea.y1",location.getBlockY());
+                this.config.setConfigValue("waitingarea.z1",location.getBlockZ());
+
+                core.setWaitRoomPos(true, location);
+
+                this.config.save();
+
+                return Constants.MSG_COLOR + "First position set at " + Util.prettyLocation(location);
+
+            }else if(parameters.get("posnumber").equalsIgnoreCase("pos2")){
+                RunsafeLocation location = player.getLocation();
+
+                this.config.setConfigValue("waitingarea.x2",location.getBlockX());
+                this.config.setConfigValue("waitingarea.y2",location.getBlockY());
+                this.config.setConfigValue("waitingarea.z2",location.getBlockZ());
+
+                core.setWaitRoomPos(false, location);
+
+                this.config.save();
+
+                return Constants.MSG_COLOR + "Second position set at " + Util.prettyLocation(location);
             }
-        }
-        else{
-            success = this.core.setWaitingRoomSecondPos(executor);
-            if(success){
-                return Constants.MSG_COLOR + "Second position set succesfully at " + executor.getLocation().toString();
-            }
+        }else{
+
+         return Constants.ERROR_COLOR + "Please move to the correct world";
         }
 
-        return Constants.ERROR_COLOR + "Please move to the correct world";
+        return null;
     }
+
 }
