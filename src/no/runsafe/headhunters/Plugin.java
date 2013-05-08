@@ -32,6 +32,7 @@ public class Plugin extends RunsafeConfigurablePlugin
         command.addSubCommand(this.getInstance(showIngame.class));
         command.addSubCommand(this.getInstance(Leave.class));
         command.addSubCommand(this.getInstance(Stop.class));
+        command.addSubCommand(this.getInstance(Info.class));
 
         this.addComponent(command);
 

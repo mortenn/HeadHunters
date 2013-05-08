@@ -103,44 +103,20 @@ public class Core implements IConfigurationChanged{
 
     }
 
-    public boolean setWaitingRoomFirstPos(RunsafePlayer player) {
-
-        RunsafeLocation location = player.getLocation();
-
-        if(player.getWorld().getName().equalsIgnoreCase(this.worldName)){
-            this.config.setConfigValue("waitingarea.x1",location.getX());
-            this.config.setConfigValue("waitingarea.y1",location.getY());
-            this.config.setConfigValue("waitingarea.z1",location.getZ());
-
-            this.waitingRoom.setFirstPos(location.getX(), location.getY(), location.getZ());
-
-            this.config.save();
-            return true;
-        }
-
-        return false;
-
-
+    public boolean getGamestarted(){
+        return gamestarted;
     }
 
-    public boolean setWaitingRoomSecondPos(RunsafePlayer player) {
+    public boolean getEnabled(){
+        return enabled;
+    }
 
-        RunsafeLocation location = player.getLocation();
+    public int getTimeToStart(){
+        return countdownToStart;
+    }
 
-        if(player.getWorld().getName().equalsIgnoreCase(this.worldName)){
-            this.config.setConfigValue("waitingarea.x2",location.getX());
-            this.config.setConfigValue("waitingarea.y2",location.getY());
-            this.config.setConfigValue("waitingarea.z2",location.getZ());
-
-            this.waitingRoom.setSecondPos(location.getX(), location.getY(), location.getZ());
-
-            this.config.save();
-            return true;
-        }
-
-        return false;
-
-
+    public int getTimeToEnd(){
+        return countdownToEnd;
     }
 
     public String startInTime(Integer time) {
@@ -203,16 +179,8 @@ public class Core implements IConfigurationChanged{
 
     }
 
-    public String showIngame(){
-
-        String out = "";
-
-        for(RunsafePlayer player: ingamePlayers){
-            out = out + player.getPrettyName() + ", ";
-        }
-
-        return out;
-
+    public ArrayList<RunsafePlayer> getIngamePlayers(){
+        return ingamePlayers;
     }
 
     public void teleportIntoWaitRoom(ArrayList<RunsafePlayer> players){
@@ -257,23 +225,6 @@ public class Core implements IConfigurationChanged{
     public RunsafeLocation safeLocation(){
         return combatArea.safeLocation();
 
-    }
-
-    public String setSpawn(RunsafePlayer executor) {
-
-        if(waitingRoom.pointInArea(executor.getLocation())){
-
-            this.waitingRoomSpawn = executor.getLocation();
-
-            config.setConfigValue("waitingroomspawn.x", executor.getLocation().getX());
-            config.setConfigValue("waitingroomspawn.y", executor.getLocation().getY());
-            config.setConfigValue("waitingroomspawn.z", executor.getLocation().getZ());
-
-            config.save();
-            return "Successfully set spawn";
-        }
-
-        return "You need to be in the waitingroom";
     }
 
     @Override
@@ -449,7 +400,7 @@ public class Core implements IConfigurationChanged{
         
     }
 
-    private RunsafePlayer pickWinner() {
+    public RunsafePlayer pickWinner() {
         int topHeads = -1;
         RunsafePlayer winner = null;
 
@@ -643,5 +594,14 @@ public class Core implements IConfigurationChanged{
         if(first) waitingRoom.setFirstPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         else waitingRoom.setSecondPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
 
+    }
+
+    public void seTWaitRoomSpawn(RunsafeLocation location) {
+        this.waitingRoomSpawn = location;
+
+    }
+
+    public Object getAmountNeeded() {
+        return winAmount;
     }
 }

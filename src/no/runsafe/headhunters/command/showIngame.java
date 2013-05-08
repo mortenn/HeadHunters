@@ -26,6 +26,14 @@ public class showIngame extends PlayerCommand {
 
     @Override
     public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters) {
-        return Constants.MSG_COLOR + core.showIngame();
+
+
+        StringBuilder out = new StringBuilder(Constants.MSG_COLOR);
+
+        for(RunsafePlayer player: core.getIngamePlayers()){
+            out.append(player.getPrettyName() + ", ");
+        }
+
+        return out.toString();
     }
 }
