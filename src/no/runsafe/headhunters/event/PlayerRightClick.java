@@ -1,6 +1,7 @@
 package no.runsafe.headhunters.event;
 
 import no.runsafe.framework.event.player.IPlayerRightClick;
+import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.block.RunsafeBlock;
 import no.runsafe.framework.server.item.RunsafeItemStack;
@@ -39,15 +40,18 @@ public class PlayerRightClick implements IPlayerRightClick {
         if(core.isIngame(player)){
             boolean used = false;
 
-            if(usingItem != null && targetBlock != null){
+            if(usingItem != null){
+
+                RunsafeLocation location = (targetBlock != null) ? targetBlock.getLocation() : player.getLocation();
+
                 int itemID = usingItem.getItemId();
                 if(itemID == Material.SLIME_BALL.getId()){
                     RunsafePotionEffect slow = new RunsafePotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 4));
                     RunsafePotionEffect hitSlow = new RunsafePotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 60, 4));
                     //visual effect...
-                    server.getWorld(core.getWorldName()).playEffect(targetBlock.getLocation(), Effect.POTION_BREAK, 2);
+                    server.getWorld(core.getWorldName()).playEffect(location, Effect.POTION_BREAK, 2);
 
-                    ArrayList<RunsafePlayer> hitPlayers = core.getPlayers(targetBlock.getLocation(), 5);
+                    ArrayList<RunsafePlayer> hitPlayers = core.getPlayers(location, 5);
                     for(RunsafePlayer hitPlayer : hitPlayers)
                         if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) {
                             hitPlayer.addPotionEffect(slow);
@@ -59,7 +63,7 @@ public class PlayerRightClick implements IPlayerRightClick {
 
 
 
-                    ArrayList<RunsafePlayer> hitPlayers = core.getPlayers(targetBlock.getLocation(), 5);
+                    ArrayList<RunsafePlayer> hitPlayers = core.getPlayers(location, 5);
                     for(RunsafePlayer hitPlayer : hitPlayers)
                         if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) {
                             hitPlayer.strikeWithLightning(false);
@@ -68,21 +72,6 @@ public class PlayerRightClick implements IPlayerRightClick {
 
 
                 }else if(itemID == Material.NETHER_STAR.getId()){
-                    used = true;
-
-                    if(Util.actPercentage(95)){
-                        player.teleport(core.safeLocation());
-                    }else{
-                        server.getWorld(core.getWorldName()).createExplosion(player.getLocation(), 2f, true);
-                    }
-
-
-                }
-
-            }else if(usingItem != null){
-                int itemID = usingItem.getItemId();
-
-                if(itemID == Material.NETHER_STAR.getId()){
                     used = true;
 
                     if(Util.actPercentage(95)){

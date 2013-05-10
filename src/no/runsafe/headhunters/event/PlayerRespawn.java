@@ -29,7 +29,6 @@ public class PlayerRespawn implements IPlayerRespawn {
             core.teleportIntoGame(player, null);
             return core.safeLocation();
         }
-        //if(combatArea.pointInArea(player.getLocation())) return waitingRoomSpawn;
         return  null;
     }
 }

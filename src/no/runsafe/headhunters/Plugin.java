@@ -22,14 +22,14 @@ public class Plugin extends RunsafeConfigurablePlugin
 
         Command command = new Command("headhunters", "Headhunters plugin commands", null);
 
-        command.addSubCommand(this.getInstance(disable.class));
-        command.addSubCommand(this.getInstance(enable.class));
+        command.addSubCommand(this.getInstance(Disable.class));
+        command.addSubCommand(this.getInstance(Enable.class));
         command.addSubCommand(this.getInstance(CombatArea.class));
         command.addSubCommand(this.getInstance(WaitingRoom.class));
         command.addSubCommand(this.getInstance(Start.class));
         command.addSubCommand(this.getInstance(Spawn.class));
         command.addSubCommand(this.getInstance(Join.class));
-        command.addSubCommand(this.getInstance(showIngame.class));
+        command.addSubCommand(this.getInstance(ShowIngame.class));
         command.addSubCommand(this.getInstance(Leave.class));
         command.addSubCommand(this.getInstance(Stop.class));
         command.addSubCommand(this.getInstance(Info.class));

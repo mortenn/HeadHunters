@@ -1,7 +1,11 @@
 package no.runsafe.headhunters;
 
 import no.runsafe.framework.server.RunsafeLocation;
+import no.runsafe.framework.server.item.RunsafeItemStack;
+import no.runsafe.framework.server.material.RunsafeMaterial;
+import no.runsafe.framework.server.player.RunsafePlayer;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -57,6 +61,13 @@ public class Util {
 
     public static String prettyLocation(RunsafeLocation location){
         return String.format("&a%d %d %d", location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    }
+
+    public static int amountMaterial(RunsafePlayer player, RunsafeMaterial search){
+        int amount = 0;
+        for(RunsafeItemStack content : (ArrayList<RunsafeItemStack>) player.getInventory().getContents())
+            if(content.getItemId() == search.getMaterialId()) amount += content.getAmount();
+        return amount;
     }
 
 }

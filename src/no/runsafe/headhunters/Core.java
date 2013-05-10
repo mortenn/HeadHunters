@@ -2,6 +2,7 @@ package no.runsafe.headhunters;
 
 import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
+import no.runsafe.framework.event.IPluginEnabled;
 import no.runsafe.framework.output.ChatColour;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeLocation;
@@ -20,17 +21,18 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Created with IntelliJ IDEA.
  * User: Naxanria
  * Date: 19-4-13
  * Time: 16:04
  */
-public class Core implements IConfigurationChanged{
+public class Core implements IConfigurationChanged, IPluginEnabled{
 
     private String worldName;
     private SimpleArea waitingRoom;
-    private SimpleArea combatArea;
+    //private SimpleArea combatArea;
     private RunsafeLocation waitingRoomSpawn;
     private boolean gamestarted;
     private boolean enabled = true;
@@ -52,6 +54,10 @@ public class Core implements IConfigurationChanged{
 
     private int top3 = 0;
     private int top3Trigger = 60;
+
+    private ArrayList<String> regions;
+    private ArrayList<SimpleArea> areas;
+    private int currRegion;
 
 
     public EquipmentManager equipmentManager;
@@ -144,6 +150,7 @@ public class Core implements IConfigurationChanged{
             return;
         }
         this.gamestarted = true;
+        currRegion = Util.getRandom(0, regions.size());
         winAmount = (int) ((players.size() / 2) + players.size() * 3.5);
         this.ingamePlayers = players;
         for(RunsafePlayer player : ingamePlayers){
@@ -152,13 +159,13 @@ public class Core implements IConfigurationChanged{
         }
 
         teleportIntoGame(this.ingamePlayers);
+        sendMessage(ingamePlayers, String.format("Map: &f%s", regions.get(currRegion)));
         sendMessage(ingamePlayers, String.format(Constants.MSG_START_MESSAGE, winAmount));
-
 
     }
 
     public void end(String endMessage){
-        for(RunsafePlayer player: this.combatArea.getPlayers(GameMode.SURVIVAL)){
+        for(RunsafePlayer player: areas.get(currRegion).getPlayers(GameMode.SURVIVAL)){
             teleportIntoWaitRoom(player);
             player.getInventory().clear();
             if(endMessage != null) player.sendColouredMessage(Constants.MSG_COLOR + endMessage);
@@ -166,7 +173,7 @@ public class Core implements IConfigurationChanged{
 
         List<RunsafeEntity> entities = server.getWorld(worldName).getEntities();
         for(RunsafeEntity entity : entities)
-            if(combatArea.pointInArea(entity.getLocation())) entity.remove();
+            if(areas.get(currRegion).pointInArea(entity.getLocation())) entity.remove();
 
 
         top3 = 0;
@@ -223,7 +230,7 @@ public class Core implements IConfigurationChanged{
     }
 
     public RunsafeLocation safeLocation(){
-        return combatArea.safeLocation();
+        return areas.get(currRegion).safeLocation();
 
     }
 
@@ -256,20 +263,17 @@ public class Core implements IConfigurationChanged{
                 server.getWorld(this.worldName)
         );
 
-        this.combatArea = new SimpleArea(
-                config.getConfigValueAsDouble("combatarea.x1"),
-                config.getConfigValueAsDouble("combatarea.y1"),
-                config.getConfigValueAsDouble("combatarea.z1"),
-                config.getConfigValueAsDouble("combatarea.x2"),
-                config.getConfigValueAsDouble("combatarea.y2"),
-                config.getConfigValueAsDouble("combatarea.z2"),
-                server.getWorld(this.worldName)
-        );
-
         this.countdownToStart = config.getConfigValueAsInt("waittime");
         this.countdownToEnd = config.getConfigValueAsInt("runtime");
 
+        regions = (ArrayList<String>) config.getConfigValueAsList("regions");
 
+    }
+
+    public void loadAreas(){
+        areas =  new ArrayList<SimpleArea>();
+        for(String reg : regions)
+            areas.add(new SimpleArea(reg, server.getWorld(worldName)));
     }
 
     private void resetWaittime(){
@@ -288,7 +292,8 @@ public class Core implements IConfigurationChanged{
 
         if(enabled) {
             if (!this.gamestarted) {
-                this.teleportIntoWaitRoom(this.combatArea.getPlayers(), GameMode.SURVIVAL);
+                for(SimpleArea combatArea: areas)
+                    this.teleportIntoWaitRoom(combatArea.getPlayers(), GameMode.SURVIVAL);
 
                 if (countdownToStart % 300 == 0) { //every 5 minutes
                     server.broadcastMessage(String.format(Constants.MSG_GAME_START_IN, (countdownToStart / 300) * 5, "minutes"));
@@ -334,7 +339,7 @@ public class Core implements IConfigurationChanged{
                 }
                 if (l != leader && amount > 0) {
                     leader = l;
-                    sendMessage(combatArea.getPlayers(), String.format(Constants.MSG_NEW_LEADER, leader.getPrettyName(), amountHeads(leader)));
+                    sendMessage(areas.get(currRegion).getPlayers(), String.format(Constants.MSG_NEW_LEADER, leader.getPrettyName(), amountHeads(leader)));
 
                 }
 
@@ -346,29 +351,32 @@ public class Core implements IConfigurationChanged{
 
 
                 if (countdownToEnd % 300 == 0) {
-                    sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, (countdownToEnd / 300) * 5, "minutes"));
+                    sendMessage(areas.get(currRegion).getPlayers(), String.format(Constants.MSG_TIME_REMAINING, (countdownToEnd / 300) * 5, "minutes"));
                 } else {
+
+                    ArrayList<RunsafePlayer> sendTo = areas.get(currRegion).getPlayers();
+
                     switch (countdownToEnd) {
                         case 180:
-                            sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, 3, "minutes"));
+                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 3, "minutes"));
                             break;
                         case 120:
-                            sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, 2, "minutes"));
+                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 2, "minutes"));
                             break;
                         case 60:
-                            sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, 1, "minute"));
+                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 1, "minute"));
                             break;
                         case 30:
-                            sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, 30, "seconds"));
+                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 30, "seconds"));
                             break;
                         case 20:
-                            sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, 10, "seconds"));
+                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 10, "seconds"));
                             break;
                         case 10:
-                            sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, 10, "seconds"));
+                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 10, "seconds"));
                             break;
                         case 5:
-                            sendMessage(this.combatArea.getPlayers(), String.format(Constants.MSG_TIME_REMAINING, 5, "seconds"));
+                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 5, "seconds"));
                             break;
 
                     }
@@ -383,17 +391,18 @@ public class Core implements IConfigurationChanged{
 
                 if (ingamePlayers.size() == 1) winner(ingamePlayers.get(0));
 
-                for (RunsafePlayer player : combatArea.getPlayers()) {
+                for(int i = 0; i < areas.size(); i++) {
+                    for (RunsafePlayer player : areas.get(i).getPlayers()) {
 
-                    if (player.getGameMode() == GameMode.CREATIVE) continue;
+                        if (player.getGameMode() == GameMode.CREATIVE) continue;
 
-                    if (!ingamePlayersNames.contains(player.getName())) teleportIntoWaitRoom(player);
-
-
+                        if (!ingamePlayersNames.contains(player.getName())) teleportIntoWaitRoom(player);
+                    }
                 }
             }
         }
-        else this.teleportIntoWaitRoom(this.combatArea.getPlayers(), GameMode.SURVIVAL);
+        else for(SimpleArea combatArea: areas)
+            this.teleportIntoWaitRoom(combatArea.getPlayers(), GameMode.SURVIVAL);
 
 
 
@@ -538,15 +547,8 @@ public class Core implements IConfigurationChanged{
 
     }
 
-    public int amountMaterial(RunsafePlayer player, RunsafeMaterial search){
-        int amount = 0;
-        for(RunsafeItemStack content : (ArrayList<RunsafeItemStack>) player.getInventory().getContents())
-            if(content.getItemId() == search.getMaterialId()) amount += content.getAmount();
-        return amount;
-    }
-
     public int amountHeads(RunsafePlayer player){
-        return amountMaterial(player, new RunsafeMaterial(Material.SKULL_ITEM));
+        return Util.amountMaterial(player, new RunsafeMaterial(Material.SKULL_ITEM));
     }
 
     public void leave(RunsafePlayer player) {
@@ -581,14 +583,6 @@ public class Core implements IConfigurationChanged{
         return worldName;
     }
 
-    public void setAreaPos(boolean first, String areaname, RunsafeLocation location) {
-
-        if(first) combatArea.setFirstPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        else combatArea.setSecondPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-
-
-    }
-
     public void setWaitRoomPos(boolean first, RunsafeLocation location) {
 
         if(first) waitingRoom.setFirstPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
@@ -596,12 +590,40 @@ public class Core implements IConfigurationChanged{
 
     }
 
-    public void seTWaitRoomSpawn(RunsafeLocation location) {
+    public void setWaitRoomSpawn(RunsafeLocation location) {
         this.waitingRoomSpawn = location;
 
     }
 
     public Object getAmountNeeded() {
         return winAmount;
+    }
+
+    @Override
+    public void OnPluginEnabled() {
+        this.loadAreas();
+    }
+
+    public ArrayList<SimpleArea> getAreas() {
+        return areas;
+    }
+
+    public ArrayList<String> getRegions() {
+        return regions;
+    }
+
+    public void setRegions(ArrayList<String> regions) {
+        this.regions = regions;
+    }
+
+    public void addRegion(String region){
+        if(!regions.contains(region)){
+            regions.add(region);
+            loadAreas();
+        }
+    }
+
+    public String getCurrentMap() {
+        return regions.get(currRegion);
     }
 }

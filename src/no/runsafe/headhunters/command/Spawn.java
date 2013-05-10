@@ -36,7 +36,7 @@ public class Spawn extends PlayerCommand {
 
             config.save();
 
-            core.seTWaitRoomSpawn(player.getLocation());
+            core.setWaitRoomSpawn(player.getLocation());
 
             return "Successfully set spawn";
         }

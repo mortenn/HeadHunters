@@ -1,5 +1,9 @@
 package no.runsafe.headhunters;
 
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.GlobalRegionManager;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.RunsafeWorld;
@@ -16,7 +20,7 @@ import java.util.ArrayList;
  */
 public class SimpleArea {
 
-
+    private WorldGuardPlugin worldGuard;
     private double x1;
     private double x2;
     private double y1;
@@ -34,6 +38,46 @@ public class SimpleArea {
         this.y2 = y2;
         this.z1 = z1;
         this.z2 = z2;
+        this.world = world;
+
+    }
+
+    public SimpleArea(String region, RunsafeWorld world){
+        this.worldGuard = RunsafeServer.Instance.getPlugin("WorldGuard");
+        if(worldGuard == null){
+            System.out.println("Please Enable/install WorldGuard");
+            this.x1 = 0;
+            this.x2 = 0;
+            this.y1 = 0;
+            this.y2 = 0;
+            this.z1 = 0;
+            this.z2 = 0;
+            this.world = world;
+        }else{
+
+            GlobalRegionManager manager = worldGuard.getGlobalRegionManager();
+
+            ProtectedRegion reg = manager.get(world.getRaw()).getRegion(region);
+            this.x1 = reg.getMaximumPoint().getBlockX();
+            this.y1 = reg.getMaximumPoint().getBlockY();
+            this.z1 = reg.getMaximumPoint().getBlockZ();
+            this.x2 = reg.getMinimumPoint().getBlockX();
+            this.y2 = reg.getMinimumPoint().getBlockY();
+            this.z2 = reg.getMinimumPoint().getBlockZ();
+            this.world = world;
+
+        }
+
+    }
+
+    public SimpleArea(ProtectedRegion reg, RunsafeWorld world){
+
+        this.x1 = reg.getMaximumPoint().getBlockX();
+        this.y1 = reg.getMaximumPoint().getBlockY();
+        this.z1 = reg.getMaximumPoint().getBlockZ();
+        this.x2 = reg.getMinimumPoint().getBlockX();
+        this.y2 = reg.getMinimumPoint().getBlockY();
+        this.z2 = reg.getMinimumPoint().getBlockZ();
         this.world = world;
 
 
@@ -152,10 +196,10 @@ public class SimpleArea {
         while(tries > 0){
 
 
-            x = Util.getRandom((int) this.getX1(), (int) this.getX2());
-            z = Util.getRandom((int) this.getZ1(), (int) this.getZ2());
+            x = Util.getRandom((int) this.getX1() + 1, (int) this.getX2() - 1);
+            z = Util.getRandom((int) this.getZ1() + 1, (int) this.getZ2() - 1);
 
-            for(y = ysmall; y < ylarge; y++){
+            for(y = ysmall; y < ylarge - 1; y++){
 
                 if((new RunsafeLocation(world,(double) x, (double) y, (double) z).getBlock().getBlockState().getMaterialID() == 0)
                         &&

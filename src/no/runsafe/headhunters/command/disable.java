@@ -1,8 +1,8 @@
 package no.runsafe.headhunters.command;
 
-import no.runsafe.framework.command.player.PlayerCommand;
+import no.runsafe.framework.command.ExecutableCommand;
 import no.runsafe.framework.output.ChatColour;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.server.ICommandExecutor;
 import no.runsafe.headhunters.Core;
 
 import java.util.HashMap;
@@ -13,19 +13,17 @@ import java.util.HashMap;
  * Date: 20-4-13
  * Time: 18:31
  */
-public class disable extends PlayerCommand {
+public class Disable extends ExecutableCommand {
 
     Core core;
 
-    public disable(Core core){
-        super("disable", "Disables the plugin", "headhunters.enable");
+    public Disable(Core core){
+        super("Disable", "Disables the plugin", "headhunters.Enable");
         this.core = core;
     }
 
-
     @Override
-    public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters) {
-
+    public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters) {
         this.core.disable();
 
         return "Headhunters " + ChatColour.RED + "disabled";

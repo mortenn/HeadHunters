@@ -13,12 +13,12 @@ import java.util.HashMap;
  * Date: 27-4-13
  * Time: 16:03
  */
-public class showIngame extends PlayerCommand {
+public class ShowIngame extends PlayerCommand {
 
 
     Core core;
 
-    public showIngame(Core core){
+    public ShowIngame(Core core){
         super("show", "shows ingame players", "headhunters.show-ingame-players");
         this.core = core;
 
