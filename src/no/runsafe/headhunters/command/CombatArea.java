@@ -6,6 +6,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import no.runsafe.framework.command.player.PlayerCommand;
 import no.runsafe.framework.configuration.IConfiguration;
+import no.runsafe.framework.output.ChatColour;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.player.RunsafePlayer;
@@ -29,7 +30,7 @@ public class CombatArea extends PlayerCommand {
     private WorldGuardPlugin worldGuard;
 
     public CombatArea(Core core, IConfiguration config){
-        super("combatarea", "Adds the WorldGuard region you are in as a combat area.", "headhunters.set-room");
+        super("combatarea", "Adds or removes the WorldGuard region you are in as a combat area.", "headhunters.set-room", "p");
         this.core = core;
         this.config = config;
         this.captureTail();
@@ -39,7 +40,23 @@ public class CombatArea extends PlayerCommand {
     }
 
     @Override
+    public String getUsageCommandParams(){
+        return this.getName() + "<" +  ChatColour.YELLOW + "add " + ChatColour.RESET + "|"+ ChatColour.YELLOW + " del"+ ChatColour.RESET + ">";
+    }
+
+    @Override
     public String OnExecute(RunsafePlayer player, HashMap<String, String> parameters) {
+
+        boolean add;
+
+        String arg = parameters.get("p");
+        if(arg.equalsIgnoreCase("add")) add = true;
+        else if(arg.equalsIgnoreCase("del")) add = false;
+        else return this.getUsage();
+
+        if(core.getEnabled()) return Constants.ERROR_COLOR + "Only use this when headhunters is disabled";
+
+
         if(player.getWorld().getName().equalsIgnoreCase(core.getWorldName())){
 
             RegionManager manager = worldGuard.getGlobalRegionManager().get(RunsafeServer.Instance.getWorld(core.getWorldName()).getRaw());
@@ -55,18 +72,33 @@ public class CombatArea extends PlayerCommand {
             for(ProtectedRegion r : set)
                 thisRegion = r.getId();
 
-            if(areas.contains(thisRegion))
-                return Constants.ERROR_COLOR + "Region already exists";
+            if(add){
 
-            areas.add(thisRegion);
-            core.setRegions(areas);
+                if(areas.contains(thisRegion))
+                    return Constants.ERROR_COLOR + "Region already exists";
 
-            config.setConfigValue("regions", areas);
-            config.save();
+                areas.add(thisRegion);
+                core.setRegions(areas);
 
-            core.loadAreas();
+                config.setConfigValue("regions", areas);
+                config.save();
 
-            return Constants.MSG_COLOR + "Added region &f" + thisRegion;
+                core.loadAreas();
+
+                return Constants.MSG_COLOR + "Added region &f" + thisRegion;
+            }else{
+                if(!areas.contains(thisRegion)) return Constants.ERROR_COLOR + "Region does not exist as a combat area.";
+
+                areas.remove(thisRegion);
+                core.setRegions(areas);
+
+                config.setConfigValue("regions", areas);
+                config.save();
+
+                core.loadAreas();
+
+                return Constants.MSG_COLOR + "Removed area &f" + thisRegion;
+            }
 
         }else{
             return Constants.ERROR_COLOR + "Please move to the correct world";

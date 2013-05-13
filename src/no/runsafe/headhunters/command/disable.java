@@ -18,7 +18,7 @@ public class Disable extends ExecutableCommand {
     Core core;
 
     public Disable(Core core){
-        super("Disable", "Disables the plugin", "headhunters.Enable");
+        super("disable", "Disables the plugin", "headhunters.Enable");
         this.core = core;
     }
 

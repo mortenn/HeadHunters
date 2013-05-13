@@ -25,7 +25,7 @@ public class BlockPlace implements IBlockPlace {
 
 
         if(eventPlayer.getWorld().getName().equalsIgnoreCase(core.getWorldName())){
-            if(core.isInCombatRegion(eventPlayer)){
+            if(core.isInCombatRegion(eventPlayer.getLocation()) != null){
 
                 if(core.getEnabled()){
                     return false;

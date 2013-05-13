@@ -24,7 +24,7 @@ public class BlockBreak implements IBlockBreakEvent {
     public void OnBlockBreakEvent(RunsafeBlockBreakEvent event) {
         RunsafePlayer eventPlayer = event.getPlayer();
         if(eventPlayer.getWorld().getName().equalsIgnoreCase(core.getWorldName())){
-            if(core.isInCombatRegion(eventPlayer)){
+            if(core.isInCombatRegion(eventPlayer.getLocation()) != null){
 
                 if(core.getEnabled()){
                     event.setCancelled(true);

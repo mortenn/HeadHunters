@@ -7,8 +7,10 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.RunsafeWorld;
+import no.runsafe.framework.server.block.RunsafeSign;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 
 import java.util.ArrayList;
 
@@ -30,6 +32,8 @@ public class SimpleArea {
 
     private RunsafeWorld world;
 
+    private String regionName;
+
     public SimpleArea(double x1, double y1, double z1, double x2, double y2, double z2, RunsafeWorld world){
 
         this.x1 = x1;
@@ -40,9 +44,14 @@ public class SimpleArea {
         this.z2 = z2;
         this.world = world;
 
+        sortCoords();
+
+        this.regionName = "Waitroom";
+
     }
 
     public SimpleArea(String region, RunsafeWorld world){
+        this.regionName = region;
         this.worldGuard = RunsafeServer.Instance.getPlugin("WorldGuard");
         if(worldGuard == null){
             System.out.println("Please Enable/install WorldGuard");
@@ -66,12 +75,14 @@ public class SimpleArea {
             this.z2 = reg.getMinimumPoint().getBlockZ();
             this.world = world;
 
+            sortCoords();
         }
 
     }
 
     public SimpleArea(ProtectedRegion reg, RunsafeWorld world){
 
+        this.regionName = reg.getId();
         this.x1 = reg.getMaximumPoint().getBlockX();
         this.y1 = reg.getMaximumPoint().getBlockY();
         this.z1 = reg.getMaximumPoint().getBlockZ();
@@ -80,6 +91,7 @@ public class SimpleArea {
         this.z2 = reg.getMinimumPoint().getBlockZ();
         this.world = world;
 
+        sortCoords();
 
 
     }
@@ -104,13 +116,11 @@ public class SimpleArea {
 
     public boolean pointInArea(double x, double y, double z){
 
-        double x1 = this.x1;
-        double x2 = this.x2;
-        double y1 = this.y1;
-        double y2 = this.y2;
-        double z1 = this.z1;
-        double z2 = this.z2;
+        return (x >= x1 && x <= x2 && y >= y1 && y <= y2 && z >= z1 && z <= z2);
 
+    }
+
+    public void sortCoords(){
 
         double temp;
         if(x2 < x1){
@@ -128,11 +138,6 @@ public class SimpleArea {
             z2 = z1;
             z1 = temp;
         }
-
-
-
-
-        return (x >= x1 && x <= x2 && y >= y1 && y <= y2 && z >= z1 && z <= z2);
 
     }
 
@@ -214,12 +219,19 @@ public class SimpleArea {
         while(tries > 0){
 
 
-            x = Util.getRandom((int) this.getX1() + 1, (int) this.getX2() - 1);
-            z = Util.getRandom((int) this.getZ1() + 1, (int) this.getZ2() - 1);
+            x = Util.getRandom((int) this.getX1() + 3, (int) this.getX2() - 3);
+            z = Util.getRandom((int) this.getZ1() + 3, (int) this.getZ2() - 3);
 
             for(y = ysmall; y < ylarge - 1; y++){
 
-                if((new RunsafeLocation(world,(double) x, (double) y, (double) z).getBlock().getBlockState().getMaterialID() == 0)
+                RunsafeLocation thisLoc = new RunsafeLocation(world,(double) x, (double) y, (double) z);
+                if(thisLoc.getBlock().getBlockState() instanceof RunsafeSign){
+                    System.out.println("Found a sign!" + Util.prettyLocation(thisLoc));
+                    RunsafeSign sign = (RunsafeSign) thisLoc.getBlock().getBlockState();
+                    if(sign.getLine(0).equalsIgnoreCase("skip")) continue;
+                }
+
+                if((thisLoc.getBlock().getBlockState().getMaterialID() == 0)
                         &&
                         (new RunsafeLocation(world,(double) x, (double) y + 1, (double) z).getBlock().getBlockState().getMaterialID() == 0)){
                     return new RunsafeLocation(world, (double) x, (double) y, (double) z);
@@ -233,4 +245,7 @@ public class SimpleArea {
 
     }
 
+    public String getRegionName() {
+        return this.regionName;
+    }
 }

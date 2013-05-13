@@ -7,12 +7,14 @@ import no.runsafe.framework.output.ChatColour;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
+import no.runsafe.framework.server.RunsafeWorld;
 import no.runsafe.framework.server.entity.RunsafeEntity;
 import no.runsafe.framework.server.item.RunsafeItemStack;
 import no.runsafe.framework.server.material.RunsafeMaterial;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.server.potion.RunsafePotionEffect;
 import no.runsafe.framework.timer.IScheduler;
+import no.runsafe.worldguardbridge.WorldGuardInterface;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.potion.PotionEffect;
@@ -61,6 +63,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
 
     public EquipmentManager equipmentManager;
+
+    //public WorldGuardInterface worldGuardBridge;
 
 
     public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, EquipmentManager equipmentManager) {
@@ -627,12 +631,15 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         return regions.get(currRegion);
     }
 
-    public boolean isInCombatRegion(RunsafePlayer player) {
+    public String isInCombatRegion(RunsafeLocation loc) {
 
         for(SimpleArea area : areas)
-            if(area.getPlayersNames().contains(player.getName())) return true;
+            if(area.pointInArea(loc)){
+                //server.broadcastMessage("Region : " + area.getRegionName());
+                return area.getRegionName();
+            }
 
 
-        return false;
+        return null;
     }
 }
