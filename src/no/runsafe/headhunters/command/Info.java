@@ -48,6 +48,7 @@ public class Info extends ExecutableCommand {
                 int min = (int)Math.floor(core.getTimeToStart() / 60);
                 int sec = core.getTimeToStart() % 60;
                 info.add(String.format("Game will start in &f%d:%d", min, sec));
+                info.add(String.format(Constants.MSG_NEXT_MAP, core.getNextRegion()));
 
 
             }

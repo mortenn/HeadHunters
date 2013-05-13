@@ -4,6 +4,7 @@ import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.event.IPluginEnabled;
 import no.runsafe.framework.output.ChatColour;
+import no.runsafe.framework.output.ConsoleColors;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
@@ -34,7 +35,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
     private String worldName;
     private SimpleArea waitingRoom;
-    //private SimpleArea combatArea;
     private RunsafeLocation waitingRoomSpawn;
     private boolean gamestarted;
     private boolean enabled = true;
@@ -54,18 +54,13 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
     private int minPlayers = 2;
     private RunsafePlayer leader = null;
 
-    private int top3 = 0;
-    private int top3Trigger = 60;
-
     private ArrayList<String> regions;
     private ArrayList<SimpleArea> areas;
     private int currRegion;
+    private int nextRegion;
 
 
     public EquipmentManager equipmentManager;
-
-    //public WorldGuardInterface worldGuardBridge;
-
 
     public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, EquipmentManager equipmentManager) {
 
@@ -154,7 +149,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
             return;
         }
         this.gamestarted = true;
-        currRegion = Util.getRandom(0, regions.size());
+        currRegion = nextRegion;
         winAmount = (int) ((players.size() / 2) + players.size() * 3.5);
         this.ingamePlayers = players;
         for(RunsafePlayer player : ingamePlayers){
@@ -179,8 +174,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         for(RunsafeEntity entity : entities)
             if(areas.get(currRegion).pointInArea(entity.getLocation())) entity.remove();
 
-
-        top3 = 0;
+        nextRegion = Util.getRandom(0, regions.size());
         gamestarted = false;
         ingamePlayers.clear();
         ingamePlayersNames.clear();
@@ -278,6 +272,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         areas =  new ArrayList<SimpleArea>();
         for(String reg : regions)
             areas.add(new SimpleArea(reg, server.getWorld(worldName)));
+        nextRegion = Util.getRandom(0, regions.size());
     }
 
     private void resetWaittime(){
@@ -324,8 +319,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                         case 5:
                             sendMessage(this.waitingRoom.getPlayers(), String.format(Constants.MSG_GAME_START_IN, 5, "seconds"));
                             break;
-
-
                     }
                 }
 
@@ -346,13 +339,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                     sendMessage(areas.get(currRegion).getPlayers(), String.format(Constants.MSG_NEW_LEADER, leader.getPrettyName(), amountHeads(leader)));
 
                 }
-
-                top3++;
-                if(top3 >= top3Trigger){
-                    top3 = 0;
-                    getTop3();
-                }
-
 
                 if (countdownToEnd % 300 == 0) {
                     sendMessage(areas.get(currRegion).getPlayers(), String.format(Constants.MSG_TIME_REMAINING, (countdownToEnd / 300) * 5, "minutes"));
@@ -407,10 +393,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         }
         else for(SimpleArea combatArea: areas)
             this.teleportIntoWaitRoom(combatArea.getPlayers(), GameMode.SURVIVAL);
-
-
-
-        
     }
 
     public RunsafePlayer pickWinner() {
@@ -441,7 +423,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
     }
 
-
     public String join(RunsafePlayer executor) {
 
         if(this.enabled){
@@ -458,86 +439,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         return Constants.MSG_COLOR + "headhunters is not enabled";
 
     }
-
-    //le crappy code xD
-    private void getTop3(){
-
-        RunsafePlayer first = null;
-        RunsafePlayer second = null;
-        RunsafePlayer third = null;
-
-        int headsFirst = 0;
-        int headsSecond = 0;
-        int headsThird = 0;
-
-        for(RunsafePlayer player : ingamePlayers){
-            int amount = amountHeads(player);
-            if(amount == 0) continue;
-            if(first == null){
-                first = player;
-                headsFirst = amount;
-            }else if(second == null){
-
-                if(amount > headsFirst){
-                    second = first;
-                    headsSecond = headsFirst;
-
-                    first = player;
-                    headsFirst = amount;
-                }
-            }else if(third == null){
-                if(amount > headsFirst){
-                    third = second;
-                    headsThird = headsSecond;
-
-                    second = first;
-                    headsSecond = headsFirst;
-
-                    first = player;
-                    headsFirst = amount;
-                }else if(amount > headsSecond){
-                    third = second;
-                    headsThird = headsSecond;
-
-                    second = player;
-                    headsSecond = amount;
-                }else if(amount > headsThird){
-                    third = player;
-                    headsThird = amount;
-                }
-            }else{
-
-                if(amount > headsFirst){
-                    third = second;
-                    headsThird = headsSecond;
-
-                    second = first;
-                    headsSecond = headsFirst;
-
-                    first = player;
-                    headsFirst = amount;
-                }else if(amount > headsSecond){
-                    third = second;
-                    headsThird = headsSecond;
-
-                    second = player;
-                    headsSecond = amount;
-                }else if(amount > headsThird){
-                    third = player;
-                    headsThird = amount;
-                }
-            }
-        }
-
-        ArrayList<RunsafePlayer> toSendPlayers = ingamePlayers;
-
-        if(first != null) sendMessage(toSendPlayers, Constants.MSG_TOP3);
-        if(first != null) sendMessage(toSendPlayers, String.format(Constants.MSG_TOP_PLAYER, first.getPrettyName(), headsFirst));
-        if(second != null) sendMessage(toSendPlayers, String.format(Constants.MSG_TOP_PLAYER, second.getPrettyName(), headsSecond));
-        if(third != null) sendMessage(toSendPlayers, String.format(Constants.MSG_TOP_PLAYER, third.getPrettyName(), headsThird));
-    }
-
-
 
     public void equip(RunsafePlayer player){
         equipmentManager.equip(player);
@@ -605,7 +506,11 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
     @Override
     public void OnPluginEnabled() {
+
         this.loadAreas();
+        console.writeColoured((enabled) ? ConsoleColors.GREEN + "Enabled": ConsoleColors.RED + "Disabled");
+        console.write(String.format("loaded %d areas", areas.size()));
+
     }
 
     public ArrayList<SimpleArea> getAreas() {
@@ -635,11 +540,14 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
         for(SimpleArea area : areas)
             if(area.pointInArea(loc)){
-                //server.broadcastMessage("Region : " + area.getRegionName());
                 return area.getRegionName();
             }
 
 
         return null;
+    }
+
+    public String getNextRegion() {
+        return regions.get(nextRegion);
     }
 }
