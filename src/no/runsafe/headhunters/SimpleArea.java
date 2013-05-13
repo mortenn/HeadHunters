@@ -158,6 +158,24 @@ public class SimpleArea {
 
     }
 
+    public ArrayList<String> getPlayersNames() {
+
+        ArrayList<String> playerNames = new ArrayList<String>();
+        for(RunsafePlayer player :this.world.getPlayers())
+            if(pointInArea(player.getLocation())) playerNames.add(player.getName());
+
+        return playerNames;
+    }
+
+    public ArrayList<String> getPlayersNames(GameMode mode) {
+
+        ArrayList<String> playerNames = new ArrayList<String>();
+        for(RunsafePlayer player :this.world.getPlayers())
+            if(pointInArea(player.getLocation()) && player.getGameMode() == mode) playerNames.add(player.getName());
+
+        return playerNames;
+    }
+
     public double getX1(){
         return this.x1;
     }
@@ -214,4 +232,5 @@ public class SimpleArea {
         return null;
 
     }
+
 }

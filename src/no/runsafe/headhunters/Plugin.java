@@ -43,7 +43,8 @@ public class Plugin extends RunsafeConfigurablePlugin
         this.addComponent(PlayerItemPickUp.class);
         this.addComponent(PlayerRightClick.class);
         this.addComponent(PlayerMove.class);
-
+        this.addComponent(BlockBreak.class);
+        this.addComponent(BlockPlace.class);
 
 
 	}

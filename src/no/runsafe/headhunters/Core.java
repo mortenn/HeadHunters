@@ -626,4 +626,13 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
     public String getCurrentMap() {
         return regions.get(currRegion);
     }
+
+    public boolean isInCombatRegion(RunsafePlayer player) {
+
+        for(SimpleArea area : areas)
+            if(area.getPlayersNames().contains(player.getName())) return true;
+
+
+        return false;
+    }
 }

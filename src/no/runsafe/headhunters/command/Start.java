@@ -17,16 +17,13 @@ public class Start extends PlayerCommand {
     Core core;
 
     public Start(Core core){
-        super("startInTime", "Forces headhunters match to startInTime", "headunters.force-startInTime", "time");
+        super("start", "Forces headhunters match to start", "headunters.force-startInTime", "time");
         this.core = core;
 
     }
 
     @Override
     public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters) {
-
-
-
         return core.startInTime(Integer.valueOf(parameters.get("time")));
     }
 }
