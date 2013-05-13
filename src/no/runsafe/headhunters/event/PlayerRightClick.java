@@ -4,6 +4,7 @@ import no.runsafe.framework.event.player.IPlayerRightClick;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.block.RunsafeBlock;
+import no.runsafe.framework.server.entity.RunsafeEntityType;
 import no.runsafe.framework.server.item.RunsafeItemStack;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.server.potion.RunsafePotionEffect;
@@ -11,6 +12,7 @@ import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.Util;
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -61,15 +63,13 @@ public class PlayerRightClick implements IPlayerRightClick {
 
                 }else if(itemID == Material.MAGMA_CREAM.getId()){
 
-
-
                     ArrayList<RunsafePlayer> hitPlayers = core.getPlayers(location, 5);
                     for(RunsafePlayer hitPlayer : hitPlayers)
                         if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) {
-                            hitPlayer.strikeWithLightning(false);
+                            hitPlayer.strikeWithLightning(true);
+                            hitPlayer.setFireTicks(90);
                         }
                     used = true;
-
 
                 }else if(itemID == Material.NETHER_STAR.getId()){
                     used = true;
@@ -80,6 +80,11 @@ public class PlayerRightClick implements IPlayerRightClick {
                         server.getWorld(core.getWorldName()).createExplosion(player.getLocation(), 2f, true);
                     }
 
+                }else if(itemID == Material.BLAZE_ROD.getId()){
+
+                    player.Launch(Material.FIREBALL.name());
+                    RunsafeServer.Instance.getWorld(core.getWorldName()).getRaw().playSound(player.getLocation().getRaw(), Sound.GHAST_FIREBALL, 1f, 1f);
+                    used = true;
 
                 }
 

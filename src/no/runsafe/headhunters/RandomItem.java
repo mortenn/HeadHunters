@@ -47,21 +47,28 @@ public class RandomItem  {
         starMeta.addLore("§eUnstable device. Might blow up.");
         star.setItemMeta(starMeta);
 
+        RunsafeItemStack rod = new RunsafeItemStack(Material.BLAZE_ROD.getId(), 3);
+        RunsafeItemMeta rodMeta = rod.getItemMeta();
+        rodMeta.setDisplayName("§6Bonerfart");
+        rodMeta.addLore("Right click to shoot a fireball!");
+        rod.setItemMeta(rodMeta);
 
 
-        items.add(apple);
-        items.add(apple);
-        items.add(apple);
-        items.add(apple);
-        items.add(apple);
-        items.add(apple);
-        items.add(sugar);
-        items.add(sugar);
-        items.add(sugar);
-        items.add(sugar);
-        items.add(slimeBall);
-        items.add(magmaCream);
-        items.add(star);
+
+//        items.add(apple);
+//        items.add(apple);
+//        items.add(apple);
+//        items.add(apple);
+//        items.add(apple);
+//        items.add(apple);
+//        items.add(sugar);
+//        items.add(sugar);
+//        items.add(sugar);
+//        items.add(sugar);
+//        items.add(slimeBall);
+//        items.add(magmaCream);
+//        items.add(star);
+        items.add(rod);
 
     }
 

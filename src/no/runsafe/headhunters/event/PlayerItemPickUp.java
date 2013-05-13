@@ -40,7 +40,7 @@ public class PlayerItemPickUp implements IPlayerPickupItemEvent {
 
             boolean used = false;
             if( itemID == Material.GOLDEN_APPLE.getId()){
-                PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 60, 1);
+                PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 190, 1);
                 player.addPotionEffect(new RunsafePotionEffect(regen));
                 used = true;
             }else if(itemID == Material.SUGAR.getId()){
