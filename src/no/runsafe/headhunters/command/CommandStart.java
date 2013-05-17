@@ -12,11 +12,11 @@ import java.util.HashMap;
  * Date: 21-4-13
  * Time: 19:08
  */
-public class Start extends PlayerCommand {
+public class CommandStart extends PlayerCommand {
 
     Core core;
 
-    public Start(Core core){
+    public CommandStart(Core core){
         super("start", "Forces headhunters match to start", "headunters.force-startInTime", "time");
         this.core = core;
 

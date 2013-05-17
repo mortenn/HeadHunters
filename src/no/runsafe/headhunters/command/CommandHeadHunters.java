@@ -8,7 +8,7 @@ import no.runsafe.framework.command.Command;
  * Date: 13-5-13
  * Time: 16:41
  */
-public class HeadHunters extends Command {
+public class CommandHeadHunters extends Command {
 
     String commandName;
     String description;
@@ -22,7 +22,7 @@ public class HeadHunters extends Command {
      * @param permission  A permission string that a player must have to run the command or null to allow anyone to run it
      * @param arguments   Optional list of required command parameters
      */
-    public HeadHunters(String commandName, String description, String permission, String... arguments) {
+    public CommandHeadHunters(String commandName, String description, String permission, String... arguments) {
         super(commandName, description, permission, arguments);
 
         this.description = description;

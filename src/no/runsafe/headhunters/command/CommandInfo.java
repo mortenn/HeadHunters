@@ -15,12 +15,12 @@ import java.util.HashMap;
  * Date: 8-5-13
  * Time: 13:53
  */
-public class Info extends ExecutableCommand {
+public class CommandInfo extends ExecutableCommand {
 
     private Core core;
 
 
-    public Info(Core core){
+    public CommandInfo(Core core){
         super("info", "shows info about the current game", null);
 
         this.core = core;

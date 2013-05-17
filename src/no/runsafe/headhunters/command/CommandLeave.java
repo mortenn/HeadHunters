@@ -9,24 +9,21 @@ import java.util.HashMap;
 /**
  * Created with IntelliJ IDEA.
  * User: Naxanria
- * Date: 23-4-13
- * Time: 13:43
+ * Date: 2-5-13
+ * Time: 20:04
  */
-public class Join extends PlayerCommand {
+public class CommandLeave extends PlayerCommand {
 
+    private Core core;
 
-    Core core;
-
-    public Join(Core core){
-        super("join", "Join a headhunters game", null);
+    public CommandLeave(Core core){
+        super("leave", "Leaves the current game", null);
         this.core = core;
     }
 
     @Override
     public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters) {
-
-       return this.core.join(executor);
-
-
+        core.leave(executor);
+        return null;
     }
 }

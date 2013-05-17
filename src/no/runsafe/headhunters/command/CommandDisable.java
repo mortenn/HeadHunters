@@ -13,21 +13,19 @@ import java.util.HashMap;
  * Date: 20-4-13
  * Time: 18:31
  */
-public class Enable extends ExecutableCommand {
+public class CommandDisable extends ExecutableCommand {
 
     Core core;
 
-    public Enable(Core core){
-        super("enable", "Enables the plugin", "headhunters.Enable");
+    public CommandDisable(Core core){
+        super("disable", "Disables the plugin", "headhunters.CommandEnable");
         this.core = core;
     }
 
     @Override
     public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters) {
+        this.core.disable();
 
-        this.core.enable();
-
-        return "Headhunters " + ChatColour.GREEN + "enabled";
-
+        return "Headhunters " + ChatColour.RED + "disabled";
     }
 }

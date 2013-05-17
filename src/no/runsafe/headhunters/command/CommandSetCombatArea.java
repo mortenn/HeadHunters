@@ -23,13 +23,13 @@ import java.util.HashMap;
  * Date: 21-4-13
  * Time: 17:14
  */
-public class CombatArea extends PlayerCommand {
+public class CommandSetCombatArea extends PlayerCommand {
 
     private Core core;
     private IConfiguration config;
     private WorldGuardPlugin worldGuard;
 
-    public CombatArea(Core core, IConfiguration config){
+    public CommandSetCombatArea(Core core, IConfiguration config){
         super("combatarea", "Adds or removes the WorldGuard region you are in as a combat area.", "headhunters.set-room", "p");
         this.core = core;
         this.config = config;

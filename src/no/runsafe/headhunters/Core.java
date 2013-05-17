@@ -59,10 +59,12 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
     private int currRegion;
     private int nextRegion;
 
+    private VoteHandler voteHandler;
+
 
     public EquipmentManager equipmentManager;
 
-    public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, EquipmentManager equipmentManager) {
+    public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, EquipmentManager equipmentManager, VoteHandler voteHandler) {
 
         this.config = config;
         this.console = console;
@@ -70,7 +72,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         this.server = server;
 
         this.equipmentManager = equipmentManager;
-
+        this.voteHandler = voteHandler;
 
         this.gamestarted = false;
 
@@ -208,9 +210,9 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
     }
 
     public void teleportIntoGame(ArrayList<RunsafePlayer> players){
-        for(RunsafePlayer player : players){
+        for(RunsafePlayer player : players)
             teleportIntoGame(player, safeLocation());
-        }
+
     }
 
 
@@ -222,7 +224,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         player.addPotionEffect(new RunsafePotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 120, 2 )));
         player.setHealth(20);
         player.setFoodLevel(20);
-        player.setSaturation(2f);
+        player.setSaturation(10f);
 
         if(loc != null) player.teleport(loc);
     }
@@ -263,7 +265,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
         this.countdownToStart = config.getConfigValueAsInt("waittime");
         this.countdownToEnd = config.getConfigValueAsInt("runtime");
-
+        this.voteHandler.setMinPerc(config.getConfigValueAsInt("vote.min-percent"));
+        this.voteHandler.setMinVotes(config.getConfigValueAsInt("vote.min-votes"));
         regions = (ArrayList<String>) config.getConfigValueAsList("regions");
 
     }
@@ -291,6 +294,15 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
         if(enabled) {
             if (!this.gamestarted) {
+
+                ArrayList<RunsafePlayer> waitingRoomPlayers = this.waitingRoom.getPlayers();
+                voteHandler.setCanVote(true);
+                if(voteHandler.votePass(waitingRoomPlayers.size())){
+                    nextRegion = Util.getRandom(0, areas.size(), nextRegion);
+                    sendMessage(waitingRoomPlayers, String.format(Constants.MSG_NEW_NEXT_MAP_VOTED, regions.get(nextRegion)));
+                    voteHandler.resetVotes();
+                }
+
                 for(SimpleArea combatArea: areas)
                     this.teleportIntoWaitRoom(combatArea.getPlayers(), GameMode.SURVIVAL);
 
@@ -299,25 +311,25 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                 } else {
                     switch (countdownToStart) {
                         case 180:
-                            sendMessage(this.waitingRoom.getPlayers(), String.format(Constants.MSG_GAME_START_IN, 3, "minutes"));
+                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 3, "minutes"));
                             break;
                         case 120:
-                            sendMessage(this.waitingRoom.getPlayers(), String.format(Constants.MSG_GAME_START_IN, 2, "minutes"));
+                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 2, "minutes"));
                             break;
                         case 60:
-                            sendMessage(this.waitingRoom.getPlayers(), String.format(Constants.MSG_GAME_START_IN, 1, "minute"));
+                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 1, "minute"));
                             break;
                         case 30:
-                            sendMessage(this.waitingRoom.getPlayers(), String.format(Constants.MSG_GAME_START_IN, 30, "seconds"));
+                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 30, "seconds"));
                             break;
                         case 20:
-                            sendMessage(this.waitingRoom.getPlayers(), String.format(Constants.MSG_GAME_START_IN, 20, "seconds"));
+                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 20, "seconds"));
                             break;
                         case 10:
-                            sendMessage(this.waitingRoom.getPlayers(), String.format(Constants.MSG_GAME_START_IN, 10, "seconds"));
+                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 10, "seconds"));
                             break;
                         case 5:
-                            sendMessage(this.waitingRoom.getPlayers(), String.format(Constants.MSG_GAME_START_IN, 5, "seconds"));
+                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 5, "seconds"));
                             break;
                     }
                 }
@@ -325,8 +337,12 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                 countdownToStart--;
                 if (countdownToStart <= 0) {
                     start();
+                    voteHandler.setCanVote(false);
+                    voteHandler.resetVotes();
                 }
             } else {
+
+
 
                 RunsafePlayer l = pickWinner();
                 int amount = amountHeads(l);
@@ -339,6 +355,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                     sendMessage(areas.get(currRegion).getPlayers(), String.format(Constants.MSG_NEW_LEADER, leader.getPrettyName(), amountHeads(leader)));
 
                 }
+                for(RunsafePlayer player : ingamePlayers)
+                    player.setSaturation(10f);
 
                 if (countdownToEnd % 300 == 0) {
                     sendMessage(areas.get(currRegion).getPlayers(), String.format(Constants.MSG_TIME_REMAINING, (countdownToEnd / 300) * 5, "minutes"));
@@ -549,5 +567,11 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
     public String getNextRegion() {
         return regions.get(nextRegion);
+    }
+
+    public boolean isInWaitroom(RunsafePlayer player) {
+
+        return (waitingRoom.pointInArea(player.getLocation()));
+
     }
 }

@@ -10,20 +10,22 @@ import java.util.HashMap;
  * Created with IntelliJ IDEA.
  * User: Naxanria
  * Date: 2-5-13
- * Time: 20:04
+ * Time: 18:39
  */
-public class Leave extends PlayerCommand {
+public class CommandStop extends PlayerCommand {
 
     private Core core;
 
-    public Leave(Core core){
-        super("leave", "Leaves the current game", null);
+    public CommandStop(Core core){
+        super("stop", "Stops the current game", "headhunters.stop");
+
         this.core = core;
+
     }
 
     @Override
     public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters) {
-        core.leave(executor);
+        this.core.stop(executor);
         return null;
     }
 }

@@ -3,14 +3,10 @@ world: world
 waittime: 120
 runtime: 900
 winamount: 50
+vote:
+  min-percent: 60
+  min-votes: 3
 waitingarea:
-  x1: 0
-  y1: 0
-  z1: 0
-  x2: 0
-  y2: 0
-  z2: 0
-combatarea:
   x1: 0
   y1: 0
   z1: 0

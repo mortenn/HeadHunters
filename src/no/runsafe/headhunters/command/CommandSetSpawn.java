@@ -14,13 +14,13 @@ import java.util.HashMap;
  * Date: 21-4-13
  * Time: 22:42
  */
-public class Spawn extends PlayerCommand {
+public class CommandSetSpawn extends PlayerCommand {
 
 
     private IConfiguration config;
     private Core core;
 
-    public Spawn(Core core, IConfiguration config){
+    public CommandSetSpawn(Core core, IConfiguration config){
         super("spawn", "Sets the spawn point for in the wait room", "headhunters.set-spawn");
         this.core = core;
         this.config = config;

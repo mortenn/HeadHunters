@@ -54,7 +54,7 @@ public class SimpleArea {
         this.regionName = region;
         this.worldGuard = RunsafeServer.Instance.getPlugin("WorldGuard");
         if(worldGuard == null){
-            System.out.println("Please Enable/install WorldGuard");
+            System.out.println("Please CommandEnable/install WorldGuard");
             this.x1 = 0;
             this.x2 = 0;
             this.y1 = 0;

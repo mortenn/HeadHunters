@@ -34,6 +34,24 @@ public class Util {
         return random.nextInt(max - min) + min;
     }
 
+    public static int getRandom(int min, int max, int not){
+
+        if(min > max){
+            int t = min;
+            min = max;
+            max = t;
+        }
+
+        if(min == max){
+            return min;
+        }
+
+        int r = random.nextInt(max - min) + min;
+        if(r == not) r = getRandom(min, max, not);
+
+        return r;
+    }
+
     public static boolean actPercentage(int percentage){
         return (getRandom(0, 100) < percentage);
     }

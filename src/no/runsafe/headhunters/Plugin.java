@@ -13,7 +13,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 
         this.addComponent(EquipmentManager.class);
         this.addComponent(RandomItem.class);
-
+        this.addComponent(VoteHandler.class);
 
 		this.addComponent(Core.class);
 
@@ -22,17 +22,18 @@ public class Plugin extends RunsafeConfigurablePlugin
 
         Command command = new Command("headhunters", "Headhunters plugin commands", null);
 
-        command.addSubCommand(this.getInstance(Disable.class));
-        command.addSubCommand(this.getInstance(Enable.class));
-        command.addSubCommand(this.getInstance(CombatArea.class));
-        command.addSubCommand(this.getInstance(WaitingRoom.class));
-        command.addSubCommand(this.getInstance(Start.class));
-        command.addSubCommand(this.getInstance(Spawn.class));
-        command.addSubCommand(this.getInstance(Join.class));
-        command.addSubCommand(this.getInstance(ShowIngame.class));
-        command.addSubCommand(this.getInstance(Leave.class));
-        command.addSubCommand(this.getInstance(Stop.class));
-        command.addSubCommand(this.getInstance(Info.class));
+        command.addSubCommand(this.getInstance(CommandDisable.class));
+        command.addSubCommand(this.getInstance(CommandEnable.class));
+        command.addSubCommand(this.getInstance(CommandSetCombatArea.class));
+        command.addSubCommand(this.getInstance(CommandSetWaitingRoom.class));
+        command.addSubCommand(this.getInstance(CommandStart.class));
+        command.addSubCommand(this.getInstance(CommandSetSpawn.class));
+        command.addSubCommand(this.getInstance(CommandJoin.class));
+        command.addSubCommand(this.getInstance(CommandShowIngame.class));
+        command.addSubCommand(this.getInstance(CommandLeave.class));
+        command.addSubCommand(this.getInstance(CommandStop.class));
+        command.addSubCommand(this.getInstance(CommandInfo.class));
+        command.addSubCommand(this.getInstance(CommandVote.class));
 
         this.addComponent(command);
 

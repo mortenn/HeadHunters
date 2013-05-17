@@ -16,12 +16,12 @@ import java.util.HashMap;
  * Date: 21-4-13
  * Time: 17:14
  */
-public class WaitingRoom extends PlayerCommand {
+public class CommandSetWaitingRoom extends PlayerCommand {
 
     private Core core;
     private IConfiguration config;
 
-    public WaitingRoom(Core core, IConfiguration config){
+    public CommandSetWaitingRoom(Core core, IConfiguration config){
         super("waitroom", "Sets the waitroom coords", "headhunters.set-room", "posnumber");
         this.config = config;
         this.core = core;
