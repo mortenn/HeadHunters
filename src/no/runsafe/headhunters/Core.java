@@ -510,6 +510,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
         if(first) waitingRoom.setFirstPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         else waitingRoom.setSecondPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        waitingRoom.sortCoords();
 
     }
 
@@ -518,7 +519,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
     }
 
-    public Object getAmountNeeded() {
+    public int getAmountNeeded() {
         return winAmount;
     }
 

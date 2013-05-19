@@ -88,4 +88,11 @@ public class Util {
         return amount;
     }
 
+    public static String fillZeros(int i){
+        String s =  i + "";
+        if(i < 10) s = "0" + s;
+        return s;
+
+    }
+
 }
