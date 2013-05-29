@@ -47,12 +47,17 @@ public class RandomItem  {
         starMeta.addLore("§eUnstable device. Might blow up.");
         star.setItemMeta(starMeta);
 
-        RunsafeItemStack rod = new RunsafeItemStack(Material.BLAZE_ROD.getId(), 3);
+        RunsafeItemStack rod = new RunsafeItemStack(Material.BLAZE_ROD.getId(), 4);
         RunsafeItemMeta rodMeta = rod.getItemMeta();
         rodMeta.setDisplayName("§6Bonerfart");
         rodMeta.addLore("Right click to shoot a fireball!");
         rod.setItemMeta(rodMeta);
 
+        RunsafeItemStack sack = new RunsafeItemStack(Material.INK_SACK.getId());
+        RunsafeItemMeta sackMeta = sack.getItemMeta();
+        sackMeta.setDisplayName("§6No Eyed Fool");
+        sackMeta.addLore("Right click to blind you enemies in a 5 block radius.");
+        sack.setItemMeta(sackMeta);
 
 
         items.add(apple);
@@ -75,6 +80,8 @@ public class RandomItem  {
 
         items.add(rod);
         items.add(rod);
+
+        items.add(sack);
 
     }
 

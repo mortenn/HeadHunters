@@ -203,7 +203,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
             if(player.getGameMode() == mode) teleportIntoWaitRoom(player);
     }
 
-
     public void teleportIntoWaitRoom(RunsafePlayer player){
         player.teleport(this.waitingRoomSpawn);
         player.getInventory().clear();
@@ -214,7 +213,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
             teleportIntoGame(player, safeLocation());
 
     }
-
 
     public void teleportIntoGame(RunsafePlayer player, RunsafeLocation loc){
         player.getInventory().clear();
@@ -561,7 +559,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
             if(area.pointInArea(loc)){
                 return area.getRegionName();
             }
-
 
         return null;
     }

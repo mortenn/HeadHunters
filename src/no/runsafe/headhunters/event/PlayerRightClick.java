@@ -29,6 +29,7 @@ public class PlayerRightClick implements IPlayerRightClick {
     private Core core;
     private RunsafeServer server;
 
+
     public PlayerRightClick(Core core, RunsafeServer server){
         this.core = core;
         this.server = server;
@@ -67,6 +68,7 @@ public class PlayerRightClick implements IPlayerRightClick {
                     for(RunsafePlayer hitPlayer : hitPlayers)
                         if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) {
                             hitPlayer.strikeWithLightning(true);
+                            hitPlayer.setHealth(Math.max(hitPlayer.getHealth() - 4, 0));
                             hitPlayer.setFireTicks(90);
                         }
                     used = true;
@@ -84,6 +86,13 @@ public class PlayerRightClick implements IPlayerRightClick {
 
                     player.Launch(Material.FIREBALL.name());
                     RunsafeServer.Instance.getWorld(core.getWorldName()).getRaw().playSound(player.getLocation().getRaw(), Sound.GHAST_FIREBALL, 1f, 1f);
+                    used = true;
+
+                }else if(itemID == Material.INK_SACK.getId()){
+                    ArrayList<RunsafePlayer> hitPlayers = core.getPlayers(location, 5);
+                    RunsafePotionEffect blind = new RunsafePotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 5));
+                    for(RunsafePlayer hitPlayer : hitPlayers)
+                        if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) hitPlayer.addPotionEffect(blind);
                     used = true;
 
                 }
