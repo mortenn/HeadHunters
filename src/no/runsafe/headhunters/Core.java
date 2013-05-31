@@ -89,13 +89,14 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
     public boolean enable() {
 
-        this.config.setConfigValue("enabled", true);
-        this.config.save();
-        this.enabled = true;
+
         loadAreas();
         if(this.areas.size() == 0){
             return false;
         }else{
+            this.config.setConfigValue("enabled", true);
+            this.config.save();
+            this.enabled = true;
             end(null);
             return true;
         }
