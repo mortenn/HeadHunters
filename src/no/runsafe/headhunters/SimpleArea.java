@@ -215,9 +215,10 @@ public class SimpleArea {
 
         int ysmall = (int) Math.min(this.getY1(), this.getY2());
         int ylarge = (int) Math.max(this.getY1(), this.getY2());
-        int tries = 350;
+        int tries = 20000;
+        boolean foundGround;
         while(tries > 0){
-
+            foundGround = false;
 
             x = Util.getRandom((int) this.getX1() + 3, (int) this.getX2() - 3);
             z = Util.getRandom((int) this.getZ1() + 3, (int) this.getZ2() - 3);
@@ -226,14 +227,16 @@ public class SimpleArea {
 
                 RunsafeLocation thisLoc = new RunsafeLocation(world,(double) x, (double) y, (double) z);
                 if(thisLoc.getBlock().getBlockState() instanceof RunsafeSign){
-                    System.out.println("Found a sign!" + Util.prettyLocation(thisLoc));
+                    //System.out.println("Found a sign!" + Util.prettyLocation(thisLoc));
                     RunsafeSign sign = (RunsafeSign) thisLoc.getBlock().getBlockState();
                     if(sign.getLine(0).equalsIgnoreCase("skip")) continue;
                 }
-
-                if((thisLoc.getBlock().getBlockState().getMaterialID() == 0)
+                if(thisLoc.getBlock().getBlockState().getMaterialID() != Material.AIR.getId()){
+                    foundGround = true;
+                    //System.out.println("~found ground!~");
+                }else if(foundGround && (thisLoc.getBlock().getBlockState().getMaterialID() == Material.AIR.getId())
                         &&
-                        (new RunsafeLocation(world,(double) x, (double) y + 1, (double) z).getBlock().getBlockState().getMaterialID() == 0)){
+                        (new RunsafeLocation(world,(double) x, (double) y + 1, (double) z).getBlock().getBlockState().getMaterialID() == Material.AIR.getId())){
                     return new RunsafeLocation(world, (double) x, (double) y, (double) z);
                 }
 

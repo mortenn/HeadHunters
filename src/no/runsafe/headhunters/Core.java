@@ -87,12 +87,18 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
     }
 
 
-    public void enable() {
+    public boolean enable() {
 
         this.config.setConfigValue("enabled", true);
         this.config.save();
         this.enabled = true;
-        end(null);
+        loadAreas();
+        if(this.areas.size() == 0){
+            return false;
+        }else{
+            end(null);
+            return true;
+        }
     }
 
 
@@ -174,7 +180,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
         List<RunsafeEntity> entities = server.getWorld(worldName).getEntities();
         for(RunsafeEntity entity : entities)
-            if(areas.get(currRegion).pointInArea(entity.getLocation())) entity.remove();
+            if(!(entity instanceof RunsafePlayer) && areas.get(currRegion).pointInArea(entity.getLocation())) entity.remove();
 
         nextRegion = Util.getRandom(0, regions.size());
         gamestarted = false;

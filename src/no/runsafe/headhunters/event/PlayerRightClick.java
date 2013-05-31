@@ -77,7 +77,11 @@ public class PlayerRightClick implements IPlayerRightClick {
                     used = true;
 
                     if(Util.actPercentage(95)){
-                        player.teleport(core.safeLocation());
+                        RunsafeLocation newLocation = core.safeLocation();
+                        if(newLocation != null)
+                            player.teleport(newLocation);
+                        else
+                            core.leave(player);
                     }else{
                         server.getWorld(core.getWorldName()).createExplosion(player.getLocation(), 2f, true);
                     }
