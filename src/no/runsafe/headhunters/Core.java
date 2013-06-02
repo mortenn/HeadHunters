@@ -82,11 +82,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         );
     }
 
-
     public boolean enable() {
-
-
-        loadAreas();
+       loadAreas();
         if(this.areas.size() == 0){
             return false;
         }else{
@@ -97,8 +94,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
             return true;
         }
     }
-
-
 
     public void disable() {
 
@@ -237,7 +232,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
     public RunsafeLocation safeLocation(){
         return areas.get(currRegion).safeLocation();
-
     }
 
     @Override
@@ -274,7 +268,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         this.voteHandler.setMinPerc(config.getConfigValueAsInt("vote.min-percent"));
         this.voteHandler.setMinVotes(config.getConfigValueAsInt("vote.min-votes"));
         regions = (ArrayList<String>) config.getConfigValueAsList("regions");
-
     }
 
     public void loadAreas(){
@@ -348,8 +341,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                 }
             } else {
 
-
-
                 RunsafePlayer l = pickWinner();
                 int amount = amountHeads(l);
                 if(amount >= winAmount){
@@ -361,8 +352,13 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                     sendMessage(areas.get(currRegion).getPlayers(), String.format(Constants.MSG_NEW_LEADER, leader.getPrettyName(), amountHeads(leader)));
 
                 }
-                for(RunsafePlayer player : ingamePlayers)
+                for(RunsafePlayer player : ingamePlayers){
                     player.setSaturation(10f);
+                    if(player.getWorld().getName().equalsIgnoreCase(getWorldName())) {
+                        leave(player);
+                        player.sendColouredMessage(Constants.MSG_COLOR + "You left the combat area");
+                    }
+                }
 
                 if (countdownToEnd % 300 == 0) {
                     sendMessage(areas.get(currRegion).getPlayers(), String.format(Constants.MSG_TIME_REMAINING, (countdownToEnd / 300) * 5, "minutes"));
