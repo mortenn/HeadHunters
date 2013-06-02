@@ -1,5 +1,6 @@
 package no.runsafe.headhunters;
 
+import no.runsafe.framework.enchant.Enchant;
 import no.runsafe.framework.server.enchantment.RunsafeEnchantment;
 import no.runsafe.framework.server.enchantment.RunsafeEnchantmentType;
 import no.runsafe.framework.server.inventory.RunsafeInventory;
@@ -7,6 +8,7 @@ import no.runsafe.framework.server.inventory.RunsafePlayerInventory;
 import no.runsafe.framework.server.item.RunsafeItemStack;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 
 import java.util.ArrayList;
 
@@ -33,8 +35,9 @@ public class EquipmentManager {
 
 
         RunsafeItemStack bow = new RunsafeItemStack(Material.BOW.getId());
-        bow.addEnchantment(new RunsafeEnchantment(RunsafeEnchantmentType.ARROW_INFINITE), 1);
-        bow.addEnchantment(new RunsafeEnchantment(RunsafeEnchantmentType.ARROW_DAMAGE), 1);
+
+        bow.addEnchantment(new RunsafeEnchantment(Enchant.InfiniteArrows.getId()), 1 );
+        bow.addEnchantment(new RunsafeEnchantment(Enchant.ArrowDamage.getId()), 1);
 
         inventory.add(new RunsafeItemStack(Material.IRON_SWORD.getId()));
         inventory.add(bow);

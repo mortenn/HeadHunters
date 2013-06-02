@@ -34,6 +34,7 @@ public class Plugin extends RunsafeConfigurablePlugin
         command.addSubCommand(this.getInstance(CommandStop.class));
         command.addSubCommand(this.getInstance(CommandInfo.class));
         command.addSubCommand(this.getInstance(CommandVote.class));
+        command.addSubCommand(this.getInstance(CommandTeleport.class));
 
         this.addComponent(command);
 

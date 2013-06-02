@@ -1,16 +1,13 @@
 package no.runsafe.headhunters.event;
 
 import no.runsafe.framework.event.player.IPlayerPickupItemEvent;
+import no.runsafe.framework.minecraft.Buff;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.entity.RunsafeItem;
 import no.runsafe.framework.server.event.player.RunsafePlayerPickupItemEvent;
 import no.runsafe.framework.server.player.RunsafePlayer;
-import no.runsafe.framework.server.potion.RunsafePotionEffect;
 import no.runsafe.headhunters.Core;
-
 import org.bukkit.Material;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,12 +37,11 @@ public class PlayerItemPickUp implements IPlayerPickupItemEvent {
 
             boolean used = false;
             if( itemID == Material.GOLDEN_APPLE.getId()){
-                PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 190, 1);
-                player.addPotionEffect(new RunsafePotionEffect(regen));
+
+                Buff.Healing.Regeneration.amplification(2).duration(6).applyTo(player);
                 used = true;
             }else if(itemID == Material.SUGAR.getId()){
-                PotionEffect speed = new PotionEffect(PotionEffectType.SPEED, 80, 3);
-                player.addPotionEffect(new RunsafePotionEffect(speed));
+                Buff.Utility.Movement.IncreaseSpeed.duration(4).amplification(4).applyTo(player);
                 used = true;
             }
             if(used){

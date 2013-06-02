@@ -1,20 +1,17 @@
 package no.runsafe.headhunters.event;
 
 import no.runsafe.framework.event.player.IPlayerRightClick;
+import no.runsafe.framework.minecraft.Buff;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.block.RunsafeBlock;
-import no.runsafe.framework.server.entity.RunsafeEntityType;
 import no.runsafe.framework.server.item.RunsafeItemStack;
 import no.runsafe.framework.server.player.RunsafePlayer;
-import no.runsafe.framework.server.potion.RunsafePotionEffect;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.Util;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 
@@ -49,16 +46,16 @@ public class PlayerRightClick implements IPlayerRightClick {
 
                 int itemID = usingItem.getItemId();
                 if(itemID == Material.SLIME_BALL.getId()){
-                    RunsafePotionEffect slow = new RunsafePotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 4));
-                    RunsafePotionEffect hitSlow = new RunsafePotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 60, 4));
+
                     //visual effect...
                     server.getWorld(core.getWorldName()).playEffect(location, Effect.POTION_BREAK, 2);
 
                     ArrayList<RunsafePlayer> hitPlayers = core.getPlayers(location, 5);
                     for(RunsafePlayer hitPlayer : hitPlayers)
                         if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) {
-                            hitPlayer.addPotionEffect(slow);
-                            hitPlayer.addPotionEffect(hitSlow);
+                            Buff.Utility.Movement.DecreaseSpeed.duration(3).amplification(5).applyTo(hitPlayer);
+                            Buff.Utility.DigSpeed.Decrease.duration(60).amplification(5);
+
                         }
                     used = true;
 
@@ -94,9 +91,8 @@ public class PlayerRightClick implements IPlayerRightClick {
 
                 }else if(itemID == Material.INK_SACK.getId()){
                     ArrayList<RunsafePlayer> hitPlayers = core.getPlayers(location, 5);
-                    RunsafePotionEffect blind = new RunsafePotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 5));
                     for(RunsafePlayer hitPlayer : hitPlayers)
-                        if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) hitPlayer.addPotionEffect(blind);
+                        if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) Buff.Combat.Blindness.duration(3).amplification(6).applyTo(hitPlayer);
                     used = true;
 
                 }

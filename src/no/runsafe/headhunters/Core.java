@@ -3,23 +3,19 @@ package no.runsafe.headhunters;
 import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.event.IPluginEnabled;
+import no.runsafe.framework.minecraft.Buff;
 import no.runsafe.framework.output.ChatColour;
 import no.runsafe.framework.output.ConsoleColors;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
-import no.runsafe.framework.server.RunsafeWorld;
 import no.runsafe.framework.server.entity.RunsafeEntity;
 import no.runsafe.framework.server.item.RunsafeItemStack;
 import no.runsafe.framework.server.material.RunsafeMaterial;
 import no.runsafe.framework.server.player.RunsafePlayer;
-import no.runsafe.framework.server.potion.RunsafePotionEffect;
 import no.runsafe.framework.timer.IScheduler;
-import no.runsafe.worldguardbridge.WorldGuardInterface;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,6 +147,12 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
     public void start(){
 
+        if(areas.size() == 0) {
+            console.write("Can not start headhunters game; There are no areas");
+            disable();
+            return;
+        }
+
         ArrayList<RunsafePlayer> players = waitingRoom.getPlayers(GameMode.SURVIVAL);
         if(players.size() < this.minPlayers){
             this.resetWaittime();
@@ -225,8 +227,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         player.getInventory().clear();
         this.equip(player);
         player.removeBuffs();
-
-        player.addPotionEffect(new RunsafePotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 120, 2 )));
+        Buff.Combat.Damage.Decrease.duration(6).amplification(3);
         player.setHealth(20);
         player.setFoodLevel(20);
         player.setSaturation(10f);

@@ -41,7 +41,7 @@ public class CommandSetCombatArea extends PlayerCommand {
 
     @Override
     public String getUsageCommandParams(){
-        return this.getName() + "<" +  ChatColour.YELLOW + "add " + ChatColour.RESET + "|"+ ChatColour.YELLOW + " del"+ ChatColour.RESET + ">";
+        return ChatColour.YELLOW + this.getName() + "&f<" +  ChatColour.YELLOW + "add " + ChatColour.RESET + "|"+ ChatColour.YELLOW + " del"+ ChatColour.RESET + ">";
     }
 
     @Override

@@ -210,6 +210,10 @@ public class SimpleArea {
         return "x1=" + x1 + "x2=" + x2 + "y1=" + y1 + "y2=" + y2 + "z1=" + z1 + "z2=" + z2 + "world="+world.getName();
     }
 
+    public void teleportToArea(RunsafePlayer player){
+        player.teleport(new RunsafeLocation(world, this.getX1(), this.getY2() + 15, this.getZ1()));
+    }
+
     public RunsafeLocation safeLocation(){
         int x,y,z;
 
