@@ -28,7 +28,6 @@ public class CommandInfo extends ExecutableCommand {
 
     }
 
-
     @Override
     public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters) {
 

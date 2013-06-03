@@ -61,7 +61,4 @@ public class EquipmentManager {
         player.getInventory().clear();
     }
 
-
-
-
 }

@@ -40,7 +40,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
     private IScheduler scheduler;
     private RunsafeServer server;
 
-
     private int countdownToStart = -1;
     private int countdownToEnd = -1;
 
@@ -56,7 +55,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
     private int nextRegion;
 
     private VoteHandler voteHandler;
-
 
     public EquipmentManager equipmentManager;
 

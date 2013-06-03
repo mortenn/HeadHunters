@@ -54,7 +54,7 @@ public class CommandSetCombatArea extends PlayerCommand {
         else if(arg.equalsIgnoreCase("del")) add = false;
         else return this.getUsage();
 
-        if(core.getEnabled()) return Constants.ERROR_COLOR + "Only use this when headhunters is disabled";
+        if(core.getEnabled()) return Constants.ERROR_COLOR + "Only use this when headhunters is disabled!";
 
 
         if(player.getWorld().getName().equalsIgnoreCase(core.getWorldName())){
@@ -87,7 +87,7 @@ public class CommandSetCombatArea extends PlayerCommand {
 
                 return Constants.MSG_COLOR + "Added region &f" + thisRegion;
             }else{
-                if(!areas.contains(thisRegion)) return Constants.ERROR_COLOR + "Region does not exist as a combat area.";
+                if(!Util.arrayListContainsIgnoreCase(areas, thisRegion)) return Constants.ERROR_COLOR + "Region does not exist as a combat area.";
 
                 areas.remove(thisRegion);
                 core.setRegions(areas);
