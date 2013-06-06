@@ -295,7 +295,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                 ArrayList<RunsafePlayer> waitingRoomPlayers = this.waitingRoom.getPlayers();
                 voteHandler.setCanVote(true);
                 if(voteHandler.votePass(waitingRoomPlayers.size())){
-                    nextRegion = Util.getRandom(0, areas.size(), nextRegion);
+                    nextRandomRegion();
                     sendMessage(waitingRoomPlayers, String.format(Constants.MSG_NEW_NEXT_MAP_VOTED, regions.get(nextRegion)));
                     voteHandler.resetVotes();
                 }
@@ -352,7 +352,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                 }
                 for(RunsafePlayer player : ingamePlayers){
                     player.setSaturation(10f);
-                    if(player.getWorld().getName().equalsIgnoreCase(getWorldName())) {
+                    if(!player.getWorld().getName().equalsIgnoreCase(getWorldName())) {
                         leave(player);
                         player.sendColouredMessage(Constants.MSG_COLOR + "You left the combat area");
                     }
@@ -573,5 +573,35 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
         return (waitingRoom.pointInArea(player.getLocation()));
 
+    }
+
+    public void nextRandomRegion() {
+        nextRegion = Util.getRandom(0, areas.size(), nextRegion);
+    }
+
+
+    public void setNextRegion(String next) {
+
+        int i = 0;
+
+        for(String region : regions){
+            if(region.equalsIgnoreCase(next)){
+                nextRegion = i;
+            }
+            i++;
+        }
+
+    }
+
+    public String getAvailableAreas() {
+        StringBuilder available = new StringBuilder();
+        boolean first = true;
+        for(String region : regions){
+            if(!first) available.append(",");
+            available.append(region);
+            first = false;
+        }
+
+        return available.toString();
     }
 }

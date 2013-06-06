@@ -89,7 +89,7 @@ public class CommandSetCombatArea extends PlayerCommand {
             }else{
                 if(!Util.arrayListContainsIgnoreCase(areas, thisRegion)) return Constants.ERROR_COLOR + "Region does not exist as a combat area.";
 
-                areas.remove(thisRegion);
+                Util.arraylistRemoveIgnoreCase(areas, thisRegion);
                 core.setRegions(areas);
 
                 config.setConfigValue("regions", areas);

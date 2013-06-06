@@ -34,7 +34,7 @@ public class PlayerMove implements IPlayerMove {
         }else if(newRegion == null && prefRegion != null){
             player.sendColouredMessage("Left region: " + prefRegion);
         }else if(prefRegion == null && newRegion != null){
-            player.sendColouredMessage("Enterd region: " + newRegion);
+            player.sendColouredMessage("Entered region: " + newRegion);
         }
 
         return true;

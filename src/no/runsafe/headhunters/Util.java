@@ -102,4 +102,14 @@ public class Util {
         return false;
     }
 
+    public static void arraylistRemoveIgnoreCase(ArrayList<String> arrayList, String removal) {
+        ArrayList<String> copy = (ArrayList<String>) arrayList.clone();
+        for(String key: copy){
+            if(key.equalsIgnoreCase(removal)){
+                arrayList.remove(key);
+                return;
+            }
+        }
+
+    }
 }

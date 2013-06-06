@@ -27,16 +27,7 @@ public class CommandTeleport extends PlayerCommand {
 
     @Override
     public String getUsageCommandParams(){
-        StringBuilder available = new StringBuilder();
-        ArrayList<String> regions =  core.getRegions();
-        boolean first = true;
-        for(String region : regions){
-            if(!first) available.append(",");
-            available.append(region);
-            first = false;
-        }
-
-        return "<map> &aAvailable maps &f" + available.toString() + "\n";
+       return "<map> &aAvailable maps &f" + core.getAvailableAreas() + "\n";
     }
 
     @Override
