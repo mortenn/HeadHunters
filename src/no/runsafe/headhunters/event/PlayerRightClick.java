@@ -5,7 +5,8 @@ import no.runsafe.framework.minecraft.Buff;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.block.RunsafeBlock;
-import no.runsafe.framework.server.item.RunsafeItemStack;
+
+import no.runsafe.framework.server.item.meta.RunsafeMeta;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.Util;
@@ -35,7 +36,7 @@ public class PlayerRightClick implements IPlayerRightClick {
 
 
     @Override
-    public boolean OnPlayerRightClick(RunsafePlayer player, RunsafeItemStack usingItem, RunsafeBlock targetBlock) {
+    public boolean OnPlayerRightClick(RunsafePlayer player, RunsafeMeta usingItem, RunsafeBlock targetBlock) {
 
         if(core.isIngame(player)){
             boolean used = false;
@@ -101,10 +102,10 @@ public class PlayerRightClick implements IPlayerRightClick {
 
             if(used){
 
-                RunsafeItemStack stack = player.getItemInHand();
-                stack.setAmount(stack.getAmount() - 1);
+                RunsafeMeta items = player.getItemInHand();
+                items.setAmount(items.getAmount() - 1);
 
-                player.getInventory().setItemInHand(stack);
+                player.getInventory().setItemInHand(items);
             }
 
             return !used;
@@ -113,4 +114,5 @@ public class PlayerRightClick implements IPlayerRightClick {
         return true;
 
     }
+
 }

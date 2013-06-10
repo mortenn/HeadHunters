@@ -35,7 +35,7 @@ public class CommandForceSkip extends PlayerCommand {
             else if(core.getRegions().contains(nextMap))
                 core.setNextRegion(nextMap);
             else return Constants.ERROR_COLOR + "Please specify a correct map, or use &frandom" + Constants.ERROR_COLOR + " for a random map. Available:&f" + core.getAvailableAreas();
-            return core.getNextRegion();
+            return "&bNext region will be:&f" + core.getNextRegion();
         }
         return Constants.ERROR_COLOR + "Only use this when headhunters is enabled!";
     }

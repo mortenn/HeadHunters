@@ -4,18 +4,17 @@ import no.runsafe.framework.configuration.IConfiguration;
 import no.runsafe.framework.event.IConfigurationChanged;
 import no.runsafe.framework.event.IPluginEnabled;
 import no.runsafe.framework.minecraft.Buff;
+import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.output.ChatColour;
 import no.runsafe.framework.output.ConsoleColors;
 import no.runsafe.framework.output.IOutput;
 import no.runsafe.framework.server.RunsafeLocation;
 import no.runsafe.framework.server.RunsafeServer;
 import no.runsafe.framework.server.entity.RunsafeEntity;
-import no.runsafe.framework.server.item.RunsafeItemStack;
-import no.runsafe.framework.server.material.RunsafeMaterial;
+import no.runsafe.framework.server.item.meta.RunsafeMeta;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.framework.timer.IScheduler;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +77,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                     }
                 }, 1, 1
         );
+
     }
 
     public boolean enable() {
@@ -411,6 +411,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         }
         else for(SimpleArea combatArea: areas)
             this.teleportIntoWaitRoom(combatArea.getPlayers(), GameMode.SURVIVAL);
+
     }
 
     public RunsafePlayer pickWinner() {
@@ -471,13 +472,15 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
     }
 
     public int amountHeads(RunsafePlayer player){
-        return Util.amountMaterial(player, new RunsafeMaterial(Material.SKULL_ITEM));
+        return Util.amountMaterial(player, Item.Decoration.Head.Human.getItem());
     }
 
     public void leave(RunsafePlayer player) {
 
         if(isIngame(player)){
-            player.getWorld().dropItem(player.getEyeLocation(), new RunsafeItemStack(Material.SKULL_ITEM.getId(), amountHeads(player), (short) 3));
+            RunsafeMeta heads =  Item.Decoration.Head.Human.getItem();
+            heads.setAmount(amountHeads(player));
+            player.getWorld().dropItem(player.getEyeLocation(), heads);
             player.getInventory().clear();
             player.teleport(waitingRoomSpawn);
             ingamePlayers.remove(player);

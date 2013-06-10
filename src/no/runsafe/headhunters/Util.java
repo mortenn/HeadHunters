@@ -1,8 +1,7 @@
 package no.runsafe.headhunters;
 
 import no.runsafe.framework.server.RunsafeLocation;
-import no.runsafe.framework.server.item.RunsafeItemStack;
-import no.runsafe.framework.server.material.RunsafeMaterial;
+import no.runsafe.framework.server.item.meta.RunsafeMeta;
 import no.runsafe.framework.server.player.RunsafePlayer;
 
 import java.util.ArrayList;
@@ -81,10 +80,10 @@ public class Util {
         return String.format("&a%d %d %d", location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
-    public static int amountMaterial(RunsafePlayer player, RunsafeMaterial search){
+    public static int amountMaterial(RunsafePlayer player, RunsafeMeta search){
         int amount = 0;
-        for(RunsafeItemStack content : (ArrayList<RunsafeItemStack>) player.getInventory().getContents())
-            if(content.getItemId() == search.getMaterialId()) amount += content.getAmount();
+        for(RunsafeMeta content :  player.getInventory().getContents())
+            if(content.getItemId() == search.getItemId()) amount += content.getAmount();
         return amount;
     }
 

@@ -1,8 +1,7 @@
 package no.runsafe.headhunters;
 
-import no.runsafe.framework.server.item.RunsafeItemStack;
-import no.runsafe.framework.server.item.meta.RunsafeItemMeta;
-import org.bukkit.Material;
+import no.runsafe.framework.minecraft.Item;
+import no.runsafe.framework.server.item.meta.RunsafeMeta;
 
 import java.util.ArrayList;
 
@@ -14,50 +13,49 @@ import java.util.ArrayList;
  */
 public class RandomItem  {
 
-    ArrayList<RunsafeItemStack> items;
+    ArrayList<RunsafeMeta> items;
 
     public RandomItem(){
 
-        items = new ArrayList<RunsafeItemStack>();
+        items = new ArrayList<RunsafeMeta>();
 
-        RunsafeItemStack apple = new RunsafeItemStack(Material.GOLDEN_APPLE.getId());
+        RunsafeMeta apple = Item.Food.Golden.Apple.getItem();
 
-        RunsafeItemStack slimeBall = new RunsafeItemStack(Material.SLIME_BALL.getId());
-        RunsafeItemMeta slimeBallMeta = slimeBall.getItemMeta();
-        slimeBallMeta.setDisplayName("§6Slow Them Now");
-        slimeBallMeta.addLore("Right click on the ground");
-        slimeBallMeta.addLore("to slow enemies");
-        slimeBallMeta.addLore("in a 5 block radius.");
-        slimeBall.setItemMeta(slimeBallMeta);
+        RunsafeMeta slimeBall = Item.Miscellaneous.Slimeball.getItem();
+        slimeBall.setDisplayName("§6Slow Them Now");
+        slimeBall.addLore("Right click on the ground");
+        slimeBall.addLore("to slow enemies");
+        slimeBall.addLore("in a 5 block radius.");
 
-        RunsafeItemStack sugar = new RunsafeItemStack(Material.SUGAR.getId());
 
-        RunsafeItemStack magmaCream = new RunsafeItemStack(Material.MAGMA_CREAM.getId());
-        RunsafeItemMeta magmaMeta = magmaCream.getItemMeta();
-        magmaMeta.setDisplayName("§6Hot Topic");
-        magmaMeta.addLore("Right click on the ground");
-        magmaMeta.addLore("to smite enemies with lightning");
-        magmaMeta.addLore("in a 5 block radius.");
-        magmaCream.setItemMeta(magmaMeta);
+        RunsafeMeta sugar = Item.Materials.Sugar.getItem();
 
-        RunsafeItemStack star = new RunsafeItemStack(Material.NETHER_STAR.getId());
-        RunsafeItemMeta starMeta = star.getItemMeta();
-        starMeta.setDisplayName("§6Portal Deluxe 2000");
-        starMeta.addLore("Right Click to teleport a random Spot");
-        starMeta.addLore("§eUnstable device. Might blow up.");
-        star.setItemMeta(starMeta);
 
-        RunsafeItemStack rod = new RunsafeItemStack(Material.BLAZE_ROD.getId(), 4);
-        RunsafeItemMeta rodMeta = rod.getItemMeta();
-        rodMeta.setDisplayName("§6Bonerfart");
-        rodMeta.addLore("Right click to shoot a fireball!");
-        rod.setItemMeta(rodMeta);
+        RunsafeMeta magmaCream = Item.Brewing.MagmaCream.getItem();
 
-        RunsafeItemStack sack = new RunsafeItemStack(Material.INK_SACK.getId());
-        RunsafeItemMeta sackMeta = sack.getItemMeta();
-        sackMeta.setDisplayName("§6No Eyed Fool");
-        sackMeta.addLore("Right click to blind you enemies in a 5 block radius.");
-        sack.setItemMeta(sackMeta);
+        magmaCream.setDisplayName("§6Hot Topic");
+        magmaCream.addLore("Right click on the ground");
+        magmaCream.addLore("to smite enemies with lightning");
+        magmaCream.addLore("in a 5 block radius.");
+
+
+        RunsafeMeta star = Item.Materials.NetherStar.getItem();
+        star.setDisplayName("§6Portal Deluxe 2000");
+        star.addLore("Right Click to teleport a random Spot");
+        star.addLore("§eUnstable device. Might blow up.");
+
+
+        RunsafeMeta rod = Item.Materials.BlazeRod.getItem();
+        rod.setAmount(3);
+
+        rod.setDisplayName("§6BF-stick");
+        rod.addLore("Right click to shoot a fireball!");
+
+
+        RunsafeMeta sack = Item.Materials.InkSack.getItem();
+
+        sack.setDisplayName("§6No Eyed Fool");
+        sack.addLore("Right click to blind you enemies in a 5 block radius.");
 
 
         items.add(apple);
@@ -85,7 +83,7 @@ public class RandomItem  {
 
     }
 
-    public RunsafeItemStack get(){
+    public RunsafeMeta get(){
         return items.get(Util.getRandom(0, items.size()));
     }
 

@@ -1,8 +1,10 @@
 package no.runsafe.headhunters.event;
 
 import no.runsafe.framework.event.player.IPlayerDeathEvent;
+import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.server.event.player.RunsafePlayerDeathEvent;
 import no.runsafe.framework.server.item.RunsafeItemStack;
+import no.runsafe.framework.server.item.meta.RunsafeMeta;
 import no.runsafe.framework.server.player.RunsafePlayer;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.RandomItem;
@@ -37,13 +39,15 @@ public class PlayerDeath implements IPlayerDeathEvent {
 
             event.setDroppedXP(0);
             int amount = core.amountHeads(event.getEntity());
-            List<RunsafeItemStack> items = event.getDrops();
+            List<RunsafeMeta> items = event.getDrops();
             items.clear();
             if(Util.actPercentage(95)) items.add(randomItem.get());
             event.setDrops(items);
+            RunsafeMeta heads = Item.Decoration.Head.Human.getItem();
+            heads.setAmount(amount + 1);
             player.getWorld().dropItem(
                     player.getEyeLocation(),
-                    new RunsafeItemStack(Material.SKULL_ITEM.getId(), amount + 1, (short)3)
+                    heads
             );
         }
     }

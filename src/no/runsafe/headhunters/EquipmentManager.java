@@ -1,14 +1,11 @@
 package no.runsafe.headhunters;
 
+
 import no.runsafe.framework.enchant.Enchant;
-import no.runsafe.framework.server.enchantment.RunsafeEnchantment;
-import no.runsafe.framework.server.enchantment.RunsafeEnchantmentType;
-import no.runsafe.framework.server.inventory.RunsafeInventory;
+import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.server.inventory.RunsafePlayerInventory;
-import no.runsafe.framework.server.item.RunsafeItemStack;
+import no.runsafe.framework.server.item.meta.RunsafeMeta;
 import no.runsafe.framework.server.player.RunsafePlayer;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 
 import java.util.ArrayList;
 
@@ -20,29 +17,29 @@ import java.util.ArrayList;
  */
 public class EquipmentManager {
 
-    RunsafeItemStack head, chest, legs, boots;
-    ArrayList<RunsafeItemStack> inventory;
+    RunsafeMeta head, chest, legs, boots;
+    ArrayList<RunsafeMeta> inventory;
 
 
     public EquipmentManager(){
 
-        chest = new RunsafeItemStack(Material.CHAINMAIL_CHESTPLATE.getId());
-        legs = new RunsafeItemStack(Material.CHAINMAIL_LEGGINGS.getId());
-        boots = new RunsafeItemStack(Material.IRON_BOOTS.getId());
-        head = new RunsafeItemStack(Material.GOLD_HELMET.getId());
+        chest = Item.Combat.Chestplate.Chainmail.getItem();
+        legs = Item.Combat.Leggings.Chainmail.getItem();
+        boots = Item.Combat.Boots.Iron.getItem();
+        head = Item.Combat.Helmet.Gold.getItem();
 
-        inventory = new ArrayList<RunsafeItemStack>();
+        inventory = new ArrayList<RunsafeMeta>();
 
 
-        RunsafeItemStack bow = new RunsafeItemStack(Material.BOW.getId());
+        RunsafeMeta bow = Item.Combat.Bow.getItem();
 
-        bow.addEnchantment(new RunsafeEnchantment(Enchant.InfiniteArrows.getId()), 1 );
-        bow.addEnchantment(new RunsafeEnchantment(Enchant.ArrowDamage.getId()), 1);
+        //infinity and power 1 bow
+        Enchant.InfiniteArrows.power(1).applyTo(bow);
+        Enchant.ArrowDamage.power(1).applyTo(bow);
 
-        inventory.add(new RunsafeItemStack(Material.IRON_SWORD.getId()));
+        inventory.add(Item.Combat.Sword.Iron.getItem());
         inventory.add(bow);
-        inventory.add(new RunsafeItemStack(Material.ARROW.getId()));
-        inventory.add(new RunsafeItemStack(Material.COOKED_BEEF.getId()));
+        inventory.add(Item.Combat.Arrow.getItem());
 
     }
 
@@ -53,7 +50,7 @@ public class EquipmentManager {
         playerInventory.setLeggings(legs);
         playerInventory.setBoots(boots);
 
-        for(RunsafeItemStack item : inventory) playerInventory.addItems(item);
+        for(RunsafeMeta item : inventory) playerInventory.addItems(item);
 
     }
 
