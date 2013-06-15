@@ -1,9 +1,11 @@
 package no.runsafe.headhunters.event;
 
-import no.runsafe.framework.event.block.IBlockPlace;
-import no.runsafe.framework.server.block.RunsafeBlock;
-import no.runsafe.framework.server.player.RunsafePlayer;
+
+import no.runsafe.framework.api.event.block.IBlockPlace;
+import no.runsafe.framework.minecraft.block.RunsafeBlock;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Core;
+import no.runsafe.headhunters.PlayerHandler;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,8 +16,10 @@ import no.runsafe.headhunters.Core;
 public class BlockPlace implements IBlockPlace {
 
     Core core;
-    public BlockPlace(Core core){
+    private PlayerHandler playerHandler;
+    public BlockPlace(Core core, PlayerHandler playerHandler){
         this.core = core;
+        this.playerHandler = playerHandler;
     }
 
 
@@ -24,7 +28,7 @@ public class BlockPlace implements IBlockPlace {
 
 
 
-        if(eventPlayer.getWorld().getName().equalsIgnoreCase(core.getWorldName())){
+        if(eventPlayer.getWorld().getName().equalsIgnoreCase(playerHandler.getWorldName())){
             if(core.isInCombatRegion(eventPlayer.getLocation()) != null){
 
                 if(core.getEnabled()){

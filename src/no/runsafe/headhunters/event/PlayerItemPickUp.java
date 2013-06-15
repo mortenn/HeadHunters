@@ -1,12 +1,15 @@
 package no.runsafe.headhunters.event;
 
-import no.runsafe.framework.event.player.IPlayerPickupItemEvent;
+
+import no.runsafe.framework.api.IOutput;
+import no.runsafe.framework.api.event.player.IPlayerPickupItemEvent;
 import no.runsafe.framework.minecraft.Buff;
-import no.runsafe.framework.output.IOutput;
-import no.runsafe.framework.server.entity.RunsafeItem;
-import no.runsafe.framework.server.event.player.RunsafePlayerPickupItemEvent;
-import no.runsafe.framework.server.player.RunsafePlayer;
+
+import no.runsafe.framework.minecraft.entity.RunsafeItem;
+import no.runsafe.framework.minecraft.event.player.RunsafePlayerPickupItemEvent;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Core;
+import no.runsafe.headhunters.PlayerHandler;
 import org.bukkit.Material;
 
 /**
@@ -20,10 +23,12 @@ public class PlayerItemPickUp implements IPlayerPickupItemEvent {
 
     private final Core core;
     private final IOutput console;
+    private final PlayerHandler playerHandler;
 
-    public PlayerItemPickUp(Core core, IOutput console){
+    public PlayerItemPickUp(Core core, IOutput console, PlayerHandler playerHandler){
         this.console = console;
         this.core = core;
+        this.playerHandler = playerHandler;
     }
 
     @Override
@@ -32,7 +37,7 @@ public class PlayerItemPickUp implements IPlayerPickupItemEvent {
         RunsafePlayer player = event.getPlayer();
         RunsafeItem item = event.getItem();
         int itemID = item.getItemStack().getItemId();
-        if(core.isIngame(player)){
+        if(playerHandler.isIngame(player)){
             console.fine(String.format("%s picked up %d", player.getName(), item.getItemStack().getItemId()));
 
             boolean used = false;

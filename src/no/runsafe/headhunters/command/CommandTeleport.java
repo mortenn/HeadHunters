@@ -1,9 +1,11 @@
 package no.runsafe.headhunters.command;
 
-import no.runsafe.framework.command.player.PlayerCommand;
-import no.runsafe.framework.server.player.RunsafePlayer;
+
+import no.runsafe.framework.api.command.player.PlayerCommand;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
+import no.runsafe.headhunters.PlayerHandler;
 import no.runsafe.headhunters.SimpleArea;
 import org.bukkit.GameMode;
 
@@ -19,10 +21,12 @@ import java.util.HashMap;
 public class CommandTeleport extends PlayerCommand {
 
     private Core core;
+    private final PlayerHandler playerHandler;
 
-    public CommandTeleport(Core core){
+    public CommandTeleport(Core core, PlayerHandler playerHandler){
         super("teleport", "teleports you to a given area", "headhunters.teleport", "region");
         this.core = core;
+        this.playerHandler = playerHandler;
     }
 
     @Override
@@ -33,7 +37,7 @@ public class CommandTeleport extends PlayerCommand {
     @Override
     public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters) {
 
-        if(core.isIngame(executor)){
+        if(playerHandler.isIngame(executor)){
             return Constants.ERROR_COLOR + "You can not use this command while in game!";
         }
 

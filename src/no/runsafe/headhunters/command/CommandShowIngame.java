@@ -1,9 +1,11 @@
 package no.runsafe.headhunters.command;
 
-import no.runsafe.framework.command.player.PlayerCommand;
-import no.runsafe.framework.server.player.RunsafePlayer;
+
+import no.runsafe.framework.api.command.player.PlayerCommand;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
+import no.runsafe.headhunters.PlayerHandler;
 
 import java.util.HashMap;
 
@@ -17,11 +19,13 @@ public class CommandShowIngame extends PlayerCommand {
 
 
     Core core;
+    private final PlayerHandler playerHandler;
 
-    public CommandShowIngame(Core core){
+    public CommandShowIngame(Core core, PlayerHandler playerHandler){
         super("show", "shows ingame players", "headhunters.show-ingame-players");
         this.core = core;
 
+        this.playerHandler = playerHandler;
     }
 
     @Override
@@ -30,7 +34,7 @@ public class CommandShowIngame extends PlayerCommand {
 
         StringBuilder out = new StringBuilder(Constants.MSG_COLOR);
 
-        for(RunsafePlayer player: core.getIngamePlayers()){
+        for(RunsafePlayer player: playerHandler.getIngamePlayers()){
             out.append(player.getPrettyName() + ", ");
         }
 

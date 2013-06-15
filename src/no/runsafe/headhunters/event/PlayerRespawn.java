@@ -1,10 +1,12 @@
 package no.runsafe.headhunters.event;
 
-import no.runsafe.framework.event.player.IPlayerRespawn;
-import no.runsafe.framework.server.RunsafeLocation;
-import no.runsafe.framework.server.player.RunsafePlayer;
+
+import no.runsafe.framework.api.event.player.IPlayerRespawn;
+import no.runsafe.framework.minecraft.RunsafeLocation;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.EquipmentManager;
+import no.runsafe.headhunters.PlayerHandler;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,19 +18,22 @@ public class PlayerRespawn implements IPlayerRespawn {
 
     private EquipmentManager manager;
     private Core core;
+    private final PlayerHandler playerHandler;
 
-    public PlayerRespawn(Core core, EquipmentManager manager){
+    public PlayerRespawn(Core core, EquipmentManager manager, PlayerHandler playerHandler){
         this.core = core;
         this.manager = manager;
+        this.playerHandler = playerHandler;
     }
 
     @Override
     public RunsafeLocation OnPlayerRespawn(RunsafePlayer player, RunsafeLocation location, boolean isBed) {
-        if(core.isIngame(player)){
+        if(playerHandler.isIngame(player)){
             manager.equip(player);
-            core.teleportIntoGame(player, null);
+            playerHandler.setUpPlayer(player);
+            player.teleport(core.safeLocation());
             return core.safeLocation();
         }
-        return  null;
+        return null;
     }
 }

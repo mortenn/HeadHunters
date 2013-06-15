@@ -1,19 +1,20 @@
 package no.runsafe.headhunters;
 
-import no.runsafe.framework.configuration.IConfiguration;
-import no.runsafe.framework.event.IConfigurationChanged;
-import no.runsafe.framework.event.IPluginEnabled;
+
+import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.IOutput;
+import no.runsafe.framework.api.IScheduler;
+import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
+import no.runsafe.framework.api.event.plugin.IPluginEnabled;
 import no.runsafe.framework.minecraft.Buff;
 import no.runsafe.framework.minecraft.Item;
-import no.runsafe.framework.output.ChatColour;
-import no.runsafe.framework.output.ConsoleColors;
-import no.runsafe.framework.output.IOutput;
-import no.runsafe.framework.server.RunsafeLocation;
-import no.runsafe.framework.server.RunsafeServer;
-import no.runsafe.framework.server.entity.RunsafeEntity;
-import no.runsafe.framework.server.item.meta.RunsafeMeta;
-import no.runsafe.framework.server.player.RunsafePlayer;
-import no.runsafe.framework.timer.IScheduler;
+
+import no.runsafe.framework.minecraft.RunsafeLocation;
+import no.runsafe.framework.minecraft.RunsafeServer;
+import no.runsafe.framework.minecraft.entity.RunsafeEntity;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.framework.text.ChatColour;
+import no.runsafe.framework.text.ConsoleColour;
 import org.bukkit.GameMode;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.List;
  * Date: 19-4-13
  * Time: 16:04
  */
-public class Core implements IConfigurationChanged, IPluginEnabled{
+public class Core implements IConfigurationChanged, IPluginEnabled {
 
     private String worldName;
     private SimpleArea waitingRoom;
@@ -42,9 +43,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
     private int countdownToStart = -1;
     private int countdownToEnd = -1;
 
-    private ArrayList<RunsafePlayer> ingamePlayers = new ArrayList<RunsafePlayer>();
-    private ArrayList<String> ingamePlayersNames = new ArrayList<String>();
-    private int winAmount = 30;
     private int minPlayers = 2;
     private RunsafePlayer leader = null;
 
@@ -56,8 +54,10 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
     private VoteHandler voteHandler;
 
     public EquipmentManager equipmentManager;
+    public PlayerHandler playerHandler;
 
-    public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, EquipmentManager equipmentManager, VoteHandler voteHandler) {
+    public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, EquipmentManager equipmentManager, VoteHandler voteHandler,
+                    PlayerHandler playerHandler) {
 
         this.config = config;
         this.console = console;
@@ -65,6 +65,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         this.server = server;
 
         this.equipmentManager = equipmentManager;
+        this.playerHandler = playerHandler;
         this.voteHandler = voteHandler;
 
         this.gamestarted = false;
@@ -149,30 +150,20 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         ArrayList<RunsafePlayer> players = waitingRoom.getPlayers(GameMode.SURVIVAL);
         if(players.size() < this.minPlayers){
             this.resetWaittime();
-            sendMessage(players, String.format(Constants.MSG_NOT_ENOUGH_PLAYERS, players.size(), this.minPlayers));
+            sendMessage(String.format(Constants.MSG_NOT_ENOUGH_PLAYERS, players.size(), this.minPlayers));
             return;
         }
+
         this.gamestarted = true;
         currRegion = nextRegion;
-        winAmount = (int) ((players.size() / 2) + players.size() * 3.5);
-        this.ingamePlayers = players;
-        for(RunsafePlayer player : ingamePlayers){
-            ingamePlayersNames.add(player.getName());
-
-        }
-
-        teleportIntoGame(this.ingamePlayers);
-        sendMessage(ingamePlayers, String.format("Map: &f%s", regions.get(currRegion)));
-        sendMessage(ingamePlayers, String.format(Constants.MSG_START_MESSAGE, winAmount));
-
+        playerHandler.start(players, areas.get(currRegion));
+        sendMessage(String.format("Map: &f%s", regions.get(currRegion)));
+        sendMessage(String.format(Constants.MSG_START_MESSAGE, playerHandler.getWinAmount()));
     }
 
     public void end(String endMessage){
-        for(RunsafePlayer player: areas.get(currRegion).getPlayers(GameMode.SURVIVAL)){
-            teleportIntoWaitRoom(player);
-            player.getInventory().clear();
-            if(endMessage != null) player.sendColouredMessage(Constants.MSG_COLOR + endMessage);
-        }
+
+        playerHandler.end();
 
         List<RunsafeEntity> entities = server.getWorld(worldName).getEntities();
         for(RunsafeEntity entity : entities)
@@ -180,16 +171,10 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
         nextRegion = Util.getRandom(0, regions.size());
         gamestarted = false;
-        ingamePlayers.clear();
-        ingamePlayersNames.clear();
+
         resetWaittime();
         resetRuntime();
-        leader = null;
 
-    }
-
-    public ArrayList<RunsafePlayer> getIngamePlayers(){
-        return ingamePlayers;
     }
 
     public void teleportIntoWaitRoom(ArrayList<RunsafePlayer> players){
@@ -210,24 +195,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         player.getInventory().clear();
     }
 
-    public void teleportIntoGame(ArrayList<RunsafePlayer> players){
-        for(RunsafePlayer player : players)
-            teleportIntoGame(player, safeLocation());
-
-    }
-
-    public void teleportIntoGame(RunsafePlayer player, RunsafeLocation loc){
-        player.getInventory().clear();
-        this.equip(player);
-        player.removeBuffs();
-        Buff.Combat.Damage.Decrease.duration(6).amplification(3);
-        player.setHealth(20);
-        player.setFoodLevel(20);
-        player.setSaturation(10f);
-
-        if(loc != null) player.teleport(loc);
-    }
-
     public RunsafeLocation safeLocation(){
         return areas.get(currRegion).safeLocation();
     }
@@ -243,6 +210,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         if(this.worldName == null){
             worldName = "world";
         }
+        playerHandler.setOperatingWorld(worldName);
 
         this.waitingRoomSpawn = new RunsafeLocation(
                 server.getWorld(this.worldName),
@@ -250,6 +218,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                 config.getConfigValueAsDouble("waitingroomspawn.y"),
                 config.getConfigValueAsDouble("waitingroomspawn.z")
         );
+
+        playerHandler.setDefaultSpawn(waitingRoomSpawn);
 
         this.waitingRoom = new SimpleArea(
                 config.getConfigValueAsDouble("waitingarea.x1"),
@@ -283,8 +253,9 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         this.countdownToEnd = config.getConfigValueAsInt("runtime");
     }
 
-    private void sendMessage(ArrayList<RunsafePlayer> players, String msg){
-         for(RunsafePlayer player : players)  player.sendColouredMessage(msg);
+    private void sendMessage( String msg){
+
+         for(RunsafePlayer player : server.getWorld(worldName).getPlayers())  player.sendColouredMessage(msg);
     }
     
     public void tick(){
@@ -296,7 +267,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                 voteHandler.setCanVote(true);
                 if(voteHandler.votePass(waitingRoomPlayers.size())){
                     nextRandomRegion();
-                    sendMessage(waitingRoomPlayers, String.format(Constants.MSG_NEW_NEXT_MAP_VOTED, regions.get(nextRegion)));
+                    sendMessage(String.format(Constants.MSG_NEW_NEXT_MAP_VOTED, regions.get(nextRegion)));
                     voteHandler.resetVotes();
                 }
 
@@ -308,25 +279,25 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                 } else {
                     switch (countdownToStart) {
                         case 180:
-                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 3, "minutes"));
+                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 3, "minutes"));
                             break;
                         case 120:
-                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 2, "minutes"));
+                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 2, "minutes"));
                             break;
                         case 60:
-                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 1, "minute"));
+                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 1, "minute"));
                             break;
                         case 30:
-                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 30, "seconds"));
+                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 30, "seconds"));
                             break;
                         case 20:
-                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 20, "seconds"));
+                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 20, "seconds"));
                             break;
                         case 10:
-                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 10, "seconds"));
+                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 10, "seconds"));
                             break;
                         case 5:
-                            sendMessage(waitingRoomPlayers, String.format(Constants.MSG_GAME_START_IN, 5, "seconds"));
+                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 5, "seconds"));
                             break;
                     }
                 }
@@ -337,54 +308,40 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                     voteHandler.setCanVote(false);
                     voteHandler.resetVotes();
                 }
+
+                //moving all players not in creative mode into waitroom
+                for(RunsafePlayer p : RunsafeServer.Instance.getWorld(worldName).getPlayers())
+                    if(p.getGameMode() != GameMode.CREATIVE && !waitingRoom.pointInArea(p.getLocation()))
+                        p.teleport(waitingRoomSpawn);
+
             } else {
-
-                RunsafePlayer l = pickWinner();
-                int amount = amountHeads(l);
-                if(amount >= winAmount){
-                    winner(l);
-                    return;
-                }
-                if (l != leader && amount > 0) {
-                    leader = l;
-                    sendMessage(areas.get(currRegion).getPlayers(), String.format(Constants.MSG_NEW_LEADER, leader.getPrettyName(), amountHeads(leader)));
-
-                }
-                for(RunsafePlayer player : ingamePlayers){
-                    player.setSaturation(10f);
-                    if(!player.getWorld().getName().equalsIgnoreCase(getWorldName())) {
-                        leave(player);
-                        player.sendColouredMessage(Constants.MSG_COLOR + "You left the combat area");
-                    }
-                }
+                  playerHandler.tick();
 
                 if (countdownToEnd % 300 == 0) {
-                    sendMessage(areas.get(currRegion).getPlayers(), String.format(Constants.MSG_TIME_REMAINING, (countdownToEnd / 300) * 5, "minutes"));
+                    sendMessage(String.format(Constants.MSG_TIME_REMAINING, (countdownToEnd / 300) * 5, "minutes"));
                 } else {
-
-                    ArrayList<RunsafePlayer> sendTo = areas.get(currRegion).getPlayers();
 
                     switch (countdownToEnd) {
                         case 180:
-                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 3, "minutes"));
+                            sendMessage(String.format(Constants.MSG_TIME_REMAINING, 3, "minutes"));
                             break;
                         case 120:
-                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 2, "minutes"));
+                            sendMessage(String.format(Constants.MSG_TIME_REMAINING, 2, "minutes"));
                             break;
                         case 60:
-                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 1, "minute"));
+                            sendMessage(String.format(Constants.MSG_TIME_REMAINING, 1, "minute"));
                             break;
                         case 30:
-                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 30, "seconds"));
+                            sendMessage(String.format(Constants.MSG_TIME_REMAINING, 30, "seconds"));
                             break;
                         case 20:
-                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 10, "seconds"));
+                            sendMessage(String.format(Constants.MSG_TIME_REMAINING, 10, "seconds"));
                             break;
                         case 10:
-                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 10, "seconds"));
+                            sendMessage(String.format(Constants.MSG_TIME_REMAINING, 10, "seconds"));
                             break;
                         case 5:
-                            sendMessage(sendTo, String.format(Constants.MSG_TIME_REMAINING, 5, "seconds"));
+                            sendMessage(String.format(Constants.MSG_TIME_REMAINING, 5, "seconds"));
                             break;
 
                     }
@@ -392,46 +349,44 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
                 this.countdownToEnd--;
                 if (countdownToEnd <= 0) {
 
-                    winner(pickWinner());
+                    //todo: winner at timeout
                     return;
 
                 }
 
-                if (ingamePlayers.size() == 1) winner(ingamePlayers.get(0));
+                // checking all players in world that are not creative mode, move them to the waiting room if not in game
 
-                for(int i = 0; i < areas.size(); i++) {
-                    for (RunsafePlayer player : areas.get(i).getPlayers()) {
-
-                        if (player.getGameMode() == GameMode.CREATIVE) continue;
-
-                        if (!ingamePlayersNames.contains(player.getName())) teleportIntoWaitRoom(player);
-                    }
-                }
+               for(RunsafePlayer p : RunsafeServer.Instance.getWorld(worldName).getPlayers())
+                   if(!playerHandler.isIngame(p) && p.getGameMode() != GameMode.CREATIVE && !waitingRoom.pointInArea(p.getLocation()))
+                       p.teleport(waitingRoomSpawn);
             }
         }
-        else for(SimpleArea combatArea: areas)
-            this.teleportIntoWaitRoom(combatArea.getPlayers(), GameMode.SURVIVAL);
-
     }
 
+
+
+
     public RunsafePlayer pickWinner() {
-        int topHeads = -1;
-        RunsafePlayer winner = null;
 
-        for(RunsafePlayer player : ingamePlayers){
-            if(topHeads == -1){
-                winner = player;
-                topHeads = amountHeads(player);
-                continue;
-            }
-            int playerAmount = amountHeads(player);
-            if(playerAmount > topHeads) {
-                winner = player;
-                topHeads = playerAmount;
-            }
-        }
 
-        return winner;
+        //todo:handled by playerHandler
+//        int topHeads = -1;
+//        RunsafePlayer winner = null;
+//
+//        for(RunsafePlayer player : ingamePlayers){
+//            if(topHeads == -1){
+//                winner = player;
+//                topHeads = amountHeads(player);
+//                continue;
+//            }
+//            int playerAmount = amountHeads(player);
+//            if(playerAmount > topHeads) {
+//                winner = player;
+//                topHeads = playerAmount;
+//            }
+//        }
+
+        return null;
 
     }
 
@@ -446,7 +401,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
         if(this.enabled){
 
-            if(!isIngame(executor)){
+            if(!playerHandler.isIngame(executor)){
                 this.teleportIntoWaitRoom(executor);
                 executor.setGameMode(GameMode.SURVIVAL);
                 return null;
@@ -459,14 +414,10 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
     }
 
-    public void equip(RunsafePlayer player){
-        equipmentManager.equip(player);
-    }
-
     public void stop(RunsafePlayer executor) {
         if(gamestarted){
             winner(pickWinner());
-            sendMessage(waitingRoom.getPlayers(), String.format(Constants.MSG_GAME_STOPPED, executor.getPrettyName()));
+            sendMessage(String.format(Constants.MSG_GAME_STOPPED, executor.getPrettyName()));
         }
 
     }
@@ -475,38 +426,15 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         return Util.amountMaterial(player, Item.Decoration.Head.Human.getItem());
     }
 
-    public void leave(RunsafePlayer player) {
-
-        if(isIngame(player)){
-            RunsafeMeta heads =  Item.Decoration.Head.Human.getItem();
-            heads.setAmount(amountHeads(player));
-            player.getWorld().dropItem(player.getEyeLocation(), heads);
-            player.getInventory().clear();
-            player.teleport(waitingRoomSpawn);
-            ingamePlayers.remove(player);
-            ingamePlayersNames.remove(player.getName());
-            sendMessage(ingamePlayers, String.format(Constants.MSG_LEAVE, player.getPrettyName()));
-            if(ingamePlayersNames.size() <= 1) winner(pickWinner());
-        }
-
-    }
 
     public ArrayList<RunsafePlayer> getPlayers(RunsafeLocation loc, int radius){
+        //todo:handled by player handler
+//        ArrayList<RunsafePlayer> players = new ArrayList<RunsafePlayer>();
+//        for(RunsafePlayer player : ingamePlayers)
+//            if(Util.distance(loc, player.getLocation()) < radius) players.add(player);
 
-        ArrayList<RunsafePlayer> players = new ArrayList<RunsafePlayer>();
-        for(RunsafePlayer player : ingamePlayers)
-            if(Util.distance(loc, player.getLocation()) < radius) players.add(player);
+        return null;
 
-        return players;
-
-    }
-
-    public boolean isIngame(RunsafePlayer player){
-        return (ingamePlayersNames.contains(player.getName()));
-    }
-
-    public String getWorldName() {
-        return worldName;
     }
 
     public void setWaitRoomPos(boolean first, RunsafeLocation location) {
@@ -522,15 +450,11 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
     }
 
-    public int getAmountNeeded() {
-        return winAmount;
-    }
-
     @Override
     public void OnPluginEnabled() {
 
         this.loadAreas();
-        console.writeColoured((enabled) ? ConsoleColors.GREEN + "Enabled": ConsoleColors.RED + "Disabled");
+        console.writeColoured((enabled) ? ConsoleColour.GREEN + "Enabled" : ConsoleColour.RED + "Disabled");
         console.write(String.format("loaded %d areas", areas.size()));
 
     }
@@ -545,13 +469,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
 
     public void setRegions(ArrayList<String> regions) {
         this.regions = regions;
-    }
-
-    public void addRegion(String region){
-        if(!regions.contains(region)){
-            regions.add(region);
-            loadAreas();
-        }
     }
 
     public String getCurrentMap() {
@@ -606,5 +523,9 @@ public class Core implements IConfigurationChanged, IPluginEnabled{
         }
 
         return available.toString();
+    }
+
+    public String getWorldName() {
+        return worldName;
     }
 }

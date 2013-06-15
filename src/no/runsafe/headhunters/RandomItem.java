@@ -1,7 +1,8 @@
 package no.runsafe.headhunters;
 
 import no.runsafe.framework.minecraft.Item;
-import no.runsafe.framework.server.item.meta.RunsafeMeta;
+import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
+
 
 import java.util.ArrayList;
 

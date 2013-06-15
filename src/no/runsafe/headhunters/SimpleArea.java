@@ -2,13 +2,13 @@ package no.runsafe.headhunters;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.GlobalRegionManager;
-import com.sk89q.worldguard.protection.managers.RegionManager;
+
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import no.runsafe.framework.server.RunsafeLocation;
-import no.runsafe.framework.server.RunsafeServer;
-import no.runsafe.framework.server.RunsafeWorld;
-import no.runsafe.framework.server.block.RunsafeSign;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.minecraft.RunsafeLocation;
+import no.runsafe.framework.minecraft.RunsafeServer;
+import no.runsafe.framework.minecraft.RunsafeWorld;
+import no.runsafe.framework.minecraft.block.RunsafeSign;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 

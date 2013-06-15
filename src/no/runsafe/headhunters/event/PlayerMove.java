@@ -1,9 +1,11 @@
 package no.runsafe.headhunters.event;
 
-import no.runsafe.framework.event.player.IPlayerMove;
-import no.runsafe.framework.server.RunsafeLocation;
-import no.runsafe.framework.server.player.RunsafePlayer;
+
+import no.runsafe.framework.api.event.player.IPlayerMove;
+import no.runsafe.framework.minecraft.RunsafeLocation;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Core;
+import org.bukkit.GameMode;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,6 +24,8 @@ public class PlayerMove implements IPlayerMove {
 
     @Override
     public boolean OnPlayerMove(RunsafePlayer player, RunsafeLocation from, RunsafeLocation to) {
+
+        if(player.getGameMode() != GameMode.CREATIVE) return true;
 
         String prefRegion = core.isInCombatRegion(from);
         String newRegion = core.isInCombatRegion(to);

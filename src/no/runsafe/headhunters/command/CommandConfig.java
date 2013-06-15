@@ -1,9 +1,9 @@
 package no.runsafe.headhunters.command;
 
-import no.runsafe.framework.command.Command;
-import no.runsafe.framework.command.ExecutableCommand;
-import no.runsafe.framework.configuration.IConfiguration;
-import no.runsafe.framework.server.ICommandExecutor;
+import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.command.ExecutableCommand;
+import no.runsafe.framework.api.command.ICommandExecutor;
+
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
 

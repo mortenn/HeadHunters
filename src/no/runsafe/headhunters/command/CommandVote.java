@@ -1,12 +1,12 @@
 package no.runsafe.headhunters.command;
 
-import no.runsafe.framework.command.player.PlayerCommand;
-import no.runsafe.framework.server.player.RunsafePlayer;
+
+import no.runsafe.framework.api.command.player.PlayerCommand;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.VoteHandler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**

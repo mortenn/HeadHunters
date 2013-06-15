@@ -1,11 +1,11 @@
 package no.runsafe.headhunters;
 
 
-import no.runsafe.framework.enchant.Enchant;
+import no.runsafe.framework.minecraft.Enchant;
 import no.runsafe.framework.minecraft.Item;
-import no.runsafe.framework.server.inventory.RunsafePlayerInventory;
-import no.runsafe.framework.server.item.meta.RunsafeMeta;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.minecraft.inventory.RunsafePlayerInventory;
+import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.ArrayList;
 

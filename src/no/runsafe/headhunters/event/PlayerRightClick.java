@@ -1,14 +1,16 @@
 package no.runsafe.headhunters.event;
 
-import no.runsafe.framework.event.player.IPlayerRightClick;
-import no.runsafe.framework.minecraft.Buff;
-import no.runsafe.framework.server.RunsafeLocation;
-import no.runsafe.framework.server.RunsafeServer;
-import no.runsafe.framework.server.block.RunsafeBlock;
 
-import no.runsafe.framework.server.item.meta.RunsafeMeta;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.api.event.player.IPlayerRightClick;
+import no.runsafe.framework.minecraft.Buff;
+
+import no.runsafe.framework.minecraft.RunsafeLocation;
+import no.runsafe.framework.minecraft.RunsafeServer;
+import no.runsafe.framework.minecraft.block.RunsafeBlock;
+import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Core;
+import no.runsafe.headhunters.PlayerHandler;
 import no.runsafe.headhunters.Util;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -26,19 +28,20 @@ public class PlayerRightClick implements IPlayerRightClick {
 
     private Core core;
     private RunsafeServer server;
+    private final PlayerHandler playerHandler;
 
 
-    public PlayerRightClick(Core core, RunsafeServer server){
+    public PlayerRightClick(Core core, RunsafeServer server, PlayerHandler playerHandler){
         this.core = core;
         this.server = server;
-
+        this.playerHandler = playerHandler;
     }
 
 
     @Override
     public boolean OnPlayerRightClick(RunsafePlayer player, RunsafeMeta usingItem, RunsafeBlock targetBlock) {
 
-        if(core.isIngame(player)){
+        if(playerHandler.isIngame(player)){
             boolean used = false;
 
             if(usingItem != null){
@@ -49,7 +52,7 @@ public class PlayerRightClick implements IPlayerRightClick {
                 if(itemID == Material.SLIME_BALL.getId()){
 
                     //visual effect...
-                    server.getWorld(core.getWorldName()).playEffect(location, Effect.POTION_BREAK, 2);
+                    server.getWorld(playerHandler.getWorldName()).playEffect(location, Effect.POTION_BREAK, 2);
 
                     ArrayList<RunsafePlayer> hitPlayers = core.getPlayers(location, 5);
                     for(RunsafePlayer hitPlayer : hitPlayers)
@@ -79,15 +82,15 @@ public class PlayerRightClick implements IPlayerRightClick {
                         if(newLocation != null)
                             player.teleport(newLocation);
                         else
-                            core.leave(player);
+                            playerHandler.remove(player);
                     }else{
-                        server.getWorld(core.getWorldName()).createExplosion(player.getLocation(), 2f, true);
+                        server.getWorld(playerHandler.getWorldName()).createExplosion(player.getLocation(), 2f, true);
                     }
 
                 }else if(itemID == Material.BLAZE_ROD.getId()){
 
                     player.Launch(Material.FIREBALL.name());
-                    RunsafeServer.Instance.getWorld(core.getWorldName()).getRaw().playSound(player.getLocation().getRaw(), Sound.GHAST_FIREBALL, 1f, 1f);
+                    RunsafeServer.Instance.getWorld(playerHandler.getWorldName()).getRaw().playSound(player.getLocation().getRaw(), Sound.GHAST_FIREBALL, 1f, 1f);
                     used = true;
 
                 }else if(itemID == Material.INK_SACK.getId()){

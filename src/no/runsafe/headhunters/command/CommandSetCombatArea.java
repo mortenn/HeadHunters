@@ -4,12 +4,12 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import no.runsafe.framework.command.player.PlayerCommand;
-import no.runsafe.framework.configuration.IConfiguration;
-import no.runsafe.framework.output.ChatColour;
-import no.runsafe.framework.server.RunsafeLocation;
-import no.runsafe.framework.server.RunsafeServer;
-import no.runsafe.framework.server.player.RunsafePlayer;
+import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.command.player.PlayerCommand;
+
+import no.runsafe.framework.minecraft.RunsafeServer;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.framework.text.ChatColour;
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.Util;

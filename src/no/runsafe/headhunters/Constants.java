@@ -1,8 +1,7 @@
 package no.runsafe.headhunters;
 
-import no.runsafe.framework.output.ChatColour;
 
-import java.util.Locale;
+import no.runsafe.framework.text.ChatColour;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,9 +1,11 @@
 package no.runsafe.headhunters.command;
 
-import no.runsafe.framework.command.ExecutableCommand;
-import no.runsafe.framework.server.ICommandExecutor;
+import no.runsafe.framework.api.command.ExecutableCommand;
+import no.runsafe.framework.api.command.ICommandExecutor;
+
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
+import no.runsafe.headhunters.PlayerHandler;
 import no.runsafe.headhunters.Util;
 
 import java.util.ArrayList;
@@ -19,13 +21,15 @@ import java.util.HashMap;
 public class CommandInfo extends ExecutableCommand {
 
     private Core core;
+    private final PlayerHandler playerHandler;
 
 
-    public CommandInfo(Core core){
+    public CommandInfo(Core core, PlayerHandler playerHandler){
         super("info", "shows info about the current game", null);
 
         this.core = core;
 
+        this.playerHandler = playerHandler;
     }
 
     @Override
@@ -40,8 +44,8 @@ public class CommandInfo extends ExecutableCommand {
                 int min = (int)Math.floor(core.getTimeToEnd() / 60);
                 int sec = core.getTimeToEnd() - min * 60;
                 info.add(String.format("Time remaining &f%s:%s", min, Util.fillZeros(sec)));
-                info.add(String.format("Current leader: %s", core.pickWinner().getPrettyName()));
-                info.add(String.format("Heads needed: &f%d", core.getAmountNeeded()));
+                info.add(String.format("Current leader: %s", playerHandler.getCurrentLeader().getPrettyName()));
+                info.add(String.format("Heads needed: &f%d", playerHandler.getWinAmount()));
                 info.add(String.format("Current Map: &f%s", core.getCurrentMap()));
             }else{
 

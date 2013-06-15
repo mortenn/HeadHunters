@@ -1,7 +1,8 @@
 package no.runsafe.headhunters;
 
 import no.runsafe.framework.RunsafeConfigurablePlugin;
-import no.runsafe.framework.command.Command;
+
+import no.runsafe.framework.api.command.Command;
 import no.runsafe.headhunters.command.*;
 import no.runsafe.headhunters.event.*;
 
@@ -14,6 +15,7 @@ public class Plugin extends RunsafeConfigurablePlugin
         this.addComponent(EquipmentManager.class);
         this.addComponent(RandomItem.class);
         this.addComponent(VoteHandler.class);
+        this.addComponent(PlayerHandler.class);
 
 		this.addComponent(Core.class);
 

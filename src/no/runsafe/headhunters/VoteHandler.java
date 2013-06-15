@@ -1,6 +1,7 @@
 package no.runsafe.headhunters;
 
-import no.runsafe.framework.server.player.RunsafePlayer;
+
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.ArrayList;
 

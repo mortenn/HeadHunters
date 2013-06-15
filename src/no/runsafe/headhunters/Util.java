@@ -1,8 +1,9 @@
 package no.runsafe.headhunters;
 
-import no.runsafe.framework.server.RunsafeLocation;
-import no.runsafe.framework.server.item.meta.RunsafeMeta;
-import no.runsafe.framework.server.player.RunsafePlayer;
+
+import no.runsafe.framework.minecraft.RunsafeLocation;
+import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.ArrayList;
 import java.util.Random;

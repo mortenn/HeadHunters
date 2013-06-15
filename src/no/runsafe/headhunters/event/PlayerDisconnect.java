@@ -1,8 +1,9 @@
 package no.runsafe.headhunters.event;
 
-import no.runsafe.framework.event.player.IPlayerQuitEvent;
-import no.runsafe.framework.server.event.player.RunsafePlayerQuitEvent;
-import no.runsafe.headhunters.Core;
+
+import no.runsafe.framework.api.event.player.IPlayerQuitEvent;
+import no.runsafe.framework.minecraft.event.player.RunsafePlayerQuitEvent;
+import no.runsafe.headhunters.PlayerHandler;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,14 +13,14 @@ import no.runsafe.headhunters.Core;
  */
 public class PlayerDisconnect implements IPlayerQuitEvent {
 
-    private Core core;
+    private PlayerHandler playerHandler;
 
-    public PlayerDisconnect(Core core){
-        this.core = core;
+    public PlayerDisconnect(PlayerHandler playerHandler){
+        this.playerHandler = playerHandler;
     }
 
     @Override
     public void OnPlayerQuit(RunsafePlayerQuitEvent event) {
-        if(core.isIngame(event.getPlayer())) this.core.leave(event.getPlayer());
+        if(playerHandler.isIngame(event.getPlayer())) playerHandler.remove(event.getPlayer());
     }
 }
