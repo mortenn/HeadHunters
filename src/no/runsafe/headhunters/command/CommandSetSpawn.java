@@ -4,6 +4,7 @@ import no.runsafe.framework.api.IConfiguration;
 
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
 
@@ -20,17 +21,19 @@ public class CommandSetSpawn extends PlayerCommand {
 
     private IConfiguration config;
     private Core core;
+    private final AreaHandler areaHandler;
 
-    public CommandSetSpawn(Core core, IConfiguration config){
+    public CommandSetSpawn(Core core, IConfiguration config, AreaHandler areaHandler){
         super("spawn", "Sets the spawn point for in the wait room", "headhunters.set-spawn");
         this.core = core;
         this.config = config;
+        this.areaHandler = areaHandler;
     }
 
     @Override
     public String OnExecute(RunsafePlayer player, HashMap<String, String> parameters) {
 
-        if(player.getWorld().getName().equalsIgnoreCase(core.getWorldName())){
+        if(player.getWorld().getName().equalsIgnoreCase(areaHandler.getWorld())){
             config.setConfigValue("waitingroomspawn.x", player.getLocation().getBlockX());
             config.setConfigValue("waitingroomspawn.y", player.getLocation().getBlockY());
             config.setConfigValue("waitingroomspawn.z", player.getLocation().getBlockZ());

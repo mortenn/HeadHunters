@@ -4,6 +4,7 @@ package no.runsafe.headhunters.event;
 import no.runsafe.framework.api.event.block.IBlockBreakEvent;
 import no.runsafe.framework.minecraft.event.block.RunsafeBlockBreakEvent;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.PlayerHandler;
 
@@ -18,8 +19,9 @@ public class BlockBreak implements IBlockBreakEvent {
 
     private PlayerHandler playerHandler;
     private Core core;
+    private AreaHandler areaHandler;
 
-    public BlockBreak(PlayerHandler playerHandler, Core core){
+    public BlockBreak(PlayerHandler playerHandler, Core core, AreaHandler areaHandler){
         this.playerHandler = playerHandler;
         this.core = core;
     }
@@ -29,7 +31,7 @@ public class BlockBreak implements IBlockBreakEvent {
     public void OnBlockBreakEvent(RunsafeBlockBreakEvent event) {
         RunsafePlayer eventPlayer = event.getPlayer();
         if(eventPlayer.getWorld().getName().equalsIgnoreCase(playerHandler.getWorldName())){
-            if(core.isInCombatRegion(eventPlayer.getLocation()) != null){
+            if(areaHandler.isInCombatRegion(eventPlayer.getLocation())){
 
                 if(core.getEnabled()){
                     event.setCancelled(true);

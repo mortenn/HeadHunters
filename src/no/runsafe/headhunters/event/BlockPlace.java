@@ -4,6 +4,7 @@ package no.runsafe.headhunters.event;
 import no.runsafe.framework.api.event.block.IBlockPlace;
 import no.runsafe.framework.minecraft.block.RunsafeBlock;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.PlayerHandler;
 
@@ -15,11 +16,13 @@ import no.runsafe.headhunters.PlayerHandler;
  */
 public class BlockPlace implements IBlockPlace {
 
-    Core core;
+    private Core core;
     private PlayerHandler playerHandler;
-    public BlockPlace(Core core, PlayerHandler playerHandler){
+    private AreaHandler areaHandler;
+    public BlockPlace(Core core, PlayerHandler playerHandler, AreaHandler areaHandler){
         this.core = core;
         this.playerHandler = playerHandler;
+        this.areaHandler = areaHandler;
     }
 
 
@@ -29,7 +32,7 @@ public class BlockPlace implements IBlockPlace {
 
 
         if(eventPlayer.getWorld().getName().equalsIgnoreCase(playerHandler.getWorldName())){
-            if(core.isInCombatRegion(eventPlayer.getLocation()) != null){
+            if(areaHandler.isInCombatRegion(eventPlayer.getLocation())){
 
                 if(core.getEnabled()){
                     return false;

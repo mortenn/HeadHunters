@@ -9,6 +9,7 @@ import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.block.RunsafeBlock;
 import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.PlayerHandler;
 import no.runsafe.headhunters.Util;
@@ -29,12 +30,14 @@ public class PlayerRightClick implements IPlayerRightClick {
     private Core core;
     private RunsafeServer server;
     private final PlayerHandler playerHandler;
+    private final AreaHandler areaHandler;
 
 
-    public PlayerRightClick(Core core, RunsafeServer server, PlayerHandler playerHandler){
+    public PlayerRightClick(Core core, RunsafeServer server, PlayerHandler playerHandler, AreaHandler areaHandler){
         this.core = core;
         this.server = server;
         this.playerHandler = playerHandler;
+        this.areaHandler = areaHandler;
     }
 
 
@@ -52,20 +55,20 @@ public class PlayerRightClick implements IPlayerRightClick {
                 if(itemID == Material.SLIME_BALL.getId()){
 
                     //visual effect...
-                    server.getWorld(playerHandler.getWorldName()).playEffect(location, Effect.POTION_BREAK, 2);
+                    server.getWorld(playerHandler.getWorldName()).playEffect(location, Effect.POTION_BREAK, 16426);
 
-                    ArrayList<RunsafePlayer> hitPlayers = core.getPlayers(location, 5);
+                    ArrayList<RunsafePlayer> hitPlayers = playerHandler.getIngamePlayers(location, 5);
                     for(RunsafePlayer hitPlayer : hitPlayers)
                         if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) {
                             Buff.Utility.Movement.DecreaseSpeed.duration(3).amplification(5).applyTo(hitPlayer);
-                            Buff.Utility.DigSpeed.Decrease.duration(60).amplification(5);
+                            Buff.Utility.DigSpeed.Decrease.duration(6).amplification(5);
 
                         }
                     used = true;
 
                 }else if(itemID == Material.MAGMA_CREAM.getId()){
 
-                    ArrayList<RunsafePlayer> hitPlayers = core.getPlayers(location, 5);
+                    ArrayList<RunsafePlayer> hitPlayers = playerHandler.getIngamePlayers(location, 5);
                     for(RunsafePlayer hitPlayer : hitPlayers)
                         if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) {
                             hitPlayer.strikeWithLightning(true);
@@ -78,7 +81,7 @@ public class PlayerRightClick implements IPlayerRightClick {
                     used = true;
 
                     if(Util.actPercentage(95)){
-                        RunsafeLocation newLocation = core.safeLocation();
+                        RunsafeLocation newLocation = areaHandler.getSafeLocation();
                         if(newLocation != null)
                             player.teleport(newLocation);
                         else
@@ -94,7 +97,7 @@ public class PlayerRightClick implements IPlayerRightClick {
                     used = true;
 
                 }else if(itemID == Material.INK_SACK.getId()){
-                    ArrayList<RunsafePlayer> hitPlayers = core.getPlayers(location, 5);
+                    ArrayList<RunsafePlayer> hitPlayers = playerHandler.getIngamePlayers(location, 5);
                     for(RunsafePlayer hitPlayer : hitPlayers)
                         if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) Buff.Combat.Blindness.duration(3).amplification(6).applyTo(hitPlayer);
                     used = true;

@@ -14,8 +14,10 @@ public class Plugin extends RunsafeConfigurablePlugin
 
         this.addComponent(EquipmentManager.class);
         this.addComponent(RandomItem.class);
+        this.addComponent(AreaHandler.class);
         this.addComponent(VoteHandler.class);
         this.addComponent(PlayerHandler.class);
+
 
 		this.addComponent(Core.class);
 
@@ -48,9 +50,10 @@ public class Plugin extends RunsafeConfigurablePlugin
         this.addComponent(PlayerDisconnect.class);
         this.addComponent(PlayerItemPickUp.class);
         this.addComponent(PlayerRightClick.class);
-        this.addComponent(PlayerMove.class);
+
         this.addComponent(BlockBreak.class);
         this.addComponent(BlockPlace.class);
+        this.addComponent(DamagePlayer.class);
 
 
 	}

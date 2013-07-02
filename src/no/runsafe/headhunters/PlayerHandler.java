@@ -24,17 +24,17 @@ public class PlayerHandler {
     Boolean winner = false;
     RunsafePlayer leader;
     int leaderAmount = -1;
-    String operatingWorld = "world";
     int winAmount = 0;
+    private AreaHandler areaHandler;
 
     EquipmentManager equipmentManager;
     private RunsafeLocation defaultSpawn;
 
-    public PlayerHandler(EquipmentManager manager){
+    public PlayerHandler(EquipmentManager manager, AreaHandler areaHandler){
 
         playerData = new HashMap<String, HashMap<String, Object>>();
         this.equipmentManager = manager;
-
+        this.areaHandler = areaHandler;
     }
 
     public void setDefaultSpawn(RunsafeLocation location){
@@ -47,20 +47,13 @@ public class PlayerHandler {
 
 
     public String getWorldName(){
-        return operatingWorld;
-    }
-
-    public void setOperatingWorld(String worldName){
-        operatingWorld = worldName;
-    }
-
-    public void setWaitRoom(RunsafeLocation location){
-        this.waitRoom = location;
+        return areaHandler.getWorld();
     }
 
     public void remove(RunsafePlayer player){
         if(isIngame(player)){
             playerData.get(player.getName()).put("remove", true);
+            unEquip(player);
             //Todo: add dropping all usable items
             RunsafeMeta heads =  Item.Decoration.Head.Human.getItem();
             heads.setAmount(Util.amountMaterial(player, heads));
@@ -99,25 +92,22 @@ public class PlayerHandler {
 
     }
 
-    public void teleport(SimpleArea area){
+    public void teleport(){
         for (String k : playerData.keySet()){
-            if(!(Boolean) playerData.get(k).get("remove"))
-                ((RunsafePlayer) playerData.get(k).get("player")).teleport(area.safeLocation());
-
+            if(!(Boolean) playerData.get(k).get("remove")){
+                RunsafePlayer player = ((RunsafePlayer) playerData.get(k).get("player"));
+                player.teleport(areaHandler.getSafeLocation());
+            }
         }
     }
 
-    public void clear(){
-        playerData.clear();
-    }
-
-    public void start(ArrayList<RunsafePlayer> players, SimpleArea area){
+    public void start(ArrayList<RunsafePlayer> players){
         addPlayers(players);
+        unEquipAll();
         setUpPlayers();
-        teleport(area);
+        teleport();
         winAmount = (int) ((players.size() / 2) + players.size() * 3.5);
     }
-
 
     public void setUpPlayers() {
         for(String k : playerData.keySet()) setUpPlayer((RunsafePlayer) playerData.get(k).get("player"));
@@ -131,6 +121,13 @@ public class PlayerHandler {
         player.setFoodLevel(20);
         player.removeBuffs();
         Buff.Resistance.Damage.amplification(2).duration(6).applyTo(player);
+    }
+
+    public void reset(){
+        winAmount = 0;
+        leader = null;
+        playerData.clear();
+        winner = false;
     }
 
 
@@ -153,12 +150,13 @@ public class PlayerHandler {
                     out.add(String.format("&3Player %s &3has been removed from the match.", player.getPrettyName()));
                 }
             }
-
-
         }
-        if(currLeader != null) if(!currLeader.getName().equalsIgnoreCase(leader.getName())){
+        if((currLeader != null && leader != null && !currLeader.getName().equalsIgnoreCase(leader.getName()))
+                || (currLeader != null && leader == null)){
+            leader = currLeader;
             out.add(String.format(Constants.MSG_NEW_LEADER, leader.getPrettyName(), currLAmount));
         }
+
         if(currLAmount >= winAmount){
             winner = true;
         }
@@ -178,7 +176,7 @@ public class PlayerHandler {
 
         this.teleportAllPlayers(defaultSpawn);
         this.unEquipAll();
-        this.clear();
+        this.reset();
 
     }
 
@@ -189,7 +187,17 @@ public class PlayerHandler {
     public ArrayList<RunsafePlayer> getIngamePlayers() {
         ArrayList<RunsafePlayer> players = new ArrayList<RunsafePlayer>();
         for(String k: playerData.keySet())
-            if(!(Boolean) playerData.get(k).get("remove")) players.add((RunsafePlayer) playerData.get(k).get("player"));
+            if(!(Boolean) playerData.get(k).get("remove"))
+                players.add((RunsafePlayer) playerData.get(k).get("player"));
+        return players;
+    }
+
+    public ArrayList<RunsafePlayer> getIngamePlayers(RunsafeLocation location, int range) {
+        ArrayList<RunsafePlayer> players = new ArrayList<RunsafePlayer>();
+        for(String k: playerData.keySet())
+            if(!(Boolean) playerData.get(k).get("remove") &&
+                    Util.distance(location, ((RunsafePlayer) playerData.get(k).get("player")).getLocation()) < range)
+                        players.add((RunsafePlayer) playerData.get(k).get("player"));
         return players;
     }
 }

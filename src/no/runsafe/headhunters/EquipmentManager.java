@@ -58,4 +58,10 @@ public class EquipmentManager {
         player.getInventory().clear();
     }
 
+    public ArrayList<RunsafeMeta> drops(ArrayList<RunsafeMeta> itemDrop){
+
+
+        return null;
+    }
+
 }

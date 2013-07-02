@@ -1,6 +1,10 @@
 package no.runsafe.headhunters.event;
 
 
+
+
+import net.minecraft.server.v1_6_R1.Packet205ClientCommand;
+import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.event.player.IPlayerDeathEvent;
 import no.runsafe.framework.minecraft.Item;
 
@@ -10,7 +14,7 @@ import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.PlayerHandler;
 import no.runsafe.headhunters.RandomItem;
-import no.runsafe.headhunters.Util;
+import org.bukkit.craftbukkit.v1_6_R1.entity.CraftPlayer;
 
 
 import java.util.List;
@@ -27,17 +31,19 @@ public class PlayerDeath implements IPlayerDeathEvent {
     private RandomItem randomItem;
     private Core core;
     private PlayerHandler playerHandler;
+    private IScheduler scheduler;
 
-    public PlayerDeath(Core core, RandomItem randomItem, PlayerHandler playerHandler){
+    public PlayerDeath(Core core, RandomItem randomItem, PlayerHandler playerHandler, IScheduler scheduler){
         this.core = core;
         this.randomItem = randomItem;
         this.playerHandler = playerHandler;
+        this.scheduler = scheduler;
     }
 
     @Override
     public void OnPlayerDeathEvent(RunsafePlayerDeathEvent event) {
 
-        RunsafePlayer player = event.getEntity();
+        final RunsafePlayer player = event.getEntity();
 
         if(playerHandler.isIngame(player)){
 
@@ -54,6 +60,16 @@ public class PlayerDeath implements IPlayerDeathEvent {
                     player.getEyeLocation(),
                     heads
             );
+            //autorespawning. Needs delay. -- mojang broke stuff again --
+            scheduler.startSyncTask(new Runnable() {
+                @Override
+                public void run() {
+                    Packet205ClientCommand packet205ClientCommand = new Packet205ClientCommand();
+                    packet205ClientCommand.a = 1;
+                    ((CraftPlayer)player.getRawPlayer()).getHandle().playerConnection.a(packet205ClientCommand);
+                }
+            }, 10L);
+
         }
     }
 }

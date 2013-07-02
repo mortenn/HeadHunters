@@ -3,8 +3,10 @@ package no.runsafe.headhunters.command;
 
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
+import no.runsafe.headhunters.VoteHandler;
 
 import java.util.HashMap;
 
@@ -18,10 +20,14 @@ public class CommandForceSkip extends PlayerCommand {
 
 
     private Core core;
+    AreaHandler areaHandler;
+    VoteHandler voteHandler;
 
-    public CommandForceSkip(Core core){
+    public CommandForceSkip(AreaHandler areaHandler, VoteHandler voteHandler, Core core){
         super("forceskip", "skips the current map for another one", "headhunters.skip", "map");
         this.core = core;
+        this.areaHandler = areaHandler;
+        this.voteHandler = voteHandler;
     }
 
     @Override
@@ -29,14 +35,17 @@ public class CommandForceSkip extends PlayerCommand {
 
         if(core.getEnabled()){
             String nextMap = parameters.get("map");
+            int nextMapIndex;
             if(nextMap.equalsIgnoreCase("random"))
-                if(core.getAreas().size() > 1) core.nextRandomRegion();
+                if(areaHandler.getAmountLoadedAreas() > 1) areaHandler.randomNextArea();
                 else return Constants.ERROR_COLOR + "Define atleast 2 areas to be able to use random.";
 
-            else if(core.getRegions().contains(nextMap))
-                core.setNextRegion(nextMap);
-            else return Constants.ERROR_COLOR + "Please specify a correct map, or use &frandom" + Constants.ERROR_COLOR + " for a random map. Available:&f" + core.getAvailableAreas();
-            return "&bNext region will be:&f" + core.getNextRegion();
+            else if((nextMapIndex = areaHandler.getAreaByName(nextMap)) != -1)
+                areaHandler.setNextArea(nextMapIndex);
+            else return Constants.ERROR_COLOR + "Please specify a correct map, or use &frandom" + Constants.ERROR_COLOR +
+                        " for a random map. Available:&f" + areaHandler.getAvailableRegions();
+            voteHandler.resetVotes();
+            return "&bNext region will be:&f" + areaHandler.getAreaName(areaHandler.getNextArea());
         }
         return Constants.ERROR_COLOR + "Only use this when headhunters is enabled!";
     }

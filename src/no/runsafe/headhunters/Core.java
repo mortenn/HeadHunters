@@ -6,7 +6,6 @@ import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.event.plugin.IPluginEnabled;
-import no.runsafe.framework.minecraft.Buff;
 import no.runsafe.framework.minecraft.Item;
 
 import no.runsafe.framework.minecraft.RunsafeLocation;
@@ -44,29 +43,22 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
     private int countdownToEnd = -1;
 
     private int minPlayers = 2;
-    private RunsafePlayer leader = null;
-
-    private ArrayList<String> regions;
-    private ArrayList<SimpleArea> areas;
-    private int currRegion;
-    private int nextRegion;
 
     private VoteHandler voteHandler;
+    private PlayerHandler playerHandler;
+    private AreaHandler areaHandler;
 
-    public EquipmentManager equipmentManager;
-    public PlayerHandler playerHandler;
-
-    public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, EquipmentManager equipmentManager, VoteHandler voteHandler,
-                    PlayerHandler playerHandler) {
+    public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, VoteHandler voteHandler,
+                    PlayerHandler playerHandler, AreaHandler areaHandler) {
 
         this.config = config;
         this.console = console;
         this.scheduler = scheduler;
         this.server = server;
 
-        this.equipmentManager = equipmentManager;
         this.playerHandler = playerHandler;
         this.voteHandler = voteHandler;
+        this.areaHandler = areaHandler;
 
         this.gamestarted = false;
 
@@ -82,8 +74,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
     }
 
     public boolean enable() {
-       loadAreas();
-        if(this.areas.size() == 0){
+        if(areaHandler.getAmountLoadedAreas() == 0){
             return false;
         }else{
             this.config.setConfigValue("enabled", true);
@@ -141,7 +132,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
 
     public void start(){
 
-        if(areas.size() == 0) {
+        if(areaHandler.getAmountLoadedAreas() == 0) {
             console.write("Can not start headhunters game; There are no areas");
             disable();
             return;
@@ -155,9 +146,9 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
         }
 
         this.gamestarted = true;
-        currRegion = nextRegion;
-        playerHandler.start(players, areas.get(currRegion));
-        sendMessage(String.format("Map: &f%s", regions.get(currRegion)));
+        areaHandler.setNextAsCurrentArea();
+        playerHandler.start(players);
+        sendMessage(String.format("Map: &f%s", areaHandler.getAreaName(areaHandler.getCurrentArea())));
         sendMessage(String.format(Constants.MSG_START_MESSAGE, playerHandler.getWinAmount()));
     }
 
@@ -166,10 +157,10 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
         playerHandler.end();
 
         List<RunsafeEntity> entities = server.getWorld(worldName).getEntities();
-        for(RunsafeEntity entity : entities)
-            if(!(entity instanceof RunsafePlayer) && areas.get(currRegion).pointInArea(entity.getLocation())) entity.remove();
+        areaHandler.removeEntities(entities);
 
-        nextRegion = Util.getRandom(0, regions.size());
+
+        areaHandler.randomNextArea();
         gamestarted = false;
 
         resetWaittime();
@@ -177,27 +168,10 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
 
     }
 
-    public void teleportIntoWaitRoom(ArrayList<RunsafePlayer> players){
-        for(RunsafePlayer player : players)
-            this.teleportIntoWaitRoom(player);
-
-    }
-
-    private void teleportIntoWaitRoom(ArrayList<RunsafePlayer> players, GameMode mode) {
-        if(mode == null) teleportIntoWaitRoom(players);
-
-        for(RunsafePlayer player : players)
-            if(player.getGameMode() == mode) teleportIntoWaitRoom(player);
-    }
-
-    public void teleportIntoWaitRoom(RunsafePlayer player){
+   public void teleportIntoWaitRoom(RunsafePlayer player){
         player.teleport(this.waitingRoomSpawn);
         player.getInventory().clear();
-    }
-
-    public RunsafeLocation safeLocation(){
-        return areas.get(currRegion).safeLocation();
-    }
+   }
 
     @Override
     public void OnConfigurationChanged(IConfiguration configuration) {
@@ -210,7 +184,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
         if(this.worldName == null){
             worldName = "world";
         }
-        playerHandler.setOperatingWorld(worldName);
+        areaHandler.setWorld(worldName);
 
         this.waitingRoomSpawn = new RunsafeLocation(
                 server.getWorld(this.worldName),
@@ -235,14 +209,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
         this.countdownToEnd = config.getConfigValueAsInt("runtime");
         this.voteHandler.setMinPerc(config.getConfigValueAsInt("vote.min-percent"));
         this.voteHandler.setMinVotes(config.getConfigValueAsInt("vote.min-votes"));
-        regions = (ArrayList<String>) config.getConfigValueAsList("regions");
-    }
-
-    public void loadAreas(){
-        areas =  new ArrayList<SimpleArea>();
-        for(String reg : regions)
-            areas.add(new SimpleArea(reg, server.getWorld(worldName)));
-        nextRegion = Util.getRandom(0, regions.size());
+        areaHandler.loadAreas(config.getConfigValueAsList("regions"));
     }
 
     private void resetWaittime(){
@@ -253,7 +220,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
         this.countdownToEnd = config.getConfigValueAsInt("runtime");
     }
 
-    private void sendMessage( String msg){
+    public void sendMessage( String msg){
 
          for(RunsafePlayer player : server.getWorld(worldName).getPlayers())  player.sendColouredMessage(msg);
     }
@@ -266,13 +233,9 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
                 ArrayList<RunsafePlayer> waitingRoomPlayers = this.waitingRoom.getPlayers();
                 voteHandler.setCanVote(true);
                 if(voteHandler.votePass(waitingRoomPlayers.size())){
-                    nextRandomRegion();
-                    sendMessage(String.format(Constants.MSG_NEW_NEXT_MAP_VOTED, regions.get(nextRegion)));
+                    sendMessage(String.format(Constants.MSG_NEW_NEXT_MAP_VOTED, areaHandler.getAreaName(areaHandler.randomNextArea())));
                     voteHandler.resetVotes();
                 }
-
-                for(SimpleArea combatArea: areas)
-                    this.teleportIntoWaitRoom(combatArea.getPlayers(), GameMode.SURVIVAL);
 
                 if (countdownToStart % 300 == 0) { //every 5 minutes
                     server.broadcastMessage(String.format(Constants.MSG_GAME_START_IN, (countdownToStart / 300) * 5, "minutes"));
@@ -307,15 +270,20 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
                     start();
                     voteHandler.setCanVote(false);
                     voteHandler.resetVotes();
-                }
-
-                //moving all players not in creative mode into waitroom
-                for(RunsafePlayer p : RunsafeServer.Instance.getWorld(worldName).getPlayers())
-                    if(p.getGameMode() != GameMode.CREATIVE && !waitingRoom.pointInArea(p.getLocation()))
-                        p.teleport(waitingRoomSpawn);
+                }else
+                    //moving all players not in creative mode into the waitroom
+                    for(RunsafePlayer p : RunsafeServer.Instance.getWorld(worldName).getPlayers())
+                        if(p.getGameMode() != GameMode.CREATIVE && !waitingRoom.pointInArea(p.getLocation()))
+                            p.teleport(waitingRoomSpawn);
 
             } else {
-                  playerHandler.tick();
+                  for(String s :playerHandler.tick())
+                    sendMessage(s);
+
+                if(playerHandler.winner){
+                    winner();
+                    return;
+                }
 
                 if (countdownToEnd % 300 == 0) {
                     sendMessage(String.format(Constants.MSG_TIME_REMAINING, (countdownToEnd / 300) * 5, "minutes"));
@@ -335,7 +303,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
                             sendMessage(String.format(Constants.MSG_TIME_REMAINING, 30, "seconds"));
                             break;
                         case 20:
-                            sendMessage(String.format(Constants.MSG_TIME_REMAINING, 10, "seconds"));
+                            sendMessage(String.format(Constants.MSG_TIME_REMAINING, 20, "seconds"));
                             break;
                         case 10:
                             sendMessage(String.format(Constants.MSG_TIME_REMAINING, 10, "seconds"));
@@ -349,7 +317,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
                 this.countdownToEnd--;
                 if (countdownToEnd <= 0) {
 
-                    //todo: winner at timeout
+                    winner();
+
                     return;
 
                 }
@@ -364,36 +333,13 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
     }
 
 
+    private void winner() {
 
-
-    public RunsafePlayer pickWinner() {
-
-
-        //todo:handled by playerHandler
-//        int topHeads = -1;
-//        RunsafePlayer winner = null;
-//
-//        for(RunsafePlayer player : ingamePlayers){
-//            if(topHeads == -1){
-//                winner = player;
-//                topHeads = amountHeads(player);
-//                continue;
-//            }
-//            int playerAmount = amountHeads(player);
-//            if(playerAmount > topHeads) {
-//                winner = player;
-//                topHeads = playerAmount;
-//            }
-//        }
-
-        return null;
-
-    }
-
-    private void winner(RunsafePlayer player) {
-
-        server.broadcastMessage(String.format(Constants.GAME_WON, player.getPrettyName()));
+        RunsafePlayer winPlayer = playerHandler.getCurrentLeader();
+        if(winPlayer != null)
+        server.broadcastMessage(String.format(Constants.GAME_WON, winPlayer.getPrettyName()));
         end(null);
+        playerHandler.reset();
 
     }
 
@@ -416,7 +362,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
 
     public void stop(RunsafePlayer executor) {
         if(gamestarted){
-            winner(pickWinner());
+            winner();
             sendMessage(String.format(Constants.MSG_GAME_STOPPED, executor.getPrettyName()));
         }
 
@@ -424,17 +370,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
 
     public int amountHeads(RunsafePlayer player){
         return Util.amountMaterial(player, Item.Decoration.Head.Human.getItem());
-    }
-
-
-    public ArrayList<RunsafePlayer> getPlayers(RunsafeLocation loc, int radius){
-        //todo:handled by player handler
-//        ArrayList<RunsafePlayer> players = new ArrayList<RunsafePlayer>();
-//        for(RunsafePlayer player : ingamePlayers)
-//            if(Util.distance(loc, player.getLocation()) < radius) players.add(player);
-
-        return null;
-
     }
 
     public void setWaitRoomPos(boolean first, RunsafeLocation location) {
@@ -453,40 +388,9 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
     @Override
     public void OnPluginEnabled() {
 
-        this.loadAreas();
         console.writeColoured((enabled) ? ConsoleColour.GREEN + "Enabled" : ConsoleColour.RED + "Disabled");
-        console.write(String.format("loaded %d areas", areas.size()));
+        console.write(String.format("loaded %d areas", areaHandler.getAmountLoadedAreas()));
 
-    }
-
-    public ArrayList<SimpleArea> getAreas() {
-        return areas;
-    }
-
-    public ArrayList<String> getRegions() {
-        return regions;
-    }
-
-    public void setRegions(ArrayList<String> regions) {
-        this.regions = regions;
-    }
-
-    public String getCurrentMap() {
-        return regions.get(currRegion);
-    }
-
-    public String isInCombatRegion(RunsafeLocation loc) {
-
-        for(SimpleArea area : areas)
-            if(area.pointInArea(loc)){
-                return area.getRegionName();
-            }
-
-        return null;
-    }
-
-    public String getNextRegion() {
-        return regions.get(nextRegion);
     }
 
     public boolean isInWaitroom(RunsafePlayer player) {
@@ -495,37 +399,4 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
 
     }
 
-    public void nextRandomRegion() {
-        nextRegion = Util.getRandom(0, areas.size(), nextRegion);
-    }
-
-
-    public void setNextRegion(String next) {
-
-        int i = 0;
-
-        for(String region : regions){
-            if(region.equalsIgnoreCase(next)){
-                nextRegion = i;
-            }
-            i++;
-        }
-
-    }
-
-    public String getAvailableAreas() {
-        StringBuilder available = new StringBuilder();
-        boolean first = true;
-        for(String region : regions){
-            if(!first) available.append(",");
-            available.append(region);
-            first = false;
-        }
-
-        return available.toString();
-    }
-
-    public String getWorldName() {
-        return worldName;
-    }
 }

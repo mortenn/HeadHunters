@@ -5,6 +5,7 @@ import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.Util;
@@ -21,18 +22,22 @@ public class CommandSetWaitingRoom extends PlayerCommand {
 
     private Core core;
     private IConfiguration config;
+    private AreaHandler areaHandler;
 
-    public CommandSetWaitingRoom(Core core, IConfiguration config){
+    public CommandSetWaitingRoom(Core core, IConfiguration config, AreaHandler areaHandler){
         super("waitroom", "Sets the waitroom coords", "headhunters.set-room", "posnumber");
         this.config = config;
         this.core = core;
+        this.areaHandler = areaHandler;
+
+
         this.captureTail();
     }
 
     @Override
     public String OnExecute(RunsafePlayer player, HashMap<String, String> parameters) {
 
-        if(player.getWorld().getName().equalsIgnoreCase(core.getWorldName())){
+        if(player.getWorld().getName().equalsIgnoreCase(areaHandler.getWorld())){
             if(parameters.get("posnumber").equalsIgnoreCase("pos1")){
 
                 RunsafeLocation location = player.getLocation();

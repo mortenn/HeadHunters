@@ -4,12 +4,14 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.framework.text.ChatColour;
+import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.Util;
@@ -28,13 +30,16 @@ public class CommandSetCombatArea extends PlayerCommand {
     private Core core;
     private IConfiguration config;
     private WorldGuardPlugin worldGuard;
+    private String worldName;
+    private AreaHandler areaHandler;
 
-    public CommandSetCombatArea(Core core, IConfiguration config){
+    public CommandSetCombatArea(Core core, IConfiguration config, AreaHandler areaHandler){
         super("combatarea", "Adds or removes the WorldGuard region you are in as a combat area.", "headhunters.set-room", "p");
         this.core = core;
         this.config = config;
         this.captureTail();
         this.worldGuard = RunsafeServer.Instance.getPlugin("WorldGuard");
+        this.areaHandler = areaHandler;
 
 
     }
@@ -52,14 +57,15 @@ public class CommandSetCombatArea extends PlayerCommand {
         String arg = parameters.get("p");
         if(arg.equalsIgnoreCase("add")) add = true;
         else if(arg.equalsIgnoreCase("del")) add = false;
-        else return this.getUsage();
+        else return this.getUsage(player);
 
         if(core.getEnabled()) return Constants.ERROR_COLOR + "Only use this when headhunters is disabled!";
 
+        worldName = areaHandler.getWorld();
 
-        if(player.getWorld().getName().equalsIgnoreCase(core.getWorldName())){
+        if(player.getWorld().getName().equalsIgnoreCase(worldName)){
 
-            RegionManager manager = worldGuard.getGlobalRegionManager().get(RunsafeServer.Instance.getWorld(core.getWorldName()).getRaw());
+            RegionManager manager = worldGuard.getGlobalRegionManager().get(RunsafeServer.Instance.getWorld(worldName).getRaw());
             ApplicableRegionSet set = manager.getApplicableRegions(player.getLocation().getRaw());
 
             if(set.size() == 0)
@@ -67,7 +73,7 @@ public class CommandSetCombatArea extends PlayerCommand {
             if(set.size() > 1)
                 return Constants.ERROR_COLOR + "Found multiple regions";
 
-            ArrayList<String> areas = core.getRegions();
+            ArrayList<String> areas = areaHandler.get__areas__();
             String thisRegion = null;
             for(ProtectedRegion r : set)
                 thisRegion = r.getId();
@@ -78,24 +84,20 @@ public class CommandSetCombatArea extends PlayerCommand {
                     return Constants.ERROR_COLOR + "Region already exists";
 
                 areas.add(thisRegion);
-                core.setRegions(areas);
+                areaHandler.loadAreas(areas);
 
                 config.setConfigValue("regions", areas);
                 config.save();
-
-                core.loadAreas();
 
                 return Constants.MSG_COLOR + "Added region &f" + thisRegion;
             }else{
                 if(!Util.arrayListContainsIgnoreCase(areas, thisRegion)) return Constants.ERROR_COLOR + "Region does not exist as a combat area.";
 
                 Util.arraylistRemoveIgnoreCase(areas, thisRegion);
-                core.setRegions(areas);
+                areaHandler.loadAreas(areas);
 
                 config.setConfigValue("regions", areas);
                 config.save();
-
-                core.loadAreas();
 
                 return Constants.MSG_COLOR + "Removed area &f" + thisRegion;
             }
