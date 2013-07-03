@@ -24,6 +24,7 @@ public class BlockBreak implements IBlockBreakEvent {
     public BlockBreak(PlayerHandler playerHandler, Core core, AreaHandler areaHandler){
         this.playerHandler = playerHandler;
         this.core = core;
+        this.areaHandler = areaHandler;
     }
 
 

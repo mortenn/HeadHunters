@@ -15,12 +15,11 @@ import java.util.HashMap;
  */
 public class CommandLeave extends PlayerCommand {
 
-    private Core core;
     private final PlayerHandler playerHandler;
 
-    public CommandLeave(Core core, PlayerHandler playerHandler){
+    public CommandLeave(PlayerHandler playerHandler){
         super("leave", "Leaves the current game", null);
-        this.core = core;
+
         this.playerHandler = playerHandler;
     }
 

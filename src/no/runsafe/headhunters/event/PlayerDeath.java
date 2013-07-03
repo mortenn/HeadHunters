@@ -1,8 +1,5 @@
 package no.runsafe.headhunters.event;
 
-
-
-
 import net.minecraft.server.v1_6_R1.Packet205ClientCommand;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.event.player.IPlayerDeathEvent;
@@ -47,6 +44,9 @@ public class PlayerDeath implements IPlayerDeathEvent {
 
         if(playerHandler.isIngame(player)){
 
+
+            RunsafePlayer killer = player.getKiller();
+            if(killer != null) killer.setHealth(Math.min(killer.getHealth() + 4, 20));
             //todo: drop all usable items
             event.setDroppedXP(0);
             int amount = core.amountHeads(event.getEntity());
@@ -60,7 +60,7 @@ public class PlayerDeath implements IPlayerDeathEvent {
                     player.getEyeLocation(),
                     heads
             );
-            //autorespawning. Needs delay. -- mojang broke stuff again --
+            //autorespawning
             scheduler.startSyncTask(new Runnable() {
                 @Override
                 public void run() {

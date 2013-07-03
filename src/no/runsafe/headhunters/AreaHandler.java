@@ -132,8 +132,9 @@ public class AreaHandler {
     }
 
     public void removeEntities(List<RunsafeEntity> entities) {
-        for(RunsafeEntity entity : entities) //lets not delete players...
-            if(!(entity instanceof RunsafePlayer) && areas.get(currentArea).pointInArea(entity.getLocation())) entity.remove();
+        if(areas.containsKey(currentArea))
+            for(RunsafeEntity entity : entities) //lets not delete players...
+                if(!(entity instanceof RunsafePlayer) && areas.get(currentArea).pointInArea(entity.getLocation())) entity.remove();
 
     }
 }

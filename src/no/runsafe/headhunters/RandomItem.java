@@ -59,6 +59,13 @@ public class RandomItem  {
         sack.addLore("Right click to blind you enemies in a 5 block radius.");
 
 
+        RunsafeMeta tear = Item.Brewing.GhastTear.getItem();
+        tear.setDisplayName("§6Feed On their Tears");
+        tear.addLore("Right click to teleport everyone to you, and you away safely.");
+
+        items.add(apple);
+        items.add(apple);
+        items.add(apple);
         items.add(apple);
         items.add(apple);
         items.add(apple);
@@ -66,21 +73,37 @@ public class RandomItem  {
         items.add(apple);
         items.add(apple);
 
+        items.add(sugar);
+        items.add(sugar);
+        items.add(sugar);
         items.add(sugar);
         items.add(sugar);
         items.add(sugar);
         items.add(sugar);
 
         items.add(slimeBall);
+        items.add(slimeBall);
+        items.add(slimeBall);
+        items.add(slimeBall);
+        items.add(slimeBall);
 
         items.add(magmaCream);
+        items.add(magmaCream);
+        items.add(magmaCream);
 
+        items.add(star);
         items.add(star);
 
         items.add(rod);
         items.add(rod);
+        items.add(rod);
+        items.add(rod);
 
         items.add(sack);
+        items.add(sack);
+        items.add(sack);
+
+        items.add(tear);
 
     }
 

@@ -40,8 +40,6 @@ public class CommandSetCombatArea extends PlayerCommand {
         this.captureTail();
         this.worldGuard = RunsafeServer.Instance.getPlugin("WorldGuard");
         this.areaHandler = areaHandler;
-
-
     }
 
     @Override

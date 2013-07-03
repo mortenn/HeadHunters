@@ -219,7 +219,7 @@ public class SimpleArea {
 
         int ysmall = (int) Math.min(this.getY1(), this.getY2());
         int ylarge = (int) Math.max(this.getY1(), this.getY2());
-        int tries = 20000;
+        int tries = 2000;
         boolean foundGround;
         while(tries > 0){
             foundGround = false;
@@ -230,26 +230,22 @@ public class SimpleArea {
             for(y = ysmall; y < ylarge - 1; y++){
 
                 RunsafeLocation thisLoc = new RunsafeLocation(world,(double) x, (double) y, (double) z);
-                if(thisLoc.getBlock().getBlockState() instanceof RunsafeSign){
-                    //System.out.println("Found a sign!" + Util.prettyLocation(thisLoc));
+                if(this.world.getBlockAt(x,y,z).getBlockState() instanceof RunsafeSign){
+
                     RunsafeSign sign = (RunsafeSign) thisLoc.getBlock().getBlockState();
                     if(sign.getLine(0).equalsIgnoreCase("skip")) continue;
                 }
-                if(thisLoc.getBlock().getBlockState().getMaterialID() != Material.AIR.getId()){
+                if(this.world.getBlockAt(x,y,z).getBlockState().getMaterialID() != Material.AIR.getId()){
                     foundGround = true;
-                    //System.out.println("~found ground!~");
-                }else if(foundGround && (thisLoc.getBlock().getBlockState().getMaterialID() == Material.AIR.getId())
+                }else if(foundGround && (this.world.getBlockAt(x,y,z).getBlockState().getMaterialID() == Material.AIR.getId())
                         &&
-                        (new RunsafeLocation(world,(double) x, (double) y + 1, (double) z).getBlock().getBlockState().getMaterialID() == Material.AIR.getId())){
+                        (this.world.getBlockAt(x,y+1,z).getBlockState().getMaterialID() == Material.AIR.getId())){
                     return new RunsafeLocation(world, (double) x, (double) y, (double) z);
                 }
-
-
             }
             tries--;
         }
         return null;
-
     }
 
     public String getRegionName() {

@@ -27,14 +27,12 @@ import java.util.ArrayList;
  */
 public class PlayerRightClick implements IPlayerRightClick {
 
-    private Core core;
     private RunsafeServer server;
     private final PlayerHandler playerHandler;
     private final AreaHandler areaHandler;
 
 
-    public PlayerRightClick(Core core, RunsafeServer server, PlayerHandler playerHandler, AreaHandler areaHandler){
-        this.core = core;
+    public PlayerRightClick( RunsafeServer server, PlayerHandler playerHandler, AreaHandler areaHandler){
         this.server = server;
         this.playerHandler = playerHandler;
         this.areaHandler = areaHandler;
@@ -102,6 +100,10 @@ public class PlayerRightClick implements IPlayerRightClick {
                         if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) Buff.Combat.Blindness.duration(3).amplification(6).applyTo(hitPlayer);
                     used = true;
 
+                }else if(itemID == Material.GHAST_TEAR.getId()){
+                    playerHandler.teleportAllPlayers(player.getLocation());
+                    player.teleport(areaHandler.getSafeLocation());
+                    used = true;
                 }
 
             }

@@ -20,7 +20,7 @@ import java.util.HashMap;
 public class PlayerHandler {
 
     HashMap<String, HashMap<String, Object>> playerData;
-    RunsafeLocation waitRoom;
+
     Boolean winner = false;
     RunsafePlayer leader;
     int leaderAmount = -1;
@@ -59,7 +59,14 @@ public class PlayerHandler {
             heads.setAmount(Util.amountMaterial(player, heads));
             player.getWorld().dropItem(player.getEyeLocation(), heads);
             player.getInventory().clear();
-            player.teleport(waitRoom);
+            player.teleport(defaultSpawn);
+
+            ArrayList<RunsafePlayer> ingame = getIngamePlayers();
+
+            if(ingame.size() == 1){
+                winner = true;
+                leader =  ingame.get(0);
+            }
         }
     }
 
