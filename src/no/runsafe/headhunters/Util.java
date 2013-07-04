@@ -46,6 +46,8 @@ public class Util {
             return min;
         }
 
+        if(max - min == 0 || max - min == 1) return max - min;
+
         int r = random.nextInt(max - min) + min;
         if(r == not) r = getRandom(min, max, not);
 

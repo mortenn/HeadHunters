@@ -3,6 +3,7 @@ world: world
 waittime: 120
 runtime: 900
 winamount: 50
+min-players: 2
 vote:
   min-percent: 60
   min-votes: 3
