@@ -97,7 +97,10 @@ public class PlayerRightClick implements IPlayerRightClick {
                 }else if(itemID == Material.INK_SACK.getId()){
                     ArrayList<RunsafePlayer> hitPlayers = playerHandler.getIngamePlayers(location, 5);
                     for(RunsafePlayer hitPlayer : hitPlayers)
-                        if(!hitPlayer.getName().equalsIgnoreCase(player.getName())) Buff.Combat.Blindness.duration(3).amplification(6).applyTo(hitPlayer);
+                        if(!hitPlayer.getName().equalsIgnoreCase(player.getName())){
+                            Buff.Combat.Blindness.duration(3).amplification(6).applyTo(hitPlayer);
+                            Buff.Combat.Damage.Decrease.duration(3).amplification(3).applyTo(hitPlayer);
+                        }
                     used = true;
 
                 }else if(itemID == Material.GHAST_TEAR.getId()){

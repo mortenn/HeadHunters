@@ -1,10 +1,11 @@
 package no.runsafe.headhunters;
 
+import no.runsafe.framework.minecraft.Enchant;
 import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
 
-
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,12 +16,15 @@ import java.util.ArrayList;
 public class RandomItem  {
 
     ArrayList<RunsafeMeta> items;
+    HashMap<RunsafeMeta, Integer> itemMap;
 
     public RandomItem(){
 
+        itemMap = new HashMap<RunsafeMeta, Integer>();
         items = new ArrayList<RunsafeMeta>();
 
         RunsafeMeta apple = Item.Food.Golden.Apple.getItem();
+        RunsafeMeta sugar = Item.Materials.Sugar.getItem();
 
         RunsafeMeta slimeBall = Item.Miscellaneous.Slimeball.getItem();
         slimeBall.setDisplayName("§6Slow Them Now");
@@ -28,83 +32,49 @@ public class RandomItem  {
         slimeBall.addLore("to slow enemies");
         slimeBall.addLore("in a 5 block radius.");
 
-
-        RunsafeMeta sugar = Item.Materials.Sugar.getItem();
-
-
         RunsafeMeta magmaCream = Item.Brewing.MagmaCream.getItem();
-
         magmaCream.setDisplayName("§6Hot Topic");
         magmaCream.addLore("Right click on the ground");
         magmaCream.addLore("to smite enemies with lightning");
         magmaCream.addLore("in a 5 block radius.");
-
 
         RunsafeMeta star = Item.Materials.NetherStar.getItem();
         star.setDisplayName("§6Portal Deluxe 2000");
         star.addLore("Right Click to teleport a random Spot");
         star.addLore("§eUnstable device. Might blow up.");
 
-
         RunsafeMeta rod = Item.Materials.BlazeRod.getItem();
         rod.setAmount(3);
-
         rod.setDisplayName("§6BF-stick");
         rod.addLore("Right click to shoot a fireball!");
 
-
         RunsafeMeta sack = Item.Materials.InkSack.getItem();
-
         sack.setDisplayName("§6No Eyed Fool");
-        sack.addLore("Right click to blind you enemies in a 5 block radius.");
-
+        sack.addLore("Right click to weaken you enemies in a 5 block radius.");
 
         RunsafeMeta tear = Item.Brewing.GhastTear.getItem();
         tear.setDisplayName("§6Feed On their Tears");
         tear.addLore("Right click to teleport everyone to you, and you away safely.");
 
-        items.add(apple);
-        items.add(apple);
-        items.add(apple);
-        items.add(apple);
-        items.add(apple);
-        items.add(apple);
-        items.add(apple);
-        items.add(apple);
-        items.add(apple);
+        RunsafeMeta woodTumbler = Item.Combat.Sword.Wood.getItem();
+        woodTumbler.setDisplayName("§6Wood Tumbler");
 
-        items.add(sugar);
-        items.add(sugar);
-        items.add(sugar);
-        items.add(sugar);
-        items.add(sugar);
-        items.add(sugar);
-        items.add(sugar);
+        woodTumbler.setDurability((byte) 57);
+        Enchant.Knockback.power(10).applyTo(woodTumbler);
 
-        items.add(slimeBall);
-        items.add(slimeBall);
-        items.add(slimeBall);
-        items.add(slimeBall);
-        items.add(slimeBall);
+        itemMap.put(apple, 10);
+        itemMap.put(sugar, 9);
+        itemMap.put(slimeBall, 5);
+        itemMap.put(magmaCream, 3);
+        itemMap.put(star, 5);
+        itemMap.put(rod, 5);
+        itemMap.put(sack, 8);
+        itemMap.put(tear, 1);
+        itemMap.put(woodTumbler, 3);
 
-        items.add(magmaCream);
-        items.add(magmaCream);
-        items.add(magmaCream);
-
-        items.add(star);
-        items.add(star);
-
-        items.add(rod);
-        items.add(rod);
-        items.add(rod);
-        items.add(rod);
-
-        items.add(sack);
-        items.add(sack);
-        items.add(sack);
-
-        items.add(tear);
-
+        for(RunsafeMeta item : itemMap.keySet())
+            for(int i = 0; i < itemMap.get(item); i++)
+                items.add(item);
     }
 
     public RunsafeMeta get(){

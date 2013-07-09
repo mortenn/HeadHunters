@@ -3,6 +3,7 @@ package no.runsafe.headhunters.command;
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 
+import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.*;
 
 import java.util.ArrayList;
@@ -43,7 +44,8 @@ public class CommandInfo extends ExecutableCommand {
                 int min = (int)Math.floor(core.getTimeToEnd() / 60);
                 int sec = core.getTimeToEnd() - min * 60;
                 info.add(String.format("Time remaining &f%s:%s", min, Util.fillZeros(sec)));
-                info.add(String.format("Current leader: %s", playerHandler.getCurrentLeader().getPrettyName()));
+                RunsafePlayer leader = playerHandler.getCurrentLeader();
+                if(leader != null) info.add(String.format("Current leader: %s", leader.getPrettyName()));
                 info.add(String.format("Heads needed: &f%d", playerHandler.getWinAmount()));
                 info.add(String.format("Current Map: &f%s", areaHandler.getAreaName(areaHandler.getCurrentArea())));
             }else{

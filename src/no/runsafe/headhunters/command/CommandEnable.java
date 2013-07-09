@@ -21,7 +21,7 @@ public class CommandEnable extends ExecutableCommand {
     Core core;
 
     public CommandEnable(Core core){
-        super("enable", "Enables the plugin", "headhunters.CommandEnable");
+        super("enable", "Enables the plugin", "headhunters.command-enable");
         this.core = core;
     }
 

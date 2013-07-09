@@ -48,6 +48,7 @@ public class PlayerDeath implements IPlayerDeathEvent {
             RunsafePlayer killer = player.getKiller();
             if(killer != null) killer.setHealth(Math.min(killer.getHealth() + 4, 20));
             //todo: drop all usable items
+            player.removeBuffs();
             event.setDroppedXP(0);
             int amount = core.amountHeads(event.getEntity());
             List<RunsafeMeta> items = event.getDrops();

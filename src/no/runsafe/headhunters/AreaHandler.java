@@ -27,8 +27,8 @@ public class AreaHandler {
 
     public AreaHandler(){
         areas = new HashMap<Integer, SimpleArea>();
-        currentArea = -1;
-        nextArea = -1;
+        currentArea = 0;
+        nextArea = 0;
         availableRegions = new StringBuilder();
     }
 
@@ -127,6 +127,14 @@ public class AreaHandler {
         return false;
     }
 
+    public boolean isInCurrentCombatRegion(RunsafeLocation location){
+        return isInCombatRegion(location, currentArea);
+    }
+
+    public boolean isInCombatRegion(RunsafeLocation location, int area) {
+        return areas.get(area).pointInArea(location);
+    }
+
     public ArrayList<String> get__areas__() {
         return __areas__;
     }
@@ -134,7 +142,8 @@ public class AreaHandler {
     public void removeEntities(List<RunsafeEntity> entities) {
         if(areas.containsKey(currentArea))
             for(RunsafeEntity entity : entities) //lets not delete players...
-                if(!(entity instanceof RunsafePlayer) && areas.get(currentArea).pointInArea(entity.getLocation())) entity.remove();
+                if(!(entity instanceof RunsafePlayer) && areas.get(currentArea).pointInArea(entity.getLocation()))
+                    entity.remove();
 
     }
 }

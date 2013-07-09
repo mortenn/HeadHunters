@@ -50,6 +50,7 @@ public class Plugin extends RunsafeConfigurablePlugin
         this.addComponent(PlayerDisconnect.class);
         this.addComponent(PlayerItemPickUp.class);
         this.addComponent(PlayerRightClick.class);
+        this.addComponent(PlayerTeleport.class);
 
         this.addComponent(BlockBreak.class);
         this.addComponent(BlockPlace.class);
