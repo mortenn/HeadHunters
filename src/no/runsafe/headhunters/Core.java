@@ -14,6 +14,7 @@ import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.framework.text.ChatColour;
 import no.runsafe.framework.text.ConsoleColour;
+import no.runsafe.worldguardbridge.WorldGuardInterface;
 import org.bukkit.GameMode;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
     private AreaHandler areaHandler;
 
     public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, VoteHandler voteHandler,
-                    PlayerHandler playerHandler, AreaHandler areaHandler) {
+                    PlayerHandler playerHandler, AreaHandler areaHandler, WorldGuardInterface worldGuardInterface) {
 
         this.config = config;
         this.console = console;
@@ -62,6 +63,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
 
         this.gamestarted = false;
 
+        SimpleArea.setWorldGuardInterface(worldGuardInterface);
+
         this.scheduler.startSyncRepeatingTask(
                 new Runnable() {
                     @Override
@@ -70,6 +73,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
                     }
                 }, 1, 1
         );
+
+
 
     }
 

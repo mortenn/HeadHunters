@@ -1,16 +1,14 @@
 package no.runsafe.headhunters;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.GlobalRegionManager;
-
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import no.runsafe.framework.minecraft.RunsafeLocation;
-import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.RunsafeWorld;
 import no.runsafe.framework.minecraft.block.RunsafeSign;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.worldguardbridge.WorldGuardInterface;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+
 
 import java.util.ArrayList;
 
@@ -22,7 +20,8 @@ import java.util.ArrayList;
  */
 public class SimpleArea {
 
-    private WorldGuardPlugin worldGuard;
+    private static WorldGuardInterface worldGuardInterface;
+
     private double x1;
     private double x2;
     private double y1;
@@ -46,54 +45,24 @@ public class SimpleArea {
 
         sortCoords();
 
-        this.regionName = "Waitroom";
-
+        this.regionName = "waitroom";
     }
 
-    public SimpleArea(String region, RunsafeWorld world){
-        this.regionName = region;
-        this.worldGuard = RunsafeServer.Instance.getPlugin("WorldGuard");
-        if(worldGuard == null){
-            System.out.println("Please CommandEnable/install WorldGuard");
-            this.x1 = 0;
-            this.x2 = 0;
-            this.y1 = 0;
-            this.y2 = 0;
-            this.z1 = 0;
-            this.z2 = 0;
-            this.world = world;
-        }else{
-
-            GlobalRegionManager manager = worldGuard.getGlobalRegionManager();
-
-            ProtectedRegion reg = manager.get(world.getRaw()).getRegion(region);
-            this.x1 = reg.getMaximumPoint().getBlockX();
-            this.y1 = reg.getMaximumPoint().getBlockY();
-            this.z1 = reg.getMaximumPoint().getBlockZ();
-            this.x2 = reg.getMinimumPoint().getBlockX();
-            this.y2 = reg.getMinimumPoint().getBlockY();
-            this.z2 = reg.getMinimumPoint().getBlockZ();
-            this.world = world;
-
-            sortCoords();
-        }
-
-    }
-
-    public SimpleArea(ProtectedRegion reg, RunsafeWorld world){
-
-        this.regionName = reg.getId();
-        this.x1 = reg.getMaximumPoint().getBlockX();
-        this.y1 = reg.getMaximumPoint().getBlockY();
-        this.z1 = reg.getMaximumPoint().getBlockZ();
-        this.x2 = reg.getMinimumPoint().getBlockX();
-        this.y2 = reg.getMinimumPoint().getBlockY();
-        this.z2 = reg.getMinimumPoint().getBlockZ();
+    public SimpleArea(RunsafeWorld world, String regionName) {
         this.world = world;
+        this.regionName = regionName;
 
-        sortCoords();
+        if(worldGuardInterface != null && worldGuardInterface.serverHasWorldGuard()){
+            ProtectedRegion region = worldGuardInterface.getRegion(world, regionName);
+            this.x1 = region.getMinimumPoint().getBlockX();
+            this.y1 = region.getMinimumPoint().getBlockY();
+            this.z1 = region.getMinimumPoint().getBlockZ();
 
+            this.x2 = region.getMaximumPoint().getBlockX();
+            this.y2 = region.getMaximumPoint().getBlockY();
+            this.z2 = region.getMaximumPoint().getBlockZ();
 
+        }
     }
 
     public void setFirstPos(double x, double y, double z){
@@ -250,5 +219,13 @@ public class SimpleArea {
 
     public String getRegionName() {
         return this.regionName;
+    }
+
+    public static WorldGuardInterface getWorldGuardInterface() {
+        return worldGuardInterface;
+    }
+
+    public static void setWorldGuardInterface(WorldGuardInterface worldGuardInterface) {
+        SimpleArea.worldGuardInterface = worldGuardInterface;
     }
 }

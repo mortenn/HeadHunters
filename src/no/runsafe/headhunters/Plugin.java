@@ -5,12 +5,15 @@ import no.runsafe.framework.RunsafeConfigurablePlugin;
 import no.runsafe.framework.api.command.Command;
 import no.runsafe.headhunters.command.*;
 import no.runsafe.headhunters.event.*;
+import no.runsafe.worldguardbridge.WorldGuardInterface;
 
 public class Plugin extends RunsafeConfigurablePlugin
 {
 	@Override
 	protected void PluginSetup()
 	{
+
+        addComponent(Instances.get("RunsafeWorldGuardBridge").getComponent(WorldGuardInterface.class));
 
         this.addComponent(EquipmentManager.class);
         this.addComponent(RandomItem.class);

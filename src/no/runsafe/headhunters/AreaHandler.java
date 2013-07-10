@@ -38,7 +38,7 @@ public class AreaHandler {
         int index = 0;
         boolean first = true;
         for(String area: areaList){
-            SimpleArea simpleArea = new SimpleArea(area, RunsafeServer.Instance.getWorld(world));
+            SimpleArea simpleArea = new SimpleArea(RunsafeServer.Instance.getWorld(world), area);
             areas.put(index, simpleArea );
             if(!first) availableRegions.append(",");
             else first = false;
@@ -119,11 +119,9 @@ public class AreaHandler {
     }
 
     public boolean isInCombatRegion(RunsafeLocation location) {
-
         for(int i = 0; i < areas.size(); i++){
             if(areas.get(i).pointInArea(location)) return true;
         }
-
         return false;
     }
 
