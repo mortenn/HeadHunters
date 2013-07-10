@@ -10,7 +10,6 @@ import no.runsafe.framework.minecraft.block.RunsafeBlock;
 import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.AreaHandler;
-import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.PlayerHandler;
 import no.runsafe.headhunters.Util;
 import org.bukkit.Effect;
