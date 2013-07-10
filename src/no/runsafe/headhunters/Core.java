@@ -1,6 +1,5 @@
 package no.runsafe.headhunters;
 
-
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.IScheduler;
