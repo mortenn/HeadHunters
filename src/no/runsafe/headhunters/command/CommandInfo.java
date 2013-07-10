@@ -25,7 +25,7 @@ public class CommandInfo extends ExecutableCommand
 	{
 
 		ArrayList<String> info = new ArrayList<String>();
-		if (core.getEnabled())
+		if (core.isEnabled())
 		{
 			info.add("-------------");
 

@@ -22,7 +22,7 @@ public class CommandConfig extends ExecutableCommand
 	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
 	{
 
-		if (core.getEnabled()) return Constants.ERROR_COLOR + "Disable headhunters first!";
+		if (core.isEnabled()) return Constants.ERROR_COLOR + "Disable headhunters first!";
 
 
 		String key = parameters.get("key");

@@ -22,6 +22,7 @@ public class CommandVote extends PlayerCommand
 	{
 
 		if (!core.isInWaitroom(executor)) return Constants.MSG_NEED_IN_WAITROOM;
+        if (!core.isEnabled()) return Constants.ERROR_COLOR + "Headhunters is disabled";
 
 		return voteHandler.vote(executor);
 

@@ -25,6 +25,7 @@ public class AreaHandler
 		areas.clear();
 		int index = 0;
 		boolean first = true;
+        availableRegions = new StringBuilder();
 		for (String area : areaList)
 		{
 			SimpleArea simpleArea = new SimpleArea(RunsafeServer.Instance.getWorld(world), area);
@@ -103,17 +104,6 @@ public class AreaHandler
 		return areas.size();
 	}
 
-	public String getCombatRegion(RunsafeLocation location)
-	{
-		for (int i = 0; i < areas.size(); i++)
-			if (areas.get(i).pointInArea(location))
-			{
-				return areas.get(i).getRegionName();
-			}
-
-		return null;
-	}
-
 	public String getAvailableRegions()
 	{
 		return availableRegions.toString();
@@ -158,7 +148,7 @@ public class AreaHandler
 	}
 
 	private final HashMap<Integer, SimpleArea> areas;
-	private final StringBuilder availableRegions;
+	private StringBuilder availableRegions;
 	private int currentArea;
 	private int nextArea;
 	private String world = "world";

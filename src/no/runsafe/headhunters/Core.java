@@ -82,7 +82,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		return gamestarted;
 	}
 
-	public boolean getEnabled()
+	public boolean isEnabled()
 	{
 		return enabled;
 	}

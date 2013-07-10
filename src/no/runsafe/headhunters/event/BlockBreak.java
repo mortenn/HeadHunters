@@ -25,7 +25,7 @@ public class BlockBreak implements IBlockBreakEvent
 			if (areaHandler.isInCombatRegion(eventPlayer.getLocation()))
 			{
 
-				if (core.getEnabled())
+				if (core.isEnabled())
 				{
 					event.setCancelled(true);
 				}

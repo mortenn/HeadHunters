@@ -26,7 +26,7 @@ public class BlockPlace implements IBlockPlace
 			if (areaHandler.isInCombatRegion(eventPlayer.getLocation()))
 			{
 
-				if (core.getEnabled())
+				if (core.isEnabled())
 				{
 					return false;
 				}
