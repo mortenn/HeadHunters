@@ -14,34 +14,41 @@ import no.runsafe.headhunters.PlayerHandler;
  * Date: 13-5-13
  * Time: 13:42
  */
-public class BlockBreak implements IBlockBreakEvent {
+public class BlockBreak implements IBlockBreakEvent
+{
+	private final PlayerHandler playerHandler;
+	private final Core core;
+	private final AreaHandler areaHandler;
+
+	public BlockBreak(PlayerHandler playerHandler, Core core, AreaHandler areaHandler)
+	{
+		this.playerHandler = playerHandler;
+		this.core = core;
+		this.areaHandler = areaHandler;
+	}
 
 
-    private PlayerHandler playerHandler;
-    private Core core;
-    private AreaHandler areaHandler;
+	@Override
+	public void OnBlockBreakEvent(RunsafeBlockBreakEvent event)
+	{
+		RunsafePlayer eventPlayer = event.getPlayer();
+		if (eventPlayer.getWorld().getName().equalsIgnoreCase(playerHandler.getWorldName()))
+		{
+			if (areaHandler.isInCombatRegion(eventPlayer.getLocation()))
+			{
 
-    public BlockBreak(PlayerHandler playerHandler, Core core, AreaHandler areaHandler){
-        this.playerHandler = playerHandler;
-        this.core = core;
-        this.areaHandler = areaHandler;
-    }
-
-
-    @Override
-    public void OnBlockBreakEvent(RunsafeBlockBreakEvent event) {
-        RunsafePlayer eventPlayer = event.getPlayer();
-        if(eventPlayer.getWorld().getName().equalsIgnoreCase(playerHandler.getWorldName())){
-            if(areaHandler.isInCombatRegion(eventPlayer.getLocation())){
-
-                if(core.getEnabled()){
-                    event.setCancelled(true);
-                }else{
-                    if(!eventPlayer.hasPermission("headhunters.build")){
-                        event.setCancelled(true);
-                    }
-                }
-            }
-        }
-    }
+				if (core.getEnabled())
+				{
+					event.setCancelled(true);
+				}
+				else
+				{
+					if (!eventPlayer.hasPermission("headhunters.build"))
+					{
+						event.setCancelled(true);
+					}
+				}
+			}
+		}
+	}
 }

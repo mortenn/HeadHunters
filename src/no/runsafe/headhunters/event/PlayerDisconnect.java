@@ -11,16 +11,18 @@ import no.runsafe.headhunters.PlayerHandler;
  * Date: 3-5-13
  * Time: 0:05
  */
-public class PlayerDisconnect implements IPlayerQuitEvent {
+public class PlayerDisconnect implements IPlayerQuitEvent
+{
+	private final PlayerHandler playerHandler;
 
-    private PlayerHandler playerHandler;
+	public PlayerDisconnect(PlayerHandler playerHandler)
+	{
+		this.playerHandler = playerHandler;
+	}
 
-    public PlayerDisconnect(PlayerHandler playerHandler){
-        this.playerHandler = playerHandler;
-    }
-
-    @Override
-    public void OnPlayerQuit(RunsafePlayerQuitEvent event) {
-        if(playerHandler.isIngame(event.getPlayer())) playerHandler.remove(event.getPlayer());
-    }
+	@Override
+	public void OnPlayerQuit(RunsafePlayerQuitEvent event)
+	{
+		if (playerHandler.isIngame(event.getPlayer())) playerHandler.remove(event.getPlayer());
+	}
 }

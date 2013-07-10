@@ -14,36 +14,44 @@ import no.runsafe.headhunters.PlayerHandler;
  * Date: 13-5-13
  * Time: 13:56
  */
-public class BlockPlace implements IBlockPlace {
+public class BlockPlace implements IBlockPlace
+{
+	private final Core core;
+	private final PlayerHandler playerHandler;
+	private final AreaHandler areaHandler;
 
-    private Core core;
-    private PlayerHandler playerHandler;
-    private AreaHandler areaHandler;
-    public BlockPlace(Core core, PlayerHandler playerHandler, AreaHandler areaHandler){
-        this.core = core;
-        this.playerHandler = playerHandler;
-        this.areaHandler = areaHandler;
-    }
-
-
-    @Override
-    public boolean OnBlockPlace(RunsafePlayer eventPlayer, RunsafeBlock block) {
+	public BlockPlace(Core core, PlayerHandler playerHandler, AreaHandler areaHandler)
+	{
+		this.core = core;
+		this.playerHandler = playerHandler;
+		this.areaHandler = areaHandler;
+	}
 
 
+	@Override
+	public boolean OnBlockPlace(RunsafePlayer eventPlayer, RunsafeBlock block)
+	{
 
-        if(eventPlayer.getWorld().getName().equalsIgnoreCase(playerHandler.getWorldName())){
-            if(areaHandler.isInCombatRegion(eventPlayer.getLocation())){
 
-                if(core.getEnabled()){
-                    return false;
-                }else{
-                    if(!eventPlayer.hasPermission("headhunters.build")){
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
+		if (eventPlayer.getWorld().getName().equalsIgnoreCase(playerHandler.getWorldName()))
+		{
+			if (areaHandler.isInCombatRegion(eventPlayer.getLocation()))
+			{
 
-    }
+				if (core.getEnabled())
+				{
+					return false;
+				}
+				else
+				{
+					if (!eventPlayer.hasPermission("headhunters.build"))
+					{
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+
+	}
 }

@@ -13,21 +13,22 @@ import java.util.HashMap;
  * Date: 23-4-13
  * Time: 13:43
  */
-public class CommandJoin extends PlayerCommand {
+public class CommandJoin extends PlayerCommand
+{
+	final Core core;
+
+	public CommandJoin(Core core)
+	{
+		super("join", "CommandJoin a headhunters game", "headhunters.play");
+		this.core = core;
+	}
+
+	@Override
+	public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters)
+	{
+
+		return this.core.join(executor);
 
 
-    Core core;
-
-    public CommandJoin(Core core){
-        super("join", "CommandJoin a headhunters game", "headhunters.play");
-        this.core = core;
-    }
-
-    @Override
-    public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters) {
-
-       return this.core.join(executor);
-
-
-    }
+	}
 }

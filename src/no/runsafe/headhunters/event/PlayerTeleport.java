@@ -12,26 +12,29 @@ import no.runsafe.headhunters.PlayerHandler;
  * Date: 8-7-13
  * Time: 12:52
  */
-public class PlayerTeleport implements IPlayerTeleportEvent{
+public class PlayerTeleport implements IPlayerTeleportEvent
+{
+	final PlayerHandler playerHandler;
+	final AreaHandler areaHandler;
 
-    PlayerHandler playerHandler;
-    AreaHandler areaHandler;
+	public PlayerTeleport(PlayerHandler playerHandler, AreaHandler areaHandler)
+	{
+		this.playerHandler = playerHandler;
+		this.areaHandler = areaHandler;
+	}
 
-    public PlayerTeleport(PlayerHandler playerHandler, AreaHandler areaHandler) {
-        this.playerHandler = playerHandler;
-        this.areaHandler = areaHandler;
-    }
+	@Override
+	public void OnPlayerTeleport(RunsafePlayerTeleportEvent event)
+	{
+		RunsafePlayer player = event.getPlayer();
 
-    @Override
-    public void OnPlayerTeleport(RunsafePlayerTeleportEvent event) {
-        RunsafePlayer player = event.getPlayer();
+		if (playerHandler.isIngame(player))
+			if (!areaHandler.isInCurrentCombatRegion(event.getTo()))
+			{
+				System.out.println("Not in region! " + areaHandler.isInCurrentCombatRegion(player.getLocation()));
 
-        if(playerHandler.isIngame(player))
-            if(!areaHandler.isInCurrentCombatRegion(event.getTo())){
-                System.out.println("Not in region! " + areaHandler.isInCurrentCombatRegion(player.getLocation()));
+				playerHandler.remove(player);
+			}
 
-                playerHandler.remove(player);
-            }
-
-    }
+	}
 }
