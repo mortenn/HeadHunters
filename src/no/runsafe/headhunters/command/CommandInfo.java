@@ -8,13 +8,6 @@ import no.runsafe.headhunters.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 8-5-13
- * Time: 13:53
- */
 public class CommandInfo extends ExecutableCommand
 {
 	private final Core core;

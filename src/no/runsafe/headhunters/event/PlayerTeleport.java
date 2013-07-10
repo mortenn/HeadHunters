@@ -6,12 +6,6 @@ import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.PlayerHandler;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 8-7-13
- * Time: 12:52
- */
 public class PlayerTeleport implements IPlayerTeleportEvent
 {
 	final PlayerHandler playerHandler;

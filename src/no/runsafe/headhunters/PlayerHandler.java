@@ -10,12 +10,6 @@ import org.bukkit.GameMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 10-6-13
- * Time: 23:32
- */
 public class PlayerHandler
 {
 	final HashMap<String, HashMap<String, Object>> playerData;

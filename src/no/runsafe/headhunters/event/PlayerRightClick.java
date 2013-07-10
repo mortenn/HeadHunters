@@ -1,6 +1,5 @@
 package no.runsafe.headhunters.event;
 
-
 import no.runsafe.framework.api.event.player.IPlayerRightClick;
 import no.runsafe.framework.minecraft.Buff;
 import no.runsafe.framework.minecraft.RunsafeLocation;
@@ -17,12 +16,6 @@ import org.bukkit.Sound;
 
 import java.util.ArrayList;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 3-5-13
- * Time: 12:55
- */
 public class PlayerRightClick implements IPlayerRightClick
 {
 	private final RunsafeServer server;

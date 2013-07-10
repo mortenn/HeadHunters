@@ -1,14 +1,7 @@
 package no.runsafe.headhunters;
 
-
 import no.runsafe.framework.text.ChatColour;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 19-4-13
- * Time: 16:09
- */
 public class Constants
 {
 	public static final String MSG_COLOR = ChatColour.AQUA + "";

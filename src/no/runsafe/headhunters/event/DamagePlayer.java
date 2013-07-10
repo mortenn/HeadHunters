@@ -7,12 +7,6 @@ import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.PlayerHandler;
 import org.bukkit.Effect;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 2-7-13
- * Time: 12:55
- */
 public class DamagePlayer implements IPlayerDamageEvent
 {
 	private final AreaHandler areaHandler;

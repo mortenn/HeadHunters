@@ -1,6 +1,5 @@
 package no.runsafe.headhunters.command;
 
-
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.AreaHandler;
@@ -11,12 +10,6 @@ import org.bukkit.GameMode;
 
 import java.util.HashMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 31-5-13
- * Time: 13:55
- */
 public class CommandTeleport extends PlayerCommand
 {
 	private final PlayerHandler playerHandler;

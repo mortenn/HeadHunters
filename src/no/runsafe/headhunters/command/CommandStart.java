@@ -6,12 +6,6 @@ import no.runsafe.headhunters.Core;
 
 import java.util.HashMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 21-4-13
- * Time: 19:08
- */
 public class CommandStart extends PlayerCommand
 {
 	final Core core;

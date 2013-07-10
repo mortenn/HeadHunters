@@ -11,12 +11,6 @@ import org.bukkit.Material;
 
 import java.util.ArrayList;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 19-4-13
- * Time: 16:17
- */
 public class SimpleArea
 {
 	private static WorldGuardInterface worldGuardInterface;

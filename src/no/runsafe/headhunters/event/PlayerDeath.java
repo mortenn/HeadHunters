@@ -14,12 +14,6 @@ import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
 
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 21-4-13
- * Time: 22:31
- */
 public class PlayerDeath implements IPlayerDeathEvent
 {
 	private final RandomItem randomItem;

@@ -8,12 +8,6 @@ import no.runsafe.headhunters.Core;
 
 import java.util.HashMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 6-6-13
- * Time: 15:19
- */
 public class CommandConfig extends ExecutableCommand
 {
 	private final Core core;

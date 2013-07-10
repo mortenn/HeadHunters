@@ -1,6 +1,5 @@
 package no.runsafe.headhunters;
 
-
 import no.runsafe.framework.minecraft.Enchant;
 import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.minecraft.inventory.RunsafePlayerInventory;
@@ -9,12 +8,6 @@ import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.ArrayList;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 7-5-13
- * Time: 22:18
- */
 public class EquipmentManager
 {
 	final RunsafeMeta head;

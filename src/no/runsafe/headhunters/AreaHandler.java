@@ -9,12 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 28-6-13
- * Time: 13:50
- */
 public class AreaHandler
 {
 	private final HashMap<Integer, SimpleArea> areas;

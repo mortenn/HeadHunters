@@ -1,18 +1,11 @@
 package no.runsafe.headhunters.event;
 
-
 import no.runsafe.framework.api.event.player.IPlayerRespawn;
 import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.PlayerHandler;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 27-4-13
- * Time: 23:11
- */
 public class PlayerRespawn implements IPlayerRespawn
 {
 	private final PlayerHandler playerHandler;

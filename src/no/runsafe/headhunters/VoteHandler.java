@@ -1,16 +1,9 @@
 package no.runsafe.headhunters;
 
-
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.ArrayList;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 16-5-13
- * Time: 17:10
- */
 public class VoteHandler
 {
 	private final ArrayList<String> votedPlayers;

@@ -8,12 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 7-5-13
- * Time: 3:12
- */
 public class RandomItem
 {
 	final ArrayList<RunsafeMeta> items;

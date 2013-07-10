@@ -1,6 +1,5 @@
 package no.runsafe.headhunters;
 
-
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.IScheduler;
@@ -19,13 +18,6 @@ import org.bukkit.GameMode;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 19-4-13
- * Time: 16:04
- */
 public class Core implements IConfigurationChanged, IPluginEnabled
 {
 	private String worldName;

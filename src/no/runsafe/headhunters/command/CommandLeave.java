@@ -6,12 +6,6 @@ import no.runsafe.headhunters.PlayerHandler;
 
 import java.util.HashMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 2-5-13
- * Time: 20:04
- */
 public class CommandLeave extends PlayerCommand
 {
 	private final PlayerHandler playerHandler;

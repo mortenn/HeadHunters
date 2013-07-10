@@ -9,12 +9,6 @@ import no.runsafe.headhunters.Core;
 
 import java.util.HashMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 21-4-13
- * Time: 22:42
- */
 public class CommandSetSpawn extends PlayerCommand
 {
 	private final IConfiguration config;

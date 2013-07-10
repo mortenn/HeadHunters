@@ -1,6 +1,5 @@
 package no.runsafe.headhunters.command;
 
-
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Constants;
@@ -9,12 +8,6 @@ import no.runsafe.headhunters.VoteHandler;
 
 import java.util.HashMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 15-5-13
- * Time: 14:01
- */
 public class CommandVote extends PlayerCommand
 {
 	private final Core core;

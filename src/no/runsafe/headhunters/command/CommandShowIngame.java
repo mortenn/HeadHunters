@@ -1,6 +1,5 @@
 package no.runsafe.headhunters.command;
 
-
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Constants;
@@ -12,12 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 27-4-13
- * Time: 16:03
- */
 public class CommandShowIngame extends PlayerCommand
 {
 	final Core core;

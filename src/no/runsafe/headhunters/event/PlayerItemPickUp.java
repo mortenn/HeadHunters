@@ -1,6 +1,5 @@
 package no.runsafe.headhunters.event;
 
-
 import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.event.player.IPlayerPickupItemEvent;
 import no.runsafe.framework.minecraft.Buff;
@@ -11,12 +10,6 @@ import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.PlayerHandler;
 import org.bukkit.Material;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 3-5-13
- * Time: 12:45
- */
 public class PlayerItemPickUp implements IPlayerPickupItemEvent
 {
 	private final IOutput console;

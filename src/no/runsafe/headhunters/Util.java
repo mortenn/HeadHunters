@@ -1,6 +1,5 @@
 package no.runsafe.headhunters;
 
-
 import com.google.common.collect.Lists;
 import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
@@ -9,12 +8,6 @@ import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import java.util.ArrayList;
 import java.util.Random;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 7-5-13
- * Time: 3:16
- */
 public class Util
 {
 	static final Random random = new Random(System.currentTimeMillis());

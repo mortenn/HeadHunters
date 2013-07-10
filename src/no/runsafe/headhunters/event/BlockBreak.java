@@ -1,6 +1,5 @@
 package no.runsafe.headhunters.event;
 
-
 import no.runsafe.framework.api.event.block.IBlockBreakEvent;
 import no.runsafe.framework.minecraft.event.block.RunsafeBlockBreakEvent;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
@@ -8,12 +7,6 @@ import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.PlayerHandler;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 13-5-13
- * Time: 13:42
- */
 public class BlockBreak implements IBlockBreakEvent
 {
 	private final PlayerHandler playerHandler;

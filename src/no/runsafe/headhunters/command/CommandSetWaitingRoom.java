@@ -1,6 +1,5 @@
 package no.runsafe.headhunters.command;
 
-
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.RunsafeLocation;
@@ -12,12 +11,6 @@ import no.runsafe.headhunters.Util;
 
 import java.util.HashMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 21-4-13
- * Time: 17:14
- */
 public class CommandSetWaitingRoom extends PlayerCommand
 {
 	private final Core core;
