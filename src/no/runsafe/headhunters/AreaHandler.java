@@ -32,11 +32,12 @@ public class AreaHandler {
         availableRegions = new StringBuilder();
     }
 
-    public void loadAreas(List<String> areaList){
-        __areas__ = (ArrayList<String>) areaList;
+    public void loadAreas(ArrayList<String> areaList){
+        __areas__ = areaList;
         areas.clear();
         int index = 0;
         boolean first = true;
+        availableRegions = new StringBuilder();
         for(String area: areaList){
             SimpleArea simpleArea = new SimpleArea(RunsafeServer.Instance.getWorld(world), area);
             areas.put(index, simpleArea );

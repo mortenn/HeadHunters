@@ -210,7 +210,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
         this.countdownToEnd = config.getConfigValueAsInt("runtime");
         this.voteHandler.setMinPerc(config.getConfigValueAsInt("vote.min-percent"));
         this.voteHandler.setMinVotes(config.getConfigValueAsInt("vote.min-votes"));
-        areaHandler.loadAreas(config.getConfigValueAsList("regions"));
+        areaHandler.loadAreas((ArrayList<String>) config.getConfigValueAsList("regions"));
     }
 
     private void resetWaittime(){

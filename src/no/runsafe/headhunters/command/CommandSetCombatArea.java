@@ -1,23 +1,19 @@
 package no.runsafe.headhunters.command;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 
-import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.framework.text.ChatColour;
 import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.Util;
+import no.runsafe.worldguardbridge.WorldGuardInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,16 +25,16 @@ public class CommandSetCombatArea extends PlayerCommand {
 
     private Core core;
     private IConfiguration config;
-    private WorldGuardPlugin worldGuard;
     private AreaHandler areaHandler;
+    private WorldGuardInterface worldGuardInterface;
 
-    public CommandSetCombatArea(Core core, IConfiguration config, AreaHandler areaHandler){
+    public CommandSetCombatArea(Core core, IConfiguration config, AreaHandler areaHandler, WorldGuardInterface worldGuardInterface){
         super("combatarea", "Adds or removes the WorldGuard region you are in as a combat area.", "headhunters.regions.modify.areas", "p");
         this.core = core;
         this.config = config;
         this.captureTail();
-        this.worldGuard = RunsafeServer.Instance.getPlugin("WorldGuard");
         this.areaHandler = areaHandler;
+        this.worldGuardInterface = worldGuardInterface;
     }
 
     @Override
@@ -63,22 +59,19 @@ public class CommandSetCombatArea extends PlayerCommand {
 
         if(player.getWorld().getName().equalsIgnoreCase(worldName)){
 
-            RegionManager manager = worldGuard.getGlobalRegionManager().get(RunsafeServer.Instance.getWorld(worldName).getRaw());
-            ApplicableRegionSet set = manager.getApplicableRegions(player.getLocation().getRaw());
+            List<String> regions = worldGuardInterface.getRegionsAtLocation(player.getLocation());
 
-            if(set.size() == 0)
-                return Constants.ERROR_COLOR + "No region found";
-            if(set.size() > 1)
-                return Constants.ERROR_COLOR + "Found multiple regions";
+            if(regions.size() == 0)
+                return Constants.ERROR_COLOR + "No region found!";
+            if(regions.size() > 1)
+                return Constants.ERROR_COLOR + "Found multiple regions!";
 
             ArrayList<String> areas = areaHandler.get__areas__();
-            String thisRegion = null;
-            for(ProtectedRegion r : set)
-                thisRegion = r.getId();
+            String thisRegion = regions.get(0);
 
             if(add){
 
-                if(areas.contains(thisRegion))
+                if(Util.arrayListContainsIgnoreCase(areas, thisRegion))
                     return Constants.ERROR_COLOR + "Region already exists";
 
                 areas.add(thisRegion);
