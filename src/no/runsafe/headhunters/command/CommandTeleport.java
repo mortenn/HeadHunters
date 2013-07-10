@@ -1,47 +1,47 @@
 package no.runsafe.headhunters.command;
 
-
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
-import no.runsafe.headhunters.*;
+import no.runsafe.headhunters.AreaHandler;
+import no.runsafe.headhunters.Constants;
+import no.runsafe.headhunters.Core;
+import no.runsafe.headhunters.PlayerHandler;
 import org.bukkit.GameMode;
 
 import java.util.HashMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 31-5-13
- * Time: 13:55
- */
-public class CommandTeleport extends PlayerCommand {
+public class CommandTeleport extends PlayerCommand
+{
+	public CommandTeleport(PlayerHandler playerHandler, AreaHandler areaHandler)
+	{
+		super("teleport", "teleports you to a given area", "headhunters.regions.teleport", "region");
+		this.playerHandler = playerHandler;
+		this.areaHandler = areaHandler;
+	}
 
-    private final PlayerHandler playerHandler;
-    private AreaHandler areaHandler;
+	@Override
+	public String getUsageCommandParams()
+	{
+		return "<map> &aAvailable maps: &f" + areaHandler.getAvailableRegions() + "\n";
+	}
 
-    public CommandTeleport(PlayerHandler playerHandler, AreaHandler areaHandler){
-        super("teleport", "teleports you to a given area", "headhunters.regions.teleport", "region");
-        this.playerHandler = playerHandler;
-        this.areaHandler = areaHandler;
-    }
+	@Override
+	public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters)
+	{
 
-    @Override
-    public String getUsageCommandParams(){
-       return "<map> &aAvailable maps: &f" + areaHandler.getAvailableRegions() + "\n";
-    }
+		if (playerHandler.isIngame(executor))
+		{
+			return Constants.ERROR_COLOR + "You can not use this command while in game!";
+		}
 
-    @Override
-    public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters) {
+		String region = parameters.get("region");
+		int regionId = areaHandler.getAreaByName(region);
+		if (regionId == -1) return getUsageCommandParams();
+		areaHandler.teleport(regionId, executor);
+		executor.setGameMode(GameMode.CREATIVE);
+		return null;
+	}
 
-        if(playerHandler.isIngame(executor)){
-            return Constants.ERROR_COLOR + "You can not use this command while in game!";
-        }
-
-        String region = parameters.get("region");
-        int regionId = areaHandler.getAreaByName(region);
-        if(regionId == -1) return getUsageCommandParams();
-        areaHandler.teleport(regionId, executor);
-        executor.setGameMode(GameMode.CREATIVE);
-        return null;
-    }
+	private final PlayerHandler playerHandler;
+	private final AreaHandler areaHandler;
 }

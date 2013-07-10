@@ -7,30 +7,25 @@ import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.PlayerHandler;
 import org.bukkit.Effect;
 
+public class DamagePlayer implements IPlayerDamageEvent
+{
+	public DamagePlayer(AreaHandler areaHandler, PlayerHandler playerHandler)
+	{
+		this.areaHandler = areaHandler;
+		this.playerHandler = playerHandler;
+	}
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 2-7-13
- * Time: 12:55
- */
-public class DamagePlayer implements IPlayerDamageEvent {
+	@Override
+	public void OnPlayerDamage(RunsafePlayer player, RunsafeEntityDamageEvent event)
+	{
+		if (player.getWorld().getName().equalsIgnoreCase(areaHandler.getWorld()) && playerHandler.isIngame(player))
+		{
 
-    private final AreaHandler areaHandler;
-    private final PlayerHandler playerHandler;
+			player.getWorld().playEffect(player.getLocation(), Effect.getById(2001), 152);
 
-    public DamagePlayer(AreaHandler areaHandler, PlayerHandler playerHandler){
-        this.areaHandler = areaHandler;
-        this.playerHandler = playerHandler;
-    }
+		}
+	}
 
-
-    @Override
-    public void OnPlayerDamage(RunsafePlayer player, RunsafeEntityDamageEvent event) {
-        if(player.getWorld().getName().equalsIgnoreCase(areaHandler.getWorld()) && playerHandler.isIngame(player)){
-
-            player.getWorld().playEffect(player.getLocation(), Effect.getById(2001), 152);
-
-        }
-    }
+	private final AreaHandler areaHandler;
+	private final PlayerHandler playerHandler;
 }

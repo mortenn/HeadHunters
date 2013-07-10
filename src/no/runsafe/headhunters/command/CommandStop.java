@@ -6,25 +6,22 @@ import no.runsafe.headhunters.Core;
 
 import java.util.HashMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 2-5-13
- * Time: 18:39
- */
-public class CommandStop extends PlayerCommand {
+public class CommandStop extends PlayerCommand
+{
+	public CommandStop(Core core)
+	{
+		super("stop", "Stops the current game", "headhunters.game-control.stop");
 
-    private Core core;
+		this.core = core;
 
-    public CommandStop(Core core){
-        super("stop", "Stops the current game", "headhunters.game-control.stop");
+	}
 
-        this.core = core;
-    }
+	@Override
+	public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters)
+	{
+		this.core.stop(executor);
+		return null;
+	}
 
-    @Override
-    public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters) {
-        this.core.stop(executor);
-        return null;
-    }
+	private final Core core;
 }

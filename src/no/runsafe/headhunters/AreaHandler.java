@@ -9,131 +9,158 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Naxanria
- * Date: 28-6-13
- * Time: 13:50
- */
-public class AreaHandler {
+public class AreaHandler
+{
+	public AreaHandler()
+	{
+		areas = new HashMap<Integer, SimpleArea>();
+		currentArea = 0;
+		nextArea = 0;
+		availableRegions = new StringBuilder();
+	}
 
-    private HashMap<Integer, SimpleArea> areas;
-    private int currentArea;
-    private int nextArea;
-    private String world = "world";
-    private StringBuilder availableRegions;
+	public void loadAreas(List<String> areaList)
+	{
+		__areas__ = (ArrayList<String>) areaList;
+		areas.clear();
+		int index = 0;
+		boolean first = true;
+		for (String area : areaList)
+		{
+			SimpleArea simpleArea = new SimpleArea(RunsafeServer.Instance.getWorld(world), area);
+			areas.put(index, simpleArea);
+			if (!first) availableRegions.append(",");
+			else first = false;
+			availableRegions.append(simpleArea.getRegionName());
+			index++;
+		}
 
-    private ArrayList<String> __areas__;
+	}
 
-    public AreaHandler(){
-        areas = new HashMap<Integer, SimpleArea>();
-        currentArea = 0;
-        nextArea = 0;
-        availableRegions = new StringBuilder();
-    }
+	public int getCurrentArea()
+	{
+		return currentArea;
+	}
 
-    public void loadAreas(ArrayList<String> areaList){
-        __areas__ = areaList;
-        areas.clear();
-        int index = 0;
-        boolean first = true;
-        availableRegions = new StringBuilder();
-        for(String area: areaList){
-            SimpleArea simpleArea = new SimpleArea(RunsafeServer.Instance.getWorld(world), area);
-            areas.put(index, simpleArea );
-            if(!first) availableRegions.append(",");
-            else first = false;
-            availableRegions.append(simpleArea.getRegionName());
-            index++;
-        }
+	public void setNextAsCurrentArea()
+	{
+		currentArea = nextArea;
+		if (!areas.containsKey(currentArea))
+		{
+			currentArea = 0;
+		}
+	}
 
-    }
+	public int getNextArea()
+	{
+		return nextArea;
+	}
 
-    public int getCurrentArea() {
-        return currentArea;
-    }
+	public String getAreaName(int index)
+	{
+		return areas.get(index).getRegionName();
+	}
 
-    public void setNextAsCurrentArea(){
-        currentArea = nextArea;
-        if(!areas.containsKey(currentArea)){
-            currentArea = 0;
-        }
-    }
+	public int randomNextArea()
+	{
+		return (nextArea = Util.getRandom(0, areas.size(), nextArea));
+	}
 
-    public int getNextArea() {
-        return nextArea;
-    }
+	public void setNextArea(int newNextArea)
+	{
+		if (newNextArea < 0) newNextArea = 0;
+		nextArea = newNextArea;
+	}
 
-    public String getAreaName(int index){
-        return areas.get(index).getRegionName();
-    }
+	public int getAreaByName(String name)
+	{
+		for (int i = 0; i < areas.size(); i++)
+		{
+			if (areas.get(i).getRegionName().equalsIgnoreCase(name))
+				return i;
+		}
+		return -1;
+	}
 
-    public int randomNextArea(){
-        return (nextArea = Util.getRandom(0, areas.size(), nextArea));
-    }
-
-    public void setNextArea(int newNextArea){
-        if(newNextArea < 0) newNextArea = 0;
-        nextArea = newNextArea;
-    }
-
-    public int getAreaByName(String name){
-        for(int i = 0; i < areas.size(); i++){
-            if(areas.get(i).getRegionName().equalsIgnoreCase(name))
-                return i;
-        }
-        return -1;
-    }
-
-    public RunsafeLocation getSafeLocation(){
-        return areas.get(currentArea).safeLocation();
-    }
+	public RunsafeLocation getSafeLocation()
+	{
+		return areas.get(currentArea).safeLocation();
+	}
 
 
-    public void setWorld(String world) {
-        this.world = world;
-    }
+	public void setWorld(String world)
+	{
+		this.world = world;
+	}
 
-    public String getWorld() {
-        return world;
-    }
+	public String getWorld()
+	{
+		return world;
+	}
 
-    public int getAmountLoadedAreas() {
-        return areas.size();
-    }
+	public int getAmountLoadedAreas()
+	{
+		return areas.size();
+	}
 
-    public String getAvailableRegions() {
-        return availableRegions.toString();
-    }
+	public String getCombatRegion(RunsafeLocation location)
+	{
+		for (int i = 0; i < areas.size(); i++)
+			if (areas.get(i).pointInArea(location))
+			{
+				return areas.get(i).getRegionName();
+			}
 
-    public void teleport(int region, RunsafePlayer player){
-        areas.get(region).teleportToArea(player);
-    }
+		return null;
+	}
 
-    public boolean isInCombatRegion(RunsafeLocation location) {
-        for(int i = 0; i < areas.size(); i++){
-            if(areas.get(i).pointInArea(location)) return true;
-        }
-        return false;
-    }
+	public String getAvailableRegions()
+	{
+		return availableRegions.toString();
+	}
 
-    public boolean isInCurrentCombatRegion(RunsafeLocation location){
-        return isInCombatRegion(location, currentArea);
-    }
+	public void teleport(int region, RunsafePlayer player)
+	{
+		areas.get(region).teleportToArea(player);
+	}
 
-    public boolean isInCombatRegion(RunsafeLocation location, int area) {
-        return areas.get(area).pointInArea(location);
-    }
+	public boolean isInCombatRegion(RunsafeLocation location)
+	{
+		for (int i = 0; i < areas.size(); i++)
+		{
+			if (areas.get(i).pointInArea(location)) return true;
+		}
+		return false;
+	}
 
-    public ArrayList<String> get__areas__() {
-        return __areas__;
-    }
+	public boolean isInCurrentCombatRegion(RunsafeLocation location)
+	{
+		return isInCombatRegion(location, currentArea);
+	}
 
-    public void removeEntities(List<RunsafeEntity> entities) {
-        if(areas.containsKey(currentArea))
-            for(RunsafeEntity entity : entities) //lets not delete players...
-                if(!(entity instanceof RunsafePlayer) && areas.get(currentArea).pointInArea(entity.getLocation()))
-                    entity.remove();
+	public boolean isInCombatRegion(RunsafeLocation location, int area)
+	{
+		return areas.get(area).pointInArea(location);
+	}
 
-    }
+	public ArrayList<String> get__areas__()
+	{
+		return __areas__;
+	}
+
+	public void removeEntities(List<RunsafeEntity> entities)
+	{
+		if (areas.containsKey(currentArea))
+			for (RunsafeEntity entity : entities) //lets not delete players...
+				if (!(entity instanceof RunsafePlayer) && areas.get(currentArea).pointInArea(entity.getLocation()))
+					entity.remove();
+
+	}
+
+	private final HashMap<Integer, SimpleArea> areas;
+	private final StringBuilder availableRegions;
+	private int currentArea;
+	private int nextArea;
+	private String world = "world";
+	private ArrayList<String> __areas__;
 }
