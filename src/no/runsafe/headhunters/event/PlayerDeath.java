@@ -30,6 +30,7 @@ public class PlayerDeath implements IPlayerDeathEvent {
     private PlayerHandler playerHandler;
     private IScheduler scheduler;
 
+
     public PlayerDeath(Core core, RandomItem randomItem, PlayerHandler playerHandler, IScheduler scheduler){
         this.core = core;
         this.randomItem = randomItem;
@@ -47,12 +48,12 @@ public class PlayerDeath implements IPlayerDeathEvent {
 
             RunsafePlayer killer = player.getKiller();
             if(killer != null) killer.setHealth(Math.min(killer.getHealth() + 4, 20));
-            //todo: drop all usable items
-            player.removeBuffs();
             event.setDroppedXP(0);
             int amount = core.amountHeads(event.getEntity());
             List<RunsafeMeta> items = event.getDrops();
+            List<RunsafeMeta> toDrop = randomItem.getCleanedDrops(items);
             items.clear();
+            items.addAll(toDrop);
             items.add(randomItem.get());
             event.setDrops(items);
             RunsafeMeta heads = Item.Decoration.Head.Human.getItem();

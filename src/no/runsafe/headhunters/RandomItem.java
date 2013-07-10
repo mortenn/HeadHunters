@@ -2,10 +2,12 @@ package no.runsafe.headhunters;
 
 import no.runsafe.framework.minecraft.Enchant;
 import no.runsafe.framework.minecraft.Item;
+import no.runsafe.framework.minecraft.inventory.RunsafeInventory;
 import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -70,7 +72,7 @@ public class RandomItem  {
         itemMap.put(rod, 5);
         itemMap.put(sack, 8);
         itemMap.put(tear, 1);
-        itemMap.put(woodTumbler, 3);
+        //itemMap.put(woodTumbler, 3);
 
         for(RunsafeMeta item : itemMap.keySet())
             for(int i = 0; i < itemMap.get(item); i++)
@@ -79,6 +81,19 @@ public class RandomItem  {
 
     public RunsafeMeta get(){
         return items.get(Util.getRandom(0, items.size()));
+    }
+
+    public ArrayList<RunsafeMeta> getCleanedDrops(List<RunsafeMeta> drops){
+
+
+        ArrayList<RunsafeMeta> outList = new ArrayList<RunsafeMeta>();
+
+        for(RunsafeMeta item : drops)
+            if(items.contains(item))
+                outList.add(item);
+
+        return outList;
+
     }
 
 }

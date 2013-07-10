@@ -4,6 +4,7 @@ package no.runsafe.headhunters;
 import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -17,7 +18,6 @@ import java.util.Random;
 public class Util {
 
     static Random random = new Random(System.currentTimeMillis());
-
 
     public static int getRandom(int min, int max){
 
@@ -77,8 +77,6 @@ public class Util {
         );
     }
 
-
-
     public static String prettyLocation(RunsafeLocation location){
         return String.format("&a%d %d %d", location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
@@ -94,7 +92,6 @@ public class Util {
         String s =  i + "";
         if(i < 10) s = "0" + s;
         return s;
-
     }
 
     public static boolean arrayListContainsIgnoreCase(ArrayList<String> arrayList, String check){
