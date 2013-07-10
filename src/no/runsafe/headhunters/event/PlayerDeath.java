@@ -1,6 +1,6 @@
 package no.runsafe.headhunters.event;
 
-import net.minecraft.server.v1_6_R1.Packet205ClientCommand;
+import net.minecraft.server.v1_6_R2.Packet205ClientCommand;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.event.player.IPlayerDeathEvent;
 import no.runsafe.framework.minecraft.Item;
@@ -11,7 +11,7 @@ import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.PlayerHandler;
 import no.runsafe.headhunters.RandomItem;
-import org.bukkit.craftbukkit.v1_6_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
 
 
 import java.util.List;
