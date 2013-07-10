@@ -10,8 +10,6 @@ import java.util.HashMap;
 
 public class CommandDisable extends ExecutableCommand
 {
-	final Core core;
-
 	public CommandDisable(Core core)
 	{
 		super("disable", "Disables the plugin", "headhunters.admin.disable");
@@ -25,4 +23,6 @@ public class CommandDisable extends ExecutableCommand
 
 		return "Headhunters " + ChatColour.RED + "disabled";
 	}
+
+	private final Core core;
 }

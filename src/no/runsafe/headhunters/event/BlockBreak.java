@@ -9,17 +9,12 @@ import no.runsafe.headhunters.PlayerHandler;
 
 public class BlockBreak implements IBlockBreakEvent
 {
-	private final PlayerHandler playerHandler;
-	private final Core core;
-	private final AreaHandler areaHandler;
-
 	public BlockBreak(PlayerHandler playerHandler, Core core, AreaHandler areaHandler)
 	{
 		this.playerHandler = playerHandler;
 		this.core = core;
 		this.areaHandler = areaHandler;
 	}
-
 
 	@Override
 	public void OnBlockBreakEvent(RunsafeBlockBreakEvent event)
@@ -44,4 +39,8 @@ public class BlockBreak implements IBlockBreakEvent
 			}
 		}
 	}
+
+	private final PlayerHandler playerHandler;
+	private final Core core;
+	private final AreaHandler areaHandler;
 }

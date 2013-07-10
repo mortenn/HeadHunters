@@ -12,9 +12,6 @@ import org.bukkit.Material;
 
 public class PlayerItemPickUp implements IPlayerPickupItemEvent
 {
-	private final IOutput console;
-	private final PlayerHandler playerHandler;
-
 	public PlayerItemPickUp(IOutput console, PlayerHandler playerHandler)
 	{
 		this.console = console;
@@ -53,4 +50,7 @@ public class PlayerItemPickUp implements IPlayerPickupItemEvent
 
 
 	}
+
+	private final IOutput console;
+	private final PlayerHandler playerHandler;
 }

@@ -8,8 +8,6 @@ import java.util.HashMap;
 
 public class CommandLeave extends PlayerCommand
 {
-	private final PlayerHandler playerHandler;
-
 	public CommandLeave(PlayerHandler playerHandler)
 	{
 		super("leave", "Leaves the current game", "headhunters.play");
@@ -23,4 +21,6 @@ public class CommandLeave extends PlayerCommand
 		playerHandler.remove(executor);
 		return null;
 	}
+
+	private final PlayerHandler playerHandler;
 }

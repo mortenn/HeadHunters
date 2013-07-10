@@ -18,10 +18,6 @@ import java.util.ArrayList;
 
 public class PlayerRightClick implements IPlayerRightClick
 {
-	private final RunsafeServer server;
-	private final PlayerHandler playerHandler;
-	private final AreaHandler areaHandler;
-
 	public PlayerRightClick(RunsafeServer server, PlayerHandler playerHandler, AreaHandler areaHandler)
 	{
 		this.server = server;
@@ -135,4 +131,7 @@ public class PlayerRightClick implements IPlayerRightClick
 
 	}
 
+	private final RunsafeServer server;
+	private final PlayerHandler playerHandler;
+	private final AreaHandler areaHandler;
 }

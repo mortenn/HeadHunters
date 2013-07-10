@@ -12,9 +12,6 @@ import java.util.HashMap;
 
 public class CommandTeleport extends PlayerCommand
 {
-	private final PlayerHandler playerHandler;
-	private final AreaHandler areaHandler;
-
 	public CommandTeleport(PlayerHandler playerHandler, AreaHandler areaHandler)
 	{
 		super("teleport", "teleports you to a given area", "headhunters.regions.teleport", "region");
@@ -44,4 +41,7 @@ public class CommandTeleport extends PlayerCommand
 		executor.setGameMode(GameMode.CREATIVE);
 		return null;
 	}
+
+	private final PlayerHandler playerHandler;
+	private final AreaHandler areaHandler;
 }

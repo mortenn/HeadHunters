@@ -10,9 +10,6 @@ import java.util.HashMap;
 
 public class CommandVote extends PlayerCommand
 {
-	private final Core core;
-	private final VoteHandler voteHandler;
-
 	public CommandVote(Core core, VoteHandler voteHandler)
 	{
 		super("vote", "Vote for a different next map", "headhunters.play");
@@ -29,4 +26,7 @@ public class CommandVote extends PlayerCommand
 		return voteHandler.vote(executor);
 
 	}
+
+	private final Core core;
+	private final VoteHandler voteHandler;
 }

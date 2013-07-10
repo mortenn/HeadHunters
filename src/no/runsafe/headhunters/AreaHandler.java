@@ -11,14 +11,6 @@ import java.util.List;
 
 public class AreaHandler
 {
-	private final HashMap<Integer, SimpleArea> areas;
-	private int currentArea;
-	private int nextArea;
-	private String world = "world";
-	private final StringBuilder availableRegions;
-
-	private ArrayList<String> __areas__;
-
 	public AreaHandler()
 	{
 		areas = new HashMap<Integer, SimpleArea>();
@@ -164,4 +156,11 @@ public class AreaHandler
 					entity.remove();
 
 	}
+
+	private final HashMap<Integer, SimpleArea> areas;
+	private final StringBuilder availableRegions;
+	private int currentArea;
+	private int nextArea;
+	private String world = "world";
+	private ArrayList<String> __areas__;
 }

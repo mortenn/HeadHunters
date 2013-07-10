@@ -8,9 +8,6 @@ import no.runsafe.headhunters.PlayerHandler;
 
 public class PlayerRespawn implements IPlayerRespawn
 {
-	private final PlayerHandler playerHandler;
-	private final AreaHandler areaHandler;
-
 	public PlayerRespawn(PlayerHandler playerHandler, AreaHandler areaHandler)
 	{
 
@@ -30,4 +27,7 @@ public class PlayerRespawn implements IPlayerRespawn
 		}
 		return null;
 	}
+
+	private final PlayerHandler playerHandler;
+	private final AreaHandler areaHandler;
 }

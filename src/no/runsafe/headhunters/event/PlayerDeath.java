@@ -16,12 +16,6 @@ import java.util.List;
 
 public class PlayerDeath implements IPlayerDeathEvent
 {
-	private final RandomItem randomItem;
-	private final Core core;
-	private final PlayerHandler playerHandler;
-	private final IScheduler scheduler;
-
-
 	public PlayerDeath(Core core, RandomItem randomItem, PlayerHandler playerHandler, IScheduler scheduler)
 	{
 		this.core = core;
@@ -70,4 +64,9 @@ public class PlayerDeath implements IPlayerDeathEvent
 
 		}
 	}
+
+	private final RandomItem randomItem;
+	private final Core core;
+	private final PlayerHandler playerHandler;
+	private final IScheduler scheduler;
 }

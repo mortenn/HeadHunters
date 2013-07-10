@@ -8,8 +8,6 @@ import java.util.HashMap;
 
 public class CommandJoin extends PlayerCommand
 {
-	final Core core;
-
 	public CommandJoin(Core core)
 	{
 		super("join", "CommandJoin a headhunters game", "headhunters.play");
@@ -24,4 +22,6 @@ public class CommandJoin extends PlayerCommand
 
 
 	}
+
+	private final Core core;
 }

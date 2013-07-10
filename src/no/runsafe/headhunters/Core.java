@@ -20,23 +20,6 @@ import java.util.List;
 
 public class Core implements IConfigurationChanged, IPluginEnabled
 {
-	private String worldName;
-	private SimpleArea waitingRoom;
-	private RunsafeLocation waitingRoomSpawn;
-	private boolean gamestarted;
-	private boolean enabled = true;
-
-	private IConfiguration config;
-	private final IOutput console;
-	private final RunsafeServer server;
-
-	private int countdownToStart = -1;
-	private int countdownToEnd = -1;
-
-	private final VoteHandler voteHandler;
-	private final PlayerHandler playerHandler;
-	private final AreaHandler areaHandler;
-
 	public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, VoteHandler voteHandler,
 							PlayerHandler playerHandler, AreaHandler areaHandler, WorldGuardInterface worldGuardInterface)
 	{
@@ -429,4 +412,17 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		return (waitingRoom.pointInArea(player.getLocation()));
 	}
 
+	private final IOutput console;
+	private final RunsafeServer server;
+	private final VoteHandler voteHandler;
+	private final PlayerHandler playerHandler;
+	private final AreaHandler areaHandler;
+	private String worldName;
+	private SimpleArea waitingRoom;
+	private RunsafeLocation waitingRoomSpawn;
+	private boolean gamestarted;
+	private boolean enabled = true;
+	private IConfiguration config;
+	private int countdownToStart = -1;
+	private int countdownToEnd = -1;
 }

@@ -10,9 +10,6 @@ import java.util.HashMap;
 
 public class CommandConfig extends ExecutableCommand
 {
-	private final Core core;
-	private final IConfiguration config;
-
 	public CommandConfig(IConfiguration config, Core core)
 	{
 		super("config", "Change the config", "headhunters.admin.config", "key", "value");
@@ -39,4 +36,7 @@ public class CommandConfig extends ExecutableCommand
 
 		return "&bSet &f" + key + "&b to &e" + value;
 	}
+
+	private final Core core;
+	private final IConfiguration config;
 }

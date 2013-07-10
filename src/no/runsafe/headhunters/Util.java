@@ -10,8 +10,6 @@ import java.util.Random;
 
 public class Util
 {
-	static final Random random = new Random(System.currentTimeMillis());
-
 	public static int getRandom(int min, int max)
 	{
 
@@ -115,4 +113,6 @@ public class Util
 		}
 
 	}
+
+	static final Random random = new Random(System.currentTimeMillis());
 }

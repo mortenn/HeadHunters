@@ -19,11 +19,6 @@ import java.util.HashMap;
 
 public class CommandSetCombatArea extends PlayerCommand
 {
-	private final Core core;
-	private final IConfiguration config;
-	private final WorldGuardPlugin worldGuard;
-	private final AreaHandler areaHandler;
-
 	public CommandSetCombatArea(Core core, IConfiguration config, AreaHandler areaHandler)
 	{
 		super("combatarea", "Adds or removes the WorldGuard region you are in as a combat area.", "headhunters.regions.modify.areas", "p");
@@ -107,5 +102,8 @@ public class CommandSetCombatArea extends PlayerCommand
 
 	}
 
-
+	private final Core core;
+	private final IConfiguration config;
+	private final WorldGuardPlugin worldGuard;
+	private final AreaHandler areaHandler;
 }

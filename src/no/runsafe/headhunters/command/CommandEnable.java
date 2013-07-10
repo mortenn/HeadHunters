@@ -11,8 +11,6 @@ import java.util.HashMap;
 
 public class CommandEnable extends ExecutableCommand
 {
-	final Core core;
-
 	public CommandEnable(Core core)
 	{
 		super("enable", "Enables the plugin", "headhunters.admin.enable");
@@ -29,4 +27,6 @@ public class CommandEnable extends ExecutableCommand
 			return "Headhunters " + ChatColour.GREEN + "enabled";
 
 	}
+
+	private final Core core;
 }

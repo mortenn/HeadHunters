@@ -6,11 +6,6 @@ import java.util.ArrayList;
 
 public class VoteHandler
 {
-	private final ArrayList<String> votedPlayers;
-	private int minVotes = 1;
-	private int minPercentage = 50;
-	private boolean canVote = false;
-
 	public VoteHandler()
 	{
 		votedPlayers = new ArrayList<String>();
@@ -48,4 +43,9 @@ public class VoteHandler
 		votedPlayers.add(player.getName());
 		return Constants.MSG_VOTE_CAST;
 	}
+
+	private final ArrayList<String> votedPlayers;
+	private int minVotes = 1;
+	private int minPercentage = 50;
+	private boolean canVote = false;
 }

@@ -11,10 +11,6 @@ import java.util.HashMap;
 
 public class CommandSetSpawn extends PlayerCommand
 {
-	private final IConfiguration config;
-	private final Core core;
-	private final AreaHandler areaHandler;
-
 	public CommandSetSpawn(Core core, IConfiguration config, AreaHandler areaHandler)
 	{
 		super("spawn", "Sets the spawn point for in the wait room", "headhunters.regions.modify.spawn");
@@ -43,4 +39,8 @@ public class CommandSetSpawn extends PlayerCommand
 
 		return Constants.ERROR_COLOR + "Please move to the correct world";
 	}
+
+	private final IConfiguration config;
+	private final Core core;
+	private final AreaHandler areaHandler;
 }

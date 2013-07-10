@@ -12,17 +12,6 @@ import java.util.HashMap;
 
 public class PlayerHandler
 {
-	final HashMap<String, HashMap<String, Object>> playerData;
-
-	Boolean winner = false;
-	RunsafePlayer leader;
-	final int leaderAmount = -1;
-	int winAmount = 0;
-	private final AreaHandler areaHandler;
-
-	final EquipmentManager equipmentManager;
-	private RunsafeLocation defaultSpawn;
-
 	public PlayerHandler(EquipmentManager manager, AreaHandler areaHandler)
 	{
 
@@ -40,7 +29,6 @@ public class PlayerHandler
 	{
 		return winAmount;
 	}
-
 
 	public String getWorldName()
 	{
@@ -69,7 +57,6 @@ public class PlayerHandler
 			}
 		}
 	}
-
 
 	public boolean isIngame(RunsafePlayer player)
 	{
@@ -149,7 +136,6 @@ public class PlayerHandler
 		winner = false;
 	}
 
-
 	public ArrayList<String> tick()
 	{
 		ArrayList<String> out = new ArrayList<String>();
@@ -188,7 +174,6 @@ public class PlayerHandler
 		}
 		return out;
 	}
-
 
 	public void unEquipAll()
 	{
@@ -232,4 +217,13 @@ public class PlayerHandler
 				players.add((RunsafePlayer) playerData.get(k).get("player"));
 		return players;
 	}
+
+	private final AreaHandler areaHandler;
+	private final HashMap<String, HashMap<String, Object>> playerData;
+	private final int leaderAmount = -1;
+	private final EquipmentManager equipmentManager;
+	private RunsafeLocation defaultSpawn;
+	private Boolean winner = false;
+	private RunsafePlayer leader;
+	private int winAmount = 0;
 }

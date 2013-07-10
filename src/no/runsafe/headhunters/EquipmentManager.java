@@ -10,12 +10,6 @@ import java.util.ArrayList;
 
 public class EquipmentManager
 {
-	final RunsafeMeta head;
-	final RunsafeMeta chest;
-	final RunsafeMeta legs;
-	final RunsafeMeta boots;
-	final ArrayList<RunsafeMeta> inventory;
-
 	public EquipmentManager()
 	{
 
@@ -63,4 +57,9 @@ public class EquipmentManager
 		return null;
 	}
 
+	private final RunsafeMeta head;
+	private final RunsafeMeta chest;
+	private final RunsafeMeta legs;
+	private final RunsafeMeta boots;
+	private final ArrayList<RunsafeMeta> inventory;
 }

@@ -8,9 +8,6 @@ import no.runsafe.headhunters.PlayerHandler;
 
 public class PlayerTeleport implements IPlayerTeleportEvent
 {
-	final PlayerHandler playerHandler;
-	final AreaHandler areaHandler;
-
 	public PlayerTeleport(PlayerHandler playerHandler, AreaHandler areaHandler)
 	{
 		this.playerHandler = playerHandler;
@@ -31,4 +28,7 @@ public class PlayerTeleport implements IPlayerTeleportEvent
 			}
 
 	}
+
+	private final PlayerHandler playerHandler;
+	private final AreaHandler areaHandler;
 }

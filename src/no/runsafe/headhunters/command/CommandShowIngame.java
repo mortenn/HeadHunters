@@ -13,13 +13,9 @@ import java.util.List;
 
 public class CommandShowIngame extends PlayerCommand
 {
-	final Core core;
-	private final PlayerHandler playerHandler;
-
-	public CommandShowIngame(Core core, PlayerHandler playerHandler)
+	public CommandShowIngame(PlayerHandler playerHandler)
 	{
 		super("show", "shows ingame players", "headhunters.play");
-		this.core = core;
 
 		this.playerHandler = playerHandler;
 	}
@@ -32,4 +28,6 @@ public class CommandShowIngame extends PlayerCommand
 			players.add(player.getPrettyName());
 		return Constants.MSG_COLOR + Strings.join(players, ", ");
 	}
+
+	private final PlayerHandler playerHandler;
 }

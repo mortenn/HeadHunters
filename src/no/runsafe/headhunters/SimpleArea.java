@@ -13,19 +13,6 @@ import java.util.ArrayList;
 
 public class SimpleArea
 {
-	private static WorldGuardInterface worldGuardInterface;
-
-	private double x1;
-	private double x2;
-	private double y1;
-	private double y2;
-	private double z1;
-	private double z2;
-
-	private final RunsafeWorld world;
-
-	private final String regionName;
-
 	public SimpleArea(double x1, double y1, double z1, double x2, double y2, double z2, RunsafeWorld world)
 	{
 		this.x1 = x1;
@@ -240,4 +227,14 @@ public class SimpleArea
 	{
 		SimpleArea.worldGuardInterface = worldGuardInterface;
 	}
+
+	private static WorldGuardInterface worldGuardInterface;
+	private double x1;
+	private double x2;
+	private double y1;
+	private double y2;
+	private double z1;
+	private double z2;
+	private final RunsafeWorld world;
+	private final String regionName;
 }

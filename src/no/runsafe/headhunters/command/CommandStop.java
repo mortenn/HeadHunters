@@ -8,8 +8,6 @@ import java.util.HashMap;
 
 public class CommandStop extends PlayerCommand
 {
-	private final Core core;
-
 	public CommandStop(Core core)
 	{
 		super("stop", "Stops the current game", "headhunters.game-control.stop");
@@ -24,4 +22,6 @@ public class CommandStop extends PlayerCommand
 		this.core.stop(executor);
 		return null;
 	}
+
+	private final Core core;
 }

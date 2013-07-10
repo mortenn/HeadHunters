@@ -9,17 +9,12 @@ import no.runsafe.headhunters.PlayerHandler;
 
 public class BlockPlace implements IBlockPlace
 {
-	private final Core core;
-	private final PlayerHandler playerHandler;
-	private final AreaHandler areaHandler;
-
 	public BlockPlace(Core core, PlayerHandler playerHandler, AreaHandler areaHandler)
 	{
 		this.core = core;
 		this.playerHandler = playerHandler;
 		this.areaHandler = areaHandler;
 	}
-
 
 	@Override
 	public boolean OnBlockPlace(RunsafePlayer eventPlayer, RunsafeBlock block)
@@ -47,4 +42,8 @@ public class BlockPlace implements IBlockPlace
 		return true;
 
 	}
+
+	private final Core core;
+	private final PlayerHandler playerHandler;
+	private final AreaHandler areaHandler;
 }

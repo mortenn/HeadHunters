@@ -10,11 +10,6 @@ import java.util.HashMap;
 
 public class CommandInfo extends ExecutableCommand
 {
-	private final Core core;
-	private final PlayerHandler playerHandler;
-	private final AreaHandler areaHandler;
-
-
 	public CommandInfo(Core core, PlayerHandler playerHandler, AreaHandler areaHandler)
 	{
 		super("info", "shows info about the current game", "headhunters.play");
@@ -63,4 +58,8 @@ public class CommandInfo extends ExecutableCommand
 		}
 		return Constants.ERROR_COLOR + "Headhunters is disabled";
 	}
+
+	private final Core core;
+	private final PlayerHandler playerHandler;
+	private final AreaHandler areaHandler;
 }

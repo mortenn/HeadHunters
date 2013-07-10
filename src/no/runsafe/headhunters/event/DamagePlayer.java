@@ -9,15 +9,11 @@ import org.bukkit.Effect;
 
 public class DamagePlayer implements IPlayerDamageEvent
 {
-	private final AreaHandler areaHandler;
-	private final PlayerHandler playerHandler;
-
 	public DamagePlayer(AreaHandler areaHandler, PlayerHandler playerHandler)
 	{
 		this.areaHandler = areaHandler;
 		this.playerHandler = playerHandler;
 	}
-
 
 	@Override
 	public void OnPlayerDamage(RunsafePlayer player, RunsafeEntityDamageEvent event)
@@ -29,4 +25,7 @@ public class DamagePlayer implements IPlayerDamageEvent
 
 		}
 	}
+
+	private final AreaHandler areaHandler;
+	private final PlayerHandler playerHandler;
 }

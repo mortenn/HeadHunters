@@ -11,10 +11,6 @@ import java.util.HashMap;
 
 public class CommandForceSkip extends PlayerCommand
 {
-	private final Core core;
-	final AreaHandler areaHandler;
-	final VoteHandler voteHandler;
-
 	public CommandForceSkip(AreaHandler areaHandler, VoteHandler voteHandler, Core core)
 	{
 		super("forceskip", "skips the current map for another one", "headhunters.game-control.forceskip", "map");
@@ -44,4 +40,8 @@ public class CommandForceSkip extends PlayerCommand
 		}
 		return Constants.ERROR_COLOR + "Only use this when headhunters is enabled!";
 	}
+
+	private final Core core;
+	private final AreaHandler areaHandler;
+	private final VoteHandler voteHandler;
 }

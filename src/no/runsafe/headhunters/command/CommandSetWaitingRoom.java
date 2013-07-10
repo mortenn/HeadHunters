@@ -13,10 +13,6 @@ import java.util.HashMap;
 
 public class CommandSetWaitingRoom extends PlayerCommand
 {
-	private final Core core;
-	private final IConfiguration config;
-	private final AreaHandler areaHandler;
-
 	public CommandSetWaitingRoom(Core core, IConfiguration config, AreaHandler areaHandler)
 	{
 		super("waitroom", "Sets the waitroom coords", "headhunters.regions.modify.waitroom", "posnumber");
@@ -74,4 +70,7 @@ public class CommandSetWaitingRoom extends PlayerCommand
 		return null;
 	}
 
+	private final Core core;
+	private final IConfiguration config;
+	private final AreaHandler areaHandler;
 }

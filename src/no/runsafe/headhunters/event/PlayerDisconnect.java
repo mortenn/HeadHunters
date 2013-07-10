@@ -6,8 +6,6 @@ import no.runsafe.headhunters.PlayerHandler;
 
 public class PlayerDisconnect implements IPlayerQuitEvent
 {
-	private final PlayerHandler playerHandler;
-
 	public PlayerDisconnect(PlayerHandler playerHandler)
 	{
 		this.playerHandler = playerHandler;
@@ -18,4 +16,6 @@ public class PlayerDisconnect implements IPlayerQuitEvent
 	{
 		if (playerHandler.isIngame(event.getPlayer())) playerHandler.remove(event.getPlayer());
 	}
+
+	private final PlayerHandler playerHandler;
 }
