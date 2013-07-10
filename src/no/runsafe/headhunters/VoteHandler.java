@@ -16,7 +16,6 @@ public class VoteHandler
 		votedPlayers = new ArrayList<String>();
 	}
 
-
 	public void setCanVote(boolean vote)
 	{
 		canVote = vote;
@@ -49,6 +48,4 @@ public class VoteHandler
 		votedPlayers.add(player.getName());
 		return Constants.MSG_VOTE_CAST;
 	}
-
-
 }
