@@ -24,7 +24,7 @@ public class CommandForceSkip extends PlayerCommand {
     VoteHandler voteHandler;
 
     public CommandForceSkip(AreaHandler areaHandler, VoteHandler voteHandler, Core core){
-        super("forceskip", "skips the current map for another one", "headhunters.skip", "map");
+        super("forceskip", "skips the current map for another one", "headhunters.game-control.forceskip", "map");
         this.core = core;
         this.areaHandler = areaHandler;
         this.voteHandler = voteHandler;

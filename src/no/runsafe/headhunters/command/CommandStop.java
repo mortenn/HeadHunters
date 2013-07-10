@@ -17,7 +17,7 @@ public class CommandStop extends PlayerCommand {
     private Core core;
 
     public CommandStop(Core core){
-        super("stop", "Stops the current game", "headhunters.stop");
+        super("stop", "Stops the current game", "headhunters.game-control.stop");
 
         this.core = core;
 

@@ -22,7 +22,7 @@ public class CommandShowIngame extends PlayerCommand {
     private final PlayerHandler playerHandler;
 
     public CommandShowIngame(Core core, PlayerHandler playerHandler){
-        super("show", "shows ingame players", "headhunters.show-ingame-players");
+        super("show", "shows ingame players", "headhunters.play");
         this.core = core;
 
         this.playerHandler = playerHandler;

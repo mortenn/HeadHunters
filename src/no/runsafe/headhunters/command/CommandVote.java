@@ -21,7 +21,7 @@ public class CommandVote extends PlayerCommand {
     private VoteHandler voteHandler;
 
     public CommandVote(Core core, VoteHandler voteHandler){
-        super("vote", "Vote for a different next map", null);
+        super("vote", "Vote for a different next map", "headhunters.play");
         this.core = core;
         this.voteHandler = voteHandler;
     }

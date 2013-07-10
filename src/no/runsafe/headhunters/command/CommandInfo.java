@@ -24,7 +24,7 @@ public class CommandInfo extends ExecutableCommand {
 
 
     public CommandInfo(Core core, PlayerHandler playerHandler, AreaHandler areaHandler){
-        super("info", "shows info about the current game", null);
+        super("info", "shows info about the current game", "headhunters.play");
 
         this.core = core;
 

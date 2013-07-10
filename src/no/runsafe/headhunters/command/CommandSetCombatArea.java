@@ -34,7 +34,7 @@ public class CommandSetCombatArea extends PlayerCommand {
     private AreaHandler areaHandler;
 
     public CommandSetCombatArea(Core core, IConfiguration config, AreaHandler areaHandler){
-        super("combatarea", "Adds or removes the WorldGuard region you are in as a combat area.", "headhunters.set-room", "p");
+        super("combatarea", "Adds or removes the WorldGuard region you are in as a combat area.", "headhunters.regions.modify.areas", "p");
         this.core = core;
         this.config = config;
         this.captureTail();

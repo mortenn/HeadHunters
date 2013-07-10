@@ -21,7 +21,7 @@ public class CommandConfig extends ExecutableCommand {
     private IConfiguration config;
 
     public CommandConfig(IConfiguration config, Core core) {
-        super("config", "Change the config", "headhunters.change-config", "key", "value");
+        super("config", "Change the config", "headhunters.admin.config", "key", "value");
         captureTail();
         this.config = config;
         this.core = core;

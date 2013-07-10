@@ -22,7 +22,7 @@ public class CommandTeleport extends PlayerCommand {
     private AreaHandler areaHandler;
 
     public CommandTeleport(Core core, PlayerHandler playerHandler, AreaHandler areaHandler){
-        super("teleport", "teleports you to a given area", "headhunters.teleport", "region");
+        super("teleport", "teleports you to a given area", "headhunters.regions.teleport", "region");
         this.core = core;
         this.playerHandler = playerHandler;
         this.areaHandler = areaHandler;

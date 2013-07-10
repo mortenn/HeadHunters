@@ -1,0 +1,17 @@
+Command                     permissions
+-----------------------------------------------
+config                      headhunters.admin.config
+disable                     headhunters.admin.disable
+enable                      headhunters.admin.enable
+forceskip                   headhunters.game-control.forceskip
+info                        headhunters.play
+join                        headhunters.play
+leave                       headhunters.play
+combatarea                  headhunters.regions.modify.areas
+spawn                       headhunters.regions.modify.spawn
+waitroom                    headhunters.regions.modify.waitroom
+show                        headhunters.play
+start                       headhunters.game-control.start
+stop                        headhunters.game-control.stop
+teleport                    headhunters.regions.teleport
+vote                        headhunters.play

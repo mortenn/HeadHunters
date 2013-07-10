@@ -25,7 +25,7 @@ public class CommandSetWaitingRoom extends PlayerCommand {
     private AreaHandler areaHandler;
 
     public CommandSetWaitingRoom(Core core, IConfiguration config, AreaHandler areaHandler){
-        super("waitroom", "Sets the waitroom coords", "headhunters.set-room", "posnumber");
+        super("waitroom", "Sets the waitroom coords", "headhunters.regions.modify.waitroom", "posnumber");
         this.config = config;
         this.core = core;
         this.areaHandler = areaHandler;

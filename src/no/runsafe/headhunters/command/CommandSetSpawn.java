@@ -24,7 +24,7 @@ public class CommandSetSpawn extends PlayerCommand {
     private final AreaHandler areaHandler;
 
     public CommandSetSpawn(Core core, IConfiguration config, AreaHandler areaHandler){
-        super("spawn", "Sets the spawn point for in the wait room", "headhunters.set-spawn");
+        super("spawn", "Sets the spawn point for in the wait room", "headhunters.regions.modify.spawn");
         this.core = core;
         this.config = config;
         this.areaHandler = areaHandler;
