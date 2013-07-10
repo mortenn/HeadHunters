@@ -279,7 +279,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 				for (String s : playerHandler.tick())
 					sendMessage(s);
 
-				if (playerHandler.winner)
+				if (playerHandler.isWinner())
 				{
 					winner();
 					return;
