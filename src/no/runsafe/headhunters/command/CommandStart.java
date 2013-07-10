@@ -18,7 +18,7 @@ public class CommandStart extends PlayerCommand {
     Core core;
 
     public CommandStart(Core core){
-        super("start", "Forces headhunters match to start", "headunters.game-control.start", "time");
+        super("start", "Forces headhunters match to start", "headhunters.game-control.start", "time");
         this.core = core;
 
     }
