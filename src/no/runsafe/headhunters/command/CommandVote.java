@@ -30,6 +30,7 @@ public class CommandVote extends PlayerCommand {
     public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters) {
 
         if(!core.isInWaitroom(executor)) return Constants.MSG_NEED_IN_WAITROOM;
+        if(!core.getEnabled()) return Constants.ERROR_COLOR + "Headhunters is disabled";
 
         return voteHandler.vote(executor);
 
