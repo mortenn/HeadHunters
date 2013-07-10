@@ -236,36 +236,39 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
                     sendMessage(String.format(Constants.MSG_NEW_NEXT_MAP_VOTED, areaHandler.getAreaName(areaHandler.randomNextArea())));
                     voteHandler.resetVotes();
                 }
-
-                if (countdownToStart % 300 == 0) { //every 5 minutes
-                    server.broadcastMessage(String.format(Constants.MSG_GAME_START_IN, (countdownToStart / 300) * 5, "minutes"));
-                } else {
-                    switch (countdownToStart) {
-                        case 180:
-                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 3, "minutes"));
-                            break;
-                        case 120:
-                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 2, "minutes"));
-                            break;
-                        case 60:
-                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 1, "minute"));
-                            break;
-                        case 30:
-                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 30, "seconds"));
-                            break;
-                        case 20:
-                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 20, "seconds"));
-                            break;
-                        case 10:
-                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 10, "seconds"));
-                            break;
-                        case 5:
-                            sendMessage(String.format(Constants.MSG_GAME_START_IN, 5, "seconds"));
-                            break;
+                if(waitingRoomPlayers.size() > 1){
+                    if (countdownToStart % 300 == 0) { //every 5 minutes
+                        server.broadcastMessage(String.format(Constants.MSG_GAME_START_IN, (countdownToStart / 300) * 5, "minutes"));
+                    } else {
+                        switch (countdownToStart) {
+                            case 180:
+                                sendMessage(String.format(Constants.MSG_GAME_START_IN, 3, "minutes"));
+                                break;
+                            case 120:
+                                sendMessage(String.format(Constants.MSG_GAME_START_IN, 2, "minutes"));
+                                break;
+                            case 60:
+                                sendMessage(String.format(Constants.MSG_GAME_START_IN, 1, "minute"));
+                                break;
+                            case 30:
+                                sendMessage(String.format(Constants.MSG_GAME_START_IN, 30, "seconds"));
+                                break;
+                            case 20:
+                                sendMessage(String.format(Constants.MSG_GAME_START_IN, 20, "seconds"));
+                                break;
+                            case 10:
+                                sendMessage(String.format(Constants.MSG_GAME_START_IN, 10, "seconds"));
+                                break;
+                            case 5:
+                                sendMessage(String.format(Constants.MSG_GAME_START_IN, 5, "seconds"));
+                                break;
+                        }
                     }
-                }
 
-                countdownToStart--;
+                    countdownToStart--;
+                }else{
+                    resetWaittime();
+                }
                 if (countdownToStart <= 0) {
                     start();
                     voteHandler.setCanVote(false);
