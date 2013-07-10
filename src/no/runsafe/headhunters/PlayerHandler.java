@@ -25,6 +25,10 @@ public class PlayerHandler
 		this.defaultSpawn = location;
 	}
 
+    public boolean isWinner(){
+        return winner;
+    }
+
 	public int getWinAmount()
 	{
 		return winAmount;
