@@ -85,7 +85,7 @@ public class PlayerRightClick implements IPlayerRightClick {
                         else
                             playerHandler.remove(player);
                     }else{
-                        server.getWorld(playerHandler.getWorldName()).createExplosion(player.getLocation(), 2f, true);
+                        server.getWorld(playerHandler.getWorldName()).createExplosion(player.getLocation(), 2f, true, false);
                     }
 
                 }else if(itemID == Material.BLAZE_ROD.getId()){
