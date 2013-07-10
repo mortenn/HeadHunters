@@ -22,7 +22,7 @@ public class CommandConfig extends ExecutableCommand {
 
     public CommandConfig(IConfiguration config, Core core) {
         super("config", "Change the config", "headhunters.admin.config", "key", "value");
-        captureTail();
+        this.captureTail();
         this.config = config;
         this.core = core;
     }
@@ -32,7 +32,6 @@ public class CommandConfig extends ExecutableCommand {
 
         if(core.getEnabled()) return Constants.ERROR_COLOR + "Disable headhunters first!";
 
-
         String key = parameters.get("key");
         String value = parameters.get("value");
 
@@ -40,7 +39,6 @@ public class CommandConfig extends ExecutableCommand {
             return "&cKey &f" + key + "&c does not exist";
 
         config.setConfigValue(key, value);
-
 
         return "&bSet &f" + key + "&b to &e" + value;
     }

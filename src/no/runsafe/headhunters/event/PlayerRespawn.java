@@ -25,6 +25,7 @@ public class PlayerRespawn implements IPlayerRespawn {
         this.areaHandler = areaHandler;
     }
 
+    //todo ---
     @Override
     public RunsafeLocation OnPlayerRespawn(RunsafePlayer player, RunsafeLocation location, boolean isBed) {
         if(playerHandler.isIngame(player)){

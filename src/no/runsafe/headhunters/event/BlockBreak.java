@@ -31,17 +31,12 @@ public class BlockBreak implements IBlockBreakEvent {
     @Override
     public void OnBlockBreakEvent(RunsafeBlockBreakEvent event) {
         RunsafePlayer eventPlayer = event.getPlayer();
-        if(eventPlayer.getWorld().getName().equalsIgnoreCase(playerHandler.getWorldName())){
-            if(areaHandler.isInCombatRegion(eventPlayer.getLocation())){
-
-                if(core.getEnabled()){
+        if(eventPlayer.getWorld().getName().equalsIgnoreCase(playerHandler.getWorldName()))
+            if(areaHandler.isInCombatRegion(eventPlayer.getLocation()))
+                if(core.getEnabled())
                     event.setCancelled(true);
-                }else{
-                    if(!eventPlayer.hasPermission("headhunters.build")){
+                else
+                    if(!eventPlayer.hasPermission("headhunters.build"))
                         event.setCancelled(true);
-                    }
-                }
-            }
-        }
     }
 }

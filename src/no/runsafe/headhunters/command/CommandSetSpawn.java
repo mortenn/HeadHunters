@@ -45,7 +45,6 @@ public class CommandSetSpawn extends PlayerCommand {
             return "Successfully set spawn";
         }
 
-
         return Constants.ERROR_COLOR + "Please move to the correct world";
     }
 }

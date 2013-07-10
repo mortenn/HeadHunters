@@ -6,7 +6,6 @@ import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.*;
 import org.bukkit.GameMode;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -17,13 +16,11 @@ import java.util.HashMap;
  */
 public class CommandTeleport extends PlayerCommand {
 
-    private Core core;
     private final PlayerHandler playerHandler;
     private AreaHandler areaHandler;
 
-    public CommandTeleport(Core core, PlayerHandler playerHandler, AreaHandler areaHandler){
+    public CommandTeleport(PlayerHandler playerHandler, AreaHandler areaHandler){
         super("teleport", "teleports you to a given area", "headhunters.regions.teleport", "region");
-        this.core = core;
         this.playerHandler = playerHandler;
         this.areaHandler = areaHandler;
     }

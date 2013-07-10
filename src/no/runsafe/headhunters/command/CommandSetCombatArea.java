@@ -30,7 +30,6 @@ public class CommandSetCombatArea extends PlayerCommand {
     private Core core;
     private IConfiguration config;
     private WorldGuardPlugin worldGuard;
-    private String worldName;
     private AreaHandler areaHandler;
 
     public CommandSetCombatArea(Core core, IConfiguration config, AreaHandler areaHandler){
@@ -50,6 +49,7 @@ public class CommandSetCombatArea extends PlayerCommand {
     @Override
     public String OnExecute(RunsafePlayer player, HashMap<String, String> parameters) {
 
+        String worldName;
         boolean add;
 
         String arg = parameters.get("p");

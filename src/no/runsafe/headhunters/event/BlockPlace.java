@@ -29,20 +29,13 @@ public class BlockPlace implements IBlockPlace {
     @Override
     public boolean OnBlockPlace(RunsafePlayer eventPlayer, RunsafeBlock block) {
 
-
-
-        if(eventPlayer.getWorld().getName().equalsIgnoreCase(playerHandler.getWorldName())){
-            if(areaHandler.isInCombatRegion(eventPlayer.getLocation())){
-
-                if(core.getEnabled()){
+        if(eventPlayer.getWorld().getName().equalsIgnoreCase(playerHandler.getWorldName()))
+            if(areaHandler.isInCombatRegion(eventPlayer.getLocation()))
+                if(core.getEnabled())
                     return false;
-                }else{
-                    if(!eventPlayer.hasPermission("headhunters.build")){
+                else
+                    if(!eventPlayer.hasPermission("headhunters.build"))
                         return false;
-                    }
-                }
-            }
-        }
         return true;
 
     }

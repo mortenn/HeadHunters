@@ -101,15 +101,6 @@ public class AreaHandler {
         return areas.size();
     }
 
-    public String getCombatRegion(RunsafeLocation location){
-        for(int i = 0; i < areas.size(); i++)
-            if(areas.get(i).pointInArea(location)){
-                return areas.get(i).getRegionName();
-            }
-
-        return null;
-    }
-
     public String getAvailableRegions() {
         return availableRegions.toString();
     }

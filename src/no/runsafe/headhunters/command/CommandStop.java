@@ -20,7 +20,6 @@ public class CommandStop extends PlayerCommand {
         super("stop", "Stops the current game", "headhunters.game-control.stop");
 
         this.core = core;
-
     }
 
     @Override

@@ -170,7 +170,6 @@ public class PlayerHandler {
         return out;
     }
 
-
     public void unEquipAll() {
         for(String k : playerData.keySet()) this.unEquip((RunsafePlayer) playerData.get(k).get("player"));
     }

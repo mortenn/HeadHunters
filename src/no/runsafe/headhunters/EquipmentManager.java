@@ -30,7 +30,6 @@ public class EquipmentManager {
 
         inventory = new ArrayList<RunsafeMeta>();
 
-
         RunsafeMeta bow = Item.Combat.Bow.getItem();
 
         //infinity and power 1 bow
@@ -52,16 +51,6 @@ public class EquipmentManager {
 
         for(RunsafeMeta item : inventory) playerInventory.addItems(item);
 
-    }
-
-    public void unEquip(RunsafePlayer player){
-        player.getInventory().clear();
-    }
-
-    public ArrayList<RunsafeMeta> drops(ArrayList<RunsafeMeta> itemDrop){
-
-
-        return null;
     }
 
 }

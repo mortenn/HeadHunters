@@ -37,7 +37,6 @@ public class PlayerRightClick implements IPlayerRightClick {
         this.areaHandler = areaHandler;
     }
 
-
     @Override
     public boolean OnPlayerRightClick(RunsafePlayer player, RunsafeMeta usingItem, RunsafeBlock targetBlock) {
 

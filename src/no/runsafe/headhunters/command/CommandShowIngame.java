@@ -17,7 +17,6 @@ import java.util.HashMap;
  */
 public class CommandShowIngame extends PlayerCommand {
 
-
     Core core;
     private final PlayerHandler playerHandler;
 

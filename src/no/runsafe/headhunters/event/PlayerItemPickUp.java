@@ -39,10 +39,8 @@ public class PlayerItemPickUp implements IPlayerPickupItemEvent {
         int itemID = item.getItemStack().getItemId();
         if(playerHandler.isIngame(player)){
             console.fine(String.format("%s picked up %d", player.getName(), item.getItemStack().getItemId()));
-
             boolean used = false;
             if( itemID == Material.GOLDEN_APPLE.getId()){
-
                 Buff.Healing.Regeneration.amplification(2).duration(6).applyTo(player);
                 used = true;
             }else if(itemID == Material.SUGAR.getId()){

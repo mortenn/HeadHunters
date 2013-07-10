@@ -85,16 +85,12 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
             this.config.setConfigValue("enabled", true);
             this.config.save();
             this.enabled = true;
-            end(null);
+            end();
             return true;
         }
     }
 
     public void disable() {
-
-        if(this.gamestarted){
-            this.end(Constants.GAME_STOPPED_IN_PROGRESS_MSG);
-        }
 
         gamestarted = false;
         this.config.setConfigValue("enabled", false);
@@ -157,7 +153,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
         sendMessage(String.format(Constants.MSG_START_MESSAGE, playerHandler.getWinAmount()));
     }
 
-    public void end(String endMessage){
+    public void end(){
 
         playerHandler.end();
 
@@ -346,7 +342,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled {
         RunsafePlayer winPlayer = playerHandler.getCurrentLeader();
         if(winPlayer != null)
         server.broadcastMessage(String.format(Constants.GAME_WON, winPlayer.getPrettyName()));
-        end(null);
+        end();
         playerHandler.reset();
 
     }

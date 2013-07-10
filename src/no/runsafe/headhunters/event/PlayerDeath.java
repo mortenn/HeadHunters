@@ -45,7 +45,6 @@ public class PlayerDeath implements IPlayerDeathEvent {
 
         if(playerHandler.isIngame(player)){
 
-
             RunsafePlayer killer = player.getKiller();
             if(killer != null) killer.setHealth(Math.min(killer.getHealth() + 4, 20));
             event.setDroppedXP(0);

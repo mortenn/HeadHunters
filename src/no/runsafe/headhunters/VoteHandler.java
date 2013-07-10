@@ -23,7 +23,6 @@ public class VoteHandler {
           votedPlayers = new ArrayList<String>();
     }
 
-
     public void setCanVote(boolean vote){
         canVote = vote;
     }

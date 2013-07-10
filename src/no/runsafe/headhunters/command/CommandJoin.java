@@ -15,7 +15,6 @@ import java.util.HashMap;
  */
 public class CommandJoin extends PlayerCommand {
 
-
     Core core;
 
     public CommandJoin(Core core){
