@@ -31,7 +31,6 @@ public class Plugin extends RunsafeConfigurablePlugin
 		command.addSubCommand(this.getInstance(CommandDisable.class));
 		command.addSubCommand(this.getInstance(CommandEnable.class));
 		command.addSubCommand(this.getInstance(CommandSetCombatArea.class));
-		command.addSubCommand(this.getInstance(CommandSetWaitingRoom.class));
 		command.addSubCommand(this.getInstance(CommandStart.class));
 		command.addSubCommand(this.getInstance(CommandSetSpawn.class));
 		command.addSubCommand(this.getInstance(CommandJoin.class));

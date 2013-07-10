@@ -227,7 +227,7 @@ public class PlayerHandler
 	private final int leaderAmount = -1;
 	private final EquipmentManager equipmentManager;
 	private RunsafeLocation defaultSpawn;
-	private Boolean winner = false;
+	Boolean winner = false;
 	private RunsafePlayer leader;
 	private int winAmount = 0;
 }

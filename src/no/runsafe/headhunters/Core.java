@@ -184,15 +184,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 
 		playerHandler.setDefaultSpawn(waitingRoomSpawn);
 
-		this.waitingRoom = new SimpleArea(
-			config.getConfigValueAsDouble("waitingarea.x1"),
-			config.getConfigValueAsDouble("waitingarea.y1"),
-			config.getConfigValueAsDouble("waitingarea.z1"),
-			config.getConfigValueAsDouble("waitingarea.x2"),
-			config.getConfigValueAsDouble("waitingarea.y2"),
-			config.getConfigValueAsDouble("waitingarea.z2"),
-			server.getWorld(this.worldName)
-		);
+		this.waitingRoom = new SimpleArea(server.getWorld(worldName), configuration.getConfigValueAsString("waitingarea"));
 
 		this.countdownToStart = config.getConfigValueAsInt("waittime");
 		this.countdownToEnd = config.getConfigValueAsInt("runtime");
@@ -323,7 +315,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 						case 5:
 							sendMessage(String.format(Constants.MSG_TIME_REMAINING, 5, "seconds"));
 							break;
-
 					}
 				}
 				this.countdownToEnd--;
@@ -337,7 +328,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 				}
 
 				// checking all players in world that are not creative mode, move them to the waiting room if not in game
-
 				for (RunsafePlayer p : RunsafeServer.Instance.getWorld(worldName).getPlayers())
 					if (!playerHandler.isIngame(p) && p.getGameMode() != GameMode.CREATIVE && !waitingRoom.pointInArea(p.getLocation()))
 						p.teleport(waitingRoomSpawn);
@@ -386,13 +376,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 	public int amountHeads(RunsafePlayer player)
 	{
 		return Util.amountMaterial(player, Item.Decoration.Head.Human.getItem());
-	}
-
-	public void setWaitRoomPos(boolean first, RunsafeLocation location)
-	{
-		if (first) waitingRoom.setFirstPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-		else waitingRoom.setSecondPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-		waitingRoom.sortCoords();
 	}
 
 	public void setWaitRoomSpawn(RunsafeLocation location)
