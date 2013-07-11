@@ -1,10 +1,12 @@
 package no.runsafe.headhunters;
 
+import no.runsafe.framework.RunsafePlugin;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.event.plugin.IPluginEnabled;
+import no.runsafe.framework.internal.configuration.ConfigurationEngine;
 import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.RunsafeServer;
@@ -12,6 +14,7 @@ import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.framework.text.ChatColour;
 import no.runsafe.framework.text.ConsoleColour;
+import no.runsafe.headhunters.exception.RegionNotFoundException;
 import no.runsafe.worldguardbridge.WorldGuardInterface;
 import org.bukkit.GameMode;
 
@@ -50,6 +53,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 
 	public boolean enable()
 	{
+        this.enabled = true;
+        loadAreasFromConfig();
 		if (areaHandler.getAmountLoadedAreas() == 0)
 		{
 			return false;
@@ -58,8 +63,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		{
 			this.config.setConfigValue("enabled", true);
 			this.config.save();
-			this.enabled = true;
-			end(null);
+
+			end();
 			return true;
 		}
 	}
@@ -68,7 +73,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 	{
 		if (this.gamestarted)
 		{
-			this.end(Constants.GAME_STOPPED_IN_PROGRESS_MSG);
+			this.end();
 		}
 
 		gamestarted = false;
@@ -123,7 +128,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 			return;
 		}
 
-		ArrayList<RunsafePlayer> players = waitingRoom.getPlayers(GameMode.SURVIVAL);
+		ArrayList<RunsafePlayer> players = areaHandler.getWaitRoomPlayers(GameMode.SURVIVAL);
 		int minPlayers = 2;
 		if (players.size() < minPlayers)
 		{
@@ -139,7 +144,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		sendMessage(String.format(Constants.MSG_START_MESSAGE, playerHandler.getWinAmount()));
 	}
 
-	public void end(String endMessage)
+	public void end()
 	{
 		playerHandler.end();
 
@@ -155,42 +160,45 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 
 	}
 
-	public void teleportIntoWaitRoom(RunsafePlayer player)
-	{
-		player.teleport(this.waitingRoomSpawn);
-		player.getInventory().clear();
-	}
-
 	@Override
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
 		this.config = configuration;
+        this.enabled = config.getConfigValueAsBoolean("enabled");
+        this.countdownToStart = config.getConfigValueAsInt("waittime");
+        this.countdownToEnd = config.getConfigValueAsInt("runtime");
+        this.voteHandler.setMinPercentage(config.getConfigValueAsInt("vote.min-percent"));
+        this.voteHandler.setMinVotes(config.getConfigValueAsInt("vote.min-votes"));
+        this.worldName = config.getConfigValueAsString("world");
+        if (this.worldName == null)
+        {
+            worldName = "world";
+        }
+        areaHandler.setWorld(worldName);
 
-		this.enabled = config.getConfigValueAsBoolean("enabled");
+        areaHandler.setWaitRoomSpawn(new RunsafeLocation(
+                server.getWorld(this.worldName),
+                config.getConfigValueAsDouble("waitingroomspawn.x"),
+                config.getConfigValueAsDouble("waitingroomspawn.y"),
+                config.getConfigValueAsDouble("waitingroomspawn.z")
+        ));
 
-		this.worldName = config.getConfigValueAsString("world");
-		if (this.worldName == null)
-		{
-			worldName = "world";
-		}
-		areaHandler.setWorld(worldName);
+        loadAreasFromConfig();
+    }
 
-		this.waitingRoomSpawn = new RunsafeLocation(
-			server.getWorld(this.worldName),
-			config.getConfigValueAsDouble("waitingroomspawn.x"),
-			config.getConfigValueAsDouble("waitingroomspawn.y"),
-			config.getConfigValueAsDouble("waitingroomspawn.z")
-		);
+    public void loadAreasFromConfig(){
 
-		playerHandler.setDefaultSpawn(waitingRoomSpawn);
+        if(enabled){
+          try
+            {
+                areaHandler.setWaitRoom(config.getConfigValueAsString("waitroom"));
+                areaHandler.loadAreas(config.getConfigValueAsList("regions"));
+            }catch (RegionNotFoundException e){
+                System.out.println(e.getMessage());
+                this.disable();
+            }
+        }
 
-		this.waitingRoom = new SimpleArea(server.getWorld(worldName), configuration.getConfigValueAsString("waitingarea"));
-
-		this.countdownToStart = config.getConfigValueAsInt("waittime");
-		this.countdownToEnd = config.getConfigValueAsInt("runtime");
-		this.voteHandler.setMinPercentage(config.getConfigValueAsInt("vote.min-percent"));
-		this.voteHandler.setMinVotes(config.getConfigValueAsInt("vote.min-votes"));
-		areaHandler.loadAreas(config.getConfigValueAsList("regions"));
 	}
 
 	private void resetWaittime()
@@ -214,7 +222,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		{
 			if (!this.gamestarted)
 			{
-				ArrayList<RunsafePlayer> waitingRoomPlayers = this.waitingRoom.getPlayers();
+				ArrayList<RunsafePlayer> waitingRoomPlayers = areaHandler.getWaitRoomPlayers();
 				voteHandler.setCanVote(true);
 				if (voteHandler.votePass(waitingRoomPlayers.size()))
 				{
@@ -270,8 +278,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 				else
 					//moving all players not in creative mode into the waitroom
 					for (RunsafePlayer p : RunsafeServer.Instance.getWorld(worldName).getPlayers())
-						if (p.getGameMode() != GameMode.CREATIVE && !waitingRoom.pointInArea(p.getLocation()))
-							p.teleport(waitingRoomSpawn);
+						if (p.getGameMode() != GameMode.CREATIVE && !areaHandler.isInWaitRoom(p))
+							p.teleport(areaHandler.getWaitRoomSpawn());
 
 			}
 			else
@@ -329,8 +337,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 
 				// checking all players in world that are not creative mode, move them to the waiting room if not in game
 				for (RunsafePlayer p : RunsafeServer.Instance.getWorld(worldName).getPlayers())
-					if (!playerHandler.isIngame(p) && p.getGameMode() != GameMode.CREATIVE && !waitingRoom.pointInArea(p.getLocation()))
-						p.teleport(waitingRoomSpawn);
+					if (!playerHandler.isIngame(p) && p.getGameMode() != GameMode.CREATIVE && !areaHandler.isInWaitRoom(p))
+						p.teleport(areaHandler.getWaitRoomSpawn());
 			}
 		}
 	}
@@ -340,7 +348,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		RunsafePlayer winPlayer = playerHandler.getCurrentLeader();
 		if (winPlayer != null)
 			server.broadcastMessage(String.format(Constants.GAME_WON, winPlayer.getPrettyName()));
-		end(null);
+		end();
 		playerHandler.reset();
 	}
 
@@ -351,7 +359,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 
 			if (!playerHandler.isIngame(executor))
 			{
-				this.teleportIntoWaitRoom(executor);
+				executor.teleport(areaHandler.getWaitRoomSpawn());
 				executor.setGameMode(GameMode.SURVIVAL);
 				return null;
 			}
@@ -378,21 +386,11 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		return Util.amountMaterial(player, Item.Decoration.Head.Human.getItem());
 	}
 
-	public void setWaitRoomSpawn(RunsafeLocation location)
-	{
-		this.waitingRoomSpawn = location;
-	}
-
 	@Override
 	public void OnPluginEnabled()
 	{
 		console.writeColoured((enabled) ? ConsoleColour.GREEN + "Enabled" : ConsoleColour.RED + "Disabled");
 		console.write(String.format("loaded %d areas", areaHandler.getAmountLoadedAreas()));
-	}
-
-	public boolean isInWaitroom(RunsafePlayer player)
-	{
-		return (waitingRoom.pointInArea(player.getLocation()));
 	}
 
 	private final IOutput console;
@@ -401,10 +399,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 	private final PlayerHandler playerHandler;
 	private final AreaHandler areaHandler;
 	private String worldName;
-	private SimpleArea waitingRoom;
-	private RunsafeLocation waitingRoomSpawn;
 	private boolean gamestarted;
-	private boolean enabled = true;
+	private boolean enabled = false;
 	private IConfiguration config;
 	private int countdownToStart = -1;
 	private int countdownToEnd = -1;

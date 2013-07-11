@@ -6,6 +6,7 @@ import no.runsafe.framework.minecraft.RunsafeWorld;
 import no.runsafe.framework.minecraft.block.RunsafeBlock;
 import no.runsafe.framework.minecraft.block.RunsafeSign;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.headhunters.exception.RegionNotFoundException;
 import no.runsafe.worldguardbridge.WorldGuardInterface;
 import org.bukkit.GameMode;
 
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 public class SimpleArea
 {
-	public SimpleArea(RunsafeWorld world, String regionName)
+	public SimpleArea(RunsafeWorld world, String regionName) throws RegionNotFoundException
 	{
 		this.world = world;
 		this.regionName = regionName;
@@ -21,8 +22,11 @@ public class SimpleArea
 		if (worldGuardInterface != null && worldGuardInterface.serverHasWorldGuard())
 		{
 			region = worldGuardInterface.getRegion(world, regionName);
+
+            if(region == null) throw new RegionNotFoundException("Could not find: " + regionName);
 		}
 	}
+
 
 	public boolean pointInArea(RunsafeLocation location)
 	{
@@ -159,4 +163,5 @@ public class SimpleArea
 	private ProtectedRegion region;
 	private final RunsafeWorld world;
 	private final String regionName;
+
 }

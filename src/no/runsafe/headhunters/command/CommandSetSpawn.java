@@ -11,10 +11,9 @@ import java.util.HashMap;
 
 public class CommandSetSpawn extends PlayerCommand
 {
-	public CommandSetSpawn(Core core, IConfiguration config, AreaHandler areaHandler)
+	public CommandSetSpawn(IConfiguration config, AreaHandler areaHandler)
 	{
 		super("spawn", "Sets the spawn point for in the wait room", "headhunters.regions.modify.spawn");
-		this.core = core;
 		this.config = config;
 		this.areaHandler = areaHandler;
 	}
@@ -31,7 +30,7 @@ public class CommandSetSpawn extends PlayerCommand
 
 			config.save();
 
-			core.setWaitRoomSpawn(player.getLocation());
+			areaHandler.setWaitRoomSpawn(player.getLocation());
 
 			return "Successfully set spawn";
 		}
@@ -41,6 +40,5 @@ public class CommandSetSpawn extends PlayerCommand
 	}
 
 	private final IConfiguration config;
-	private final Core core;
 	private final AreaHandler areaHandler;
 }

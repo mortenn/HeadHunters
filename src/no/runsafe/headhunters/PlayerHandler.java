@@ -20,12 +20,8 @@ public class PlayerHandler
 		this.areaHandler = areaHandler;
 	}
 
-	public void setDefaultSpawn(RunsafeLocation location)
-	{
-		this.defaultSpawn = location;
-	}
-
-    public boolean isWinner(){
+    public boolean isWinner()
+    {
         return winner;
     }
 
@@ -50,7 +46,7 @@ public class PlayerHandler
 			heads.setAmount(Util.amountMaterial(player, heads));
 			player.getWorld().dropItem(player.getEyeLocation(), heads);
 			player.getInventory().clear();
-			player.teleport(defaultSpawn);
+			player.teleport(areaHandler.getWaitRoomSpawn());
 
 			ArrayList<RunsafePlayer> ingame = getIngamePlayers();
 
@@ -192,7 +188,7 @@ public class PlayerHandler
 	public void end()
 	{
 
-		this.teleportAllPlayers(defaultSpawn);
+		this.teleportAllPlayers(areaHandler.getWaitRoomSpawn());
 		this.unEquipAll();
 		this.reset();
 
@@ -226,7 +222,6 @@ public class PlayerHandler
 	private final HashMap<String, HashMap<String, Object>> playerData;
 	private final int leaderAmount = -1;
 	private final EquipmentManager equipmentManager;
-	private RunsafeLocation defaultSpawn;
 	Boolean winner = false;
 	private RunsafePlayer leader;
 	private int winAmount = 0;

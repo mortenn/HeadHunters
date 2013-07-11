@@ -85,7 +85,7 @@ public class PlayerRightClick implements IPlayerRightClick
 					}
 					else
 					{
-						server.getWorld(playerHandler.getWorldName()).createExplosion(player.getLocation(), 2f, true, false);
+						server.getWorld(playerHandler.getWorldName()).createExplosion(player.getLocation(), 2f, false, false);
 					}
 
 				}

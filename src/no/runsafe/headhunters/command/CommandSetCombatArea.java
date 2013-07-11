@@ -8,6 +8,7 @@ import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.Util;
+import no.runsafe.headhunters.exception.RegionNotFoundException;
 import no.runsafe.worldguardbridge.WorldGuardInterface;
 
 import java.util.ArrayList;
@@ -70,7 +71,14 @@ public class CommandSetCombatArea extends PlayerCommand
 					return Constants.ERROR_COLOR + "Region already exists";
 
 				areas.add(thisRegion);
-				areaHandler.loadAreas(areas);
+				try
+                {
+                    areaHandler.loadAreas(areas);
+                }
+                catch (RegionNotFoundException e)
+                {
+                    return e.getMessage();
+                }
 
 				config.setConfigValue("regions", areas);
 				config.save();
@@ -83,12 +91,20 @@ public class CommandSetCombatArea extends PlayerCommand
 					return Constants.ERROR_COLOR + "Region does not exist as a combat area.";
 
 				Util.arraylistRemoveIgnoreCase(areas, thisRegion);
-				areaHandler.loadAreas(areas);
+
+                try
+                {
+                    areaHandler.loadAreas(areas);
+                }
+                catch (RegionNotFoundException e)
+                {
+                    return e.getMessage();
+                }
 
 				config.setConfigValue("regions", areas);
 				config.save();
 
-				return Constants.MSG_COLOR + "Removed area &f" + thisRegion;
+
 			}
 
 		}
@@ -97,7 +113,8 @@ public class CommandSetCombatArea extends PlayerCommand
 			return Constants.ERROR_COLOR + "Please move to the correct world";
 		}
 
-	}
+        return "Something went wrong... i think...";
+    }
 
 	private final Core core;
 	private final IConfiguration config;

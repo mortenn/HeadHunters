@@ -1,9 +1,12 @@
 package no.runsafe.headhunters;
 
+import no.runsafe.framework.minecraft.RunsafeConsole;
 import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
+import no.runsafe.headhunters.exception.RegionNotFoundException;
+import org.bukkit.GameMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,30 +14,37 @@ import java.util.List;
 
 public class AreaHandler
 {
-	public AreaHandler()
+
+
+    public AreaHandler()
 	{
 		areas = new HashMap<Integer, SimpleArea>();
 		currentArea = 0;
 		nextArea = 0;
 		availableRegions = new StringBuilder();
+
 	}
 
-	public void loadAreas(List<String> areaList)
+	public void loadAreas(List<String> areaList) throws RegionNotFoundException
 	{
 		__areas__ = (ArrayList<String>) areaList;
 		areas.clear();
 		int index = 0;
 		boolean first = true;
         availableRegions = new StringBuilder();
-		for (String area : areaList)
-		{
-			SimpleArea simpleArea = new SimpleArea(RunsafeServer.Instance.getWorld(world), area);
-			areas.put(index, simpleArea);
-			if (!first) availableRegions.append(",");
-			else first = false;
-			availableRegions.append(simpleArea.getRegionName());
-			index++;
-		}
+
+        for (String area : areaList)
+        {
+
+            SimpleArea simpleArea = new SimpleArea(RunsafeServer.Instance.getWorld(world), area);
+            areas.put(index, simpleArea);
+            if (!first) availableRegions.append(",");
+            else first = false;
+            availableRegions.append(simpleArea.getRegionName());
+            index++;
+        }
+
+
 
 	}
 
@@ -147,10 +157,48 @@ public class AreaHandler
 
 	}
 
+    public void setWaitRoom(String region) throws RegionNotFoundException
+    {
+        waitRoom = new SimpleArea(RunsafeServer.Instance.getWorld(world), region);
+    }
+
+    public SimpleArea getWaitRoom(){
+        return waitRoom;
+    }
+
+    public boolean isInWaitRoom(RunsafePlayer player){
+        return waitRoom.pointInArea(player.getLocation());
+    }
+
+    public RunsafeLocation getWaitRoomSpawn()
+    {
+        return waitroomSpawn;
+    }
+
+    public ArrayList<RunsafePlayer> getWaitRoomPlayers()
+    {
+        return waitRoom.getPlayers();
+    }
+
+    public ArrayList<RunsafePlayer> getWaitRoomPlayers(GameMode mode)
+    {
+        return waitRoom.getPlayers(mode);
+    }
+
+    public void setWaitRoomSpawn(RunsafeLocation location)
+    {
+        waitroomSpawn = location;
+    }
+
 	private final HashMap<Integer, SimpleArea> areas;
 	private StringBuilder availableRegions;
 	private int currentArea;
 	private int nextArea;
 	private String world = "world";
+    private SimpleArea waitRoom;
 	private ArrayList<String> __areas__;
+    private RunsafeLocation waitroomSpawn;
+
+
+
 }
