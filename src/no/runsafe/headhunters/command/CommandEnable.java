@@ -22,7 +22,7 @@ public class CommandEnable extends ExecutableCommand
 	{
 
 		if (!this.core.enable())
-			return Constants.ERROR_COLOR + "There are no areas defined!";
+			return Constants.ERROR_COLOR + "There are no areas or no waitroom defined!";
 		else
 			return "Headhunters " + ChatColour.GREEN + "enabled";
 

@@ -1,11 +1,9 @@
 package no.runsafe.headhunters;
 
-import no.runsafe.framework.minecraft.RunsafeConsole;
 import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
-import no.runsafe.headhunters.exception.RegionNotFoundException;
 import org.bukkit.GameMode;
 
 import java.util.ArrayList;
@@ -25,7 +23,7 @@ public class AreaHandler
 
 	}
 
-	public void loadAreas(List<String> areaList) throws RegionNotFoundException
+	public void loadAreas(List<String> areaList)
 	{
 		__areas__ = (ArrayList<String>) areaList;
 		areas.clear();
@@ -157,7 +155,7 @@ public class AreaHandler
 
 	}
 
-    public void setWaitRoom(String region) throws RegionNotFoundException
+    public void setWaitRoom(String region)
     {
         waitRoom = new SimpleArea(RunsafeServer.Instance.getWorld(world), region);
     }

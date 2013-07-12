@@ -8,7 +8,8 @@ import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.Constants;
 import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.Util;
-import no.runsafe.headhunters.exception.RegionNotFoundException;
+import no.runsafe.headhunters.database.AreaRepository;
+import no.runsafe.headhunters.database.WaitRoomRepository;
 import no.runsafe.worldguardbridge.WorldGuardInterface;
 
 import java.util.ArrayList;
@@ -19,14 +20,17 @@ public class CommandSetCombatArea extends PlayerCommand
 {
 
 
-    public CommandSetCombatArea(Core core, IConfiguration config, AreaHandler areaHandler, WorldGuardInterface worldGuardInterface)
+    public CommandSetCombatArea(Core core, AreaHandler areaHandler, WorldGuardInterface worldGuardInterface,
+                                AreaRepository areaRepository, WaitRoomRepository waitRoomRepository)
 	{
 		super("combatarea", "Adds or removes the WorldGuard region you are in as a combat area.", "headhunters.regions.modify.areas", "p");
 		this.core = core;
-		this.config = config;
-		this.captureTail();
 		this.worldGuardInterface = worldGuardInterface;
 		this.areaHandler = areaHandler;
+        this.areaRepository = areaRepository;
+        this.waitRoomRepository = waitRoomRepository;
+
+        this.captureTail();
 	}
 
 	@Override
@@ -38,7 +42,6 @@ public class CommandSetCombatArea extends PlayerCommand
 	@Override
 	public String OnExecute(RunsafePlayer player, HashMap<String, String> parameters)
 	{
-
 		boolean add;
 
 		String arg = parameters.get("p");
@@ -60,28 +63,22 @@ public class CommandSetCombatArea extends PlayerCommand
 			if (regions.size() > 1)
 				return Constants.ERROR_COLOR + "Found multiple regions";
 
-			ArrayList<String> areas = areaHandler.get__areas__();
+			ArrayList<String> areas = areaRepository.getAreas();
 			String thisRegion = regions.get(0);
 
+            String waitroom = waitRoomRepository.getWaitRoom();
+            if(waitroom.equalsIgnoreCase(thisRegion))
+                return Constants.ERROR_COLOR + "This region is registered as the waitroom";
 
 			if (add)
 			{
 
-				if (areas.contains(thisRegion))
+				if (Util.arrayListContainsIgnoreCase(areas, thisRegion))
 					return Constants.ERROR_COLOR + "Region already exists";
 
 				areas.add(thisRegion);
-				try
-                {
-                    areaHandler.loadAreas(areas);
-                }
-                catch (RegionNotFoundException e)
-                {
-                    return e.getMessage();
-                }
-
-				config.setConfigValue("regions", areas);
-				config.save();
+                areaHandler.loadAreas(areas);
+                areaRepository.addArea(thisRegion);
 
 				return Constants.MSG_COLOR + "Added region &f" + thisRegion;
 			}
@@ -91,19 +88,8 @@ public class CommandSetCombatArea extends PlayerCommand
 					return Constants.ERROR_COLOR + "Region does not exist as a combat area.";
 
 				Util.arraylistRemoveIgnoreCase(areas, thisRegion);
-
-                try
-                {
-                    areaHandler.loadAreas(areas);
-                }
-                catch (RegionNotFoundException e)
-                {
-                    return e.getMessage();
-                }
-
-				config.setConfigValue("regions", areas);
-				config.save();
-
+                areaHandler.loadAreas(areas);
+                areaRepository.delArea(thisRegion);
 
 			}
 
@@ -117,7 +103,8 @@ public class CommandSetCombatArea extends PlayerCommand
     }
 
 	private final Core core;
-	private final IConfiguration config;
     private final WorldGuardInterface worldGuardInterface;
 	private final AreaHandler areaHandler;
+    private final WaitRoomRepository waitRoomRepository;
+    private final AreaRepository areaRepository;
 }

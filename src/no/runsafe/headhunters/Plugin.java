@@ -3,6 +3,8 @@ package no.runsafe.headhunters;
 import no.runsafe.framework.RunsafeConfigurablePlugin;
 import no.runsafe.framework.api.command.Command;
 import no.runsafe.headhunters.command.*;
+import no.runsafe.headhunters.database.AreaRepository;
+import no.runsafe.headhunters.database.WaitRoomRepository;
 import no.runsafe.headhunters.event.*;
 import no.runsafe.worldguardbridge.WorldGuardInterface;
 
@@ -11,21 +13,24 @@ public class Plugin extends RunsafeConfigurablePlugin
 	@Override
 	protected void PluginSetup()
 	{
+        //worldguard interface
+		this.addComponent(Instances.get("RunsafeWorldGuardBridge").getComponent(WorldGuardInterface.class));
 
-		addComponent(Instances.get("RunsafeWorldGuardBridge").getComponent(WorldGuardInterface.class));
+        //database
+        this.addComponent(AreaRepository.class);
+        this.addComponent(WaitRoomRepository.class);
 
+        //handlers and managers
 		this.addComponent(EquipmentManager.class);
 		this.addComponent(RandomItem.class);
 		this.addComponent(AreaHandler.class);
 		this.addComponent(VoteHandler.class);
 		this.addComponent(PlayerHandler.class);
 
-
+        //core
 		this.addComponent(Core.class);
 
 		// commands
-
-
 		Command command = new Command("headhunters", "Headhunters plugin commands", null);
 
 		command.addSubCommand(this.getInstance(CommandDisable.class));
