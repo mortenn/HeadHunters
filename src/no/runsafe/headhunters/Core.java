@@ -95,7 +95,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 
     public void disable()
 	{
-        console.fine("diabling");
+        console.fine("disabling");
 		if (this.gamestarted)
 		{
 			this.end();
@@ -105,6 +105,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		this.config.setConfigValue("enabled", false);
 		this.config.save();
 		this.enabled = false;
+
+
 	}
 
 	public boolean getGamestarted()

@@ -1,6 +1,5 @@
 package no.runsafe.headhunters.command;
 
-import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.framework.text.ChatColour;
@@ -91,6 +90,7 @@ public class CommandSetCombatArea extends PlayerCommand
                 areaHandler.loadAreas(areas);
                 areaRepository.delArea(thisRegion);
 
+                return Constants.MSG_COLOR + "Succesfully removed region &f" + thisRegion;
 			}
 
 		}
@@ -98,8 +98,6 @@ public class CommandSetCombatArea extends PlayerCommand
 		{
 			return Constants.ERROR_COLOR + "Please move to the correct world";
 		}
-
-        return "Something went wrong... i think...";
     }
 
 	private final Core core;

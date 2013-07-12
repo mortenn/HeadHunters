@@ -42,7 +42,7 @@ public class WaitRoomRepository extends Repository
 
     public String getWaitRoom()
     {
-        String query = "SELECT * FROM 'headhunters_waitroom";
+        String query = "SELECT * FROM headhunters_waitroom";
         IRow row = database.QueryRow(query);
         if(row == null || row == Set.Empty) return null;
         else return row.String("AREANAME");
@@ -50,13 +50,13 @@ public class WaitRoomRepository extends Repository
 
     private void delWaitRoom()
     {
-        String query = "TRUNCATE TABLE 'headhunters_waitroom'";
-        database.Update(query);
+        String query = "TRUNCATE TABLE headhunters_waitroom";
+        database.Execute(query);
     }
 
     public void setWaitRoom(String name)
     {
-        String query = String.format("INSERT INTO `minecraft`.`headhunters_waitroom` (`AREANAME`) VALUES ('%s');", name);
+        String query = String.format("INSERT INTO headhunters_waitroom (`AREANAME`) VALUES ('%s');", name);
         delWaitRoom();
         database.Update(query);
     }

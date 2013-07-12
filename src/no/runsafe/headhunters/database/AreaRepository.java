@@ -48,7 +48,7 @@ public class AreaRepository extends Repository
 
     public ArrayList<String> getAreas()
     {
-        String query = "SELECT * FROM 'headhunters_areas'";
+        String query = "SELECT * FROM headhunters_areas";
         ISet set = database.Query(query);
 
         ArrayList<String> areas = new ArrayList<String>();
@@ -65,7 +65,7 @@ public class AreaRepository extends Repository
 
         if(areaExists(name)) return false;
 
-        String query = String.format("INSERT INTO `minecraft`.`headhunters_areas` (`ID`, `AREANAME`) VALUES (NULL, '%s');", name);
+        String query = String.format("INSERT INTO headhunters_areas (`ID`, `AREANAME`) VALUES (NULL, '%s');", name);
         console.fine(String.format("Adding %s to the areas", name));
         int id = database.Update(query);
         console.fine(String.format("Inserted Id: %d", id));
@@ -76,7 +76,7 @@ public class AreaRepository extends Repository
     {
         if(!areaExists(name)) return false;
 
-        String query = String.format("DELETE FROM `headhunters_areas` WHERE `AREANAME` = %s;", name);
+        String query = String.format("DELETE FROM `headhunters_areas` WHERE `AREANAME` = '%s';", name);
         console.fine(String.format("deleting %s from the areas", name));
         int id = database.Update(query);
         console.fine(String.format("Removed Id: %d", id));
