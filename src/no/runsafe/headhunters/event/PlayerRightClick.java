@@ -1,9 +1,7 @@
 package no.runsafe.headhunters.event;
 
 import no.runsafe.framework.api.event.player.IPlayerRightClick;
-import no.runsafe.framework.minecraft.Buff;
-import no.runsafe.framework.minecraft.RunsafeLocation;
-import no.runsafe.framework.minecraft.RunsafeServer;
+import no.runsafe.framework.minecraft.*;
 import no.runsafe.framework.minecraft.block.RunsafeBlock;
 import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
@@ -12,7 +10,6 @@ import no.runsafe.headhunters.PlayerHandler;
 import no.runsafe.headhunters.Util;
 import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 
 import java.util.ArrayList;
 
@@ -30,6 +27,7 @@ public class PlayerRightClick implements IPlayerRightClick
 	{
 		int range = 5;
 		int roll = 95;
+        RunsafeWorld world = server.getWorld(areaHandler.getWorld());
 
 		if (playerHandler.isIngame(player))
 		{
@@ -44,7 +42,7 @@ public class PlayerRightClick implements IPlayerRightClick
 				{
 
 					//visual effect...
-					server.getWorld(playerHandler.getWorldName()).playEffect(location, Effect.POTION_BREAK, 16426);
+					world.playEffect(location, Effect.POTION_BREAK, 16426);
 
 					ArrayList<RunsafePlayer> hitPlayers = playerHandler.getIngamePlayers(location, range);
 					for (RunsafePlayer hitPlayer : hitPlayers)
@@ -85,7 +83,7 @@ public class PlayerRightClick implements IPlayerRightClick
 					}
 					else
 					{
-						server.getWorld(playerHandler.getWorldName()).createExplosion(player.getLocation(), 2f, false, false);
+						world.createExplosion(player.getLocation(), 2f, false, false);
 					}
 
 				}
@@ -93,12 +91,13 @@ public class PlayerRightClick implements IPlayerRightClick
 				{
 
 					player.Launch(Material.FIREBALL.name());
-					RunsafeServer.Instance.getWorld(playerHandler.getWorldName()).getRaw().playSound(player.getLocation().getRaw(), Sound.GHAST_FIREBALL, 1f, 1f);
+					world.playSound(location, Sound.Creature.Ghast.Fireball, 1f, 1f);
 					used = true;
 
 				}
 				else if (itemID == Material.INK_SACK.getId())
 				{
+                    world.playSound(location, Sound.Environment.Splash, 1f, 1f);
 					ArrayList<RunsafePlayer> hitPlayers = playerHandler.getIngamePlayers(location, range);
 					for (RunsafePlayer hitPlayer : hitPlayers)
 						if (!hitPlayer.getName().equalsIgnoreCase(player.getName()))
