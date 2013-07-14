@@ -1,48 +1,39 @@
 package no.runsafe.headhunters;
 
+import no.runsafe.framework.api.IConfiguration;
+import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.RunsafeServer;
+import no.runsafe.framework.minecraft.RunsafeWorld;
 import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import org.bukkit.GameMode;
+import org.bukkit.craftbukkit.libs.joptsimple.internal.Strings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class AreaHandler
+public class AreaHandler implements IConfigurationChanged
 {
-
-
 	public AreaHandler()
 	{
-		areas = new HashMap<Integer, SimpleArea>();
 		currentArea = 0;
 		nextArea = 0;
-		availableRegions = new StringBuilder();
-
 	}
 
 	public void loadAreas(List<String> areaList)
 	{
-		__areas__ = (ArrayList<String>) areaList;
 		areas.clear();
+		availableRegions.clear();
+		availableRegions.addAll(areaList);
 		int index = 0;
-		boolean first = true;
-		availableRegions = new StringBuilder();
-
 		for (String area : areaList)
 		{
-
-			SimpleArea simpleArea = new SimpleArea(RunsafeServer.Instance.getWorld(world), area);
+			SimpleArea simpleArea = new SimpleArea(world, area);
 			areas.put(index, simpleArea);
-			if (!first) availableRegions.append(",");
-			else first = false;
-			availableRegions.append(simpleArea.getRegionName());
 			index++;
 		}
-
-
 	}
 
 	public int getCurrentArea()
@@ -54,9 +45,7 @@ public class AreaHandler
 	{
 		currentArea = nextArea;
 		if (!areas.containsKey(currentArea))
-		{
 			currentArea = 0;
-		}
 	}
 
 	public int getNextArea()
@@ -95,13 +84,14 @@ public class AreaHandler
 		return areas.get(currentArea).safeLocation();
 	}
 
-
 	public void setWorld(String world)
 	{
-		this.world = world;
+		this.world = RunsafeServer.Instance.getWorld(world);
+		this.configuration.setConfigValue("world", world);
+		this.configuration.save();
 	}
 
-	public String getWorld()
+	public RunsafeWorld getWorld()
 	{
 		return world;
 	}
@@ -113,7 +103,7 @@ public class AreaHandler
 
 	public String getAvailableRegions()
 	{
-		return availableRegions.toString();
+		return Strings.join(availableRegions, ", ");
 	}
 
 	public void teleport(int region, RunsafePlayer player)
@@ -140,28 +130,26 @@ public class AreaHandler
 		return areas.get(area).pointInArea(location);
 	}
 
-	public ArrayList<String> get__areas__()
-	{
-		return __areas__;
-	}
-
-	public void removeEntities(List<RunsafeEntity> entities)
+	public void removeEntities()
 	{
 		if (areas.containsKey(currentArea))
-			for (RunsafeEntity entity : entities) //lets not delete players...
+			for (RunsafeEntity entity : world.getEntities()) //lets not delete players...
 				if (!(entity instanceof RunsafePlayer) && areas.get(currentArea).pointInArea(entity.getLocation()))
 					entity.remove();
-
 	}
 
 	public void setWaitRoom(String region)
 	{
-		waitRoom = new SimpleArea(RunsafeServer.Instance.getWorld(world), region);
+		if (waitRoom.getRegionName().equalsIgnoreCase(region))
+			return;
+		waitRoom = new SimpleArea(world, region);
+		configuration.setConfigValue("waitingarea", region);
+		configuration.save();
 	}
 
-	public SimpleArea getWaitRoom()
+	public boolean isInGameWorld(RunsafePlayer player)
 	{
-		return waitRoom;
+		return world.equals(player.getWorld());
 	}
 
 	public boolean isInWaitRoom(RunsafePlayer player)
@@ -187,16 +175,34 @@ public class AreaHandler
 	public void setWaitRoomSpawn(RunsafeLocation location)
 	{
 		waitroomSpawn = location;
+		configuration.setConfigValue("waitingroomspawn.x", location.getBlockX());
+		configuration.setConfigValue("waitingroomspawn.y", location.getBlockY());
+		configuration.setConfigValue("waitingroomspawn.z", location.getBlockZ());
+		configuration.save();
 	}
 
-	private final HashMap<Integer, SimpleArea> areas;
-	private StringBuilder availableRegions;
+	@Override
+	public void OnConfigurationChanged(IConfiguration configuration)
+	{
+		this.configuration = configuration;
+		world = RunsafeServer.Instance.getWorld(configuration.getConfigValueAsString("world"));
+		waitRoom = new SimpleArea(world, configuration.getConfigValueAsString("waitroom"));
+		setWaitRoomSpawn(
+			new RunsafeLocation(
+				world,
+				configuration.getConfigValueAsDouble("waitingroomspawn.x"),
+				configuration.getConfigValueAsDouble("waitingroomspawn.y"),
+				configuration.getConfigValueAsDouble("waitingroomspawn.z")
+			)
+		);
+	}
+
+	private final HashMap<Integer, SimpleArea> areas = new HashMap<Integer, SimpleArea>();
+	private final List<String> availableRegions = new ArrayList<String>();
+	private IConfiguration configuration;
 	private int currentArea;
 	private int nextArea;
-	private String world = "world";
+	private RunsafeWorld world;
 	private SimpleArea waitRoom;
-	private ArrayList<String> __areas__;
 	private RunsafeLocation waitroomSpawn;
-
-
 }

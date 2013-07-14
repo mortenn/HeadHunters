@@ -32,7 +32,7 @@ public class PlayerHandler
 
 	public String getWorldName()
 	{
-		return areaHandler.getWorld();
+		return areaHandler.getWorld().getName();
 	}
 
 	public void remove(RunsafePlayer player)
@@ -60,7 +60,10 @@ public class PlayerHandler
 
 	public boolean isIngame(RunsafePlayer player)
 	{
-		return playerData.containsKey(player.getName()) && !((Boolean) playerData.get(player.getName()).get("remove"));
+		return
+			areaHandler.isInGameWorld(player)
+				&& playerData.containsKey(player.getName())
+				&& !((Boolean) playerData.get(player.getName()).get("remove"));
 	}
 
 

@@ -7,14 +7,12 @@ import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.event.plugin.IPluginEnabled;
 import no.runsafe.framework.minecraft.Item;
-import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.RunsafeServer;
 import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.framework.text.ChatColour;
 import no.runsafe.framework.text.ConsoleColour;
 import no.runsafe.headhunters.database.AreaRepository;
-import no.runsafe.headhunters.database.WaitRoomRepository;
 import no.runsafe.worldguardbridge.WorldGuardInterface;
 import org.bukkit.GameMode;
 
@@ -25,18 +23,14 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 {
 	public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, VoteHandler voteHandler,
 							PlayerHandler playerHandler, AreaHandler areaHandler, WorldGuardInterface worldGuardInterface,
-							AreaRepository areaRepository, WaitRoomRepository waitRoomRepository)
+							AreaRepository areaRepository)
 	{
-
-		this.config = config;
 		this.console = console;
 		this.server = server;
-
 		this.playerHandler = playerHandler;
 		this.voteHandler = voteHandler;
 		this.areaHandler = areaHandler;
 
-		this.waitRoomRepository = waitRoomRepository;
 		this.areaRepository = areaRepository;
 
 		this.gamestarted = false;
@@ -61,34 +55,23 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		this.enabled = true;
 		if (loadAreas() != 0) return false;
 		if (areaHandler.getAmountLoadedAreas() == 0)
-		{
 			return false;
-		}
-		else
-		{
-			this.config.setConfigValue("enabled", true);
-			this.config.save();
 
-			end();
-			return true;
-		}
+		this.config.setConfigValue("enabled", true);
+		this.config.save();
+
+		end();
+		return true;
 	}
 
 	private int loadAreas()
 	{
-
 		console.fine("loading areas");
 		ArrayList<String> areas = areaRepository.getAreas();
-		String waitroom = waitRoomRepository.getWaitRoom();
 
 		if (areas.isEmpty())
 			return 1;
-		if (waitroom == null)
-			return 2;
-
 		areaHandler.loadAreas(areas);
-		areaHandler.setWaitRoom(waitroom);
-
 		return 0;
 	}
 
@@ -96,16 +79,12 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 	{
 		console.fine("disabling");
 		if (this.gamestarted)
-		{
 			this.end();
-		}
 
 		gamestarted = false;
 		this.config.setConfigValue("enabled", false);
 		this.config.save();
 		this.enabled = false;
-
-
 	}
 
 	public boolean getGamestarted()
@@ -130,19 +109,14 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 
 	public String startInTime(Integer time)
 	{
-		if (!this.enabled) return Constants.MSG_DISABLED;
+		if (!this.enabled)
+			return Constants.MSG_DISABLED;
 
-		if (!gamestarted)
-		{
+		if (gamestarted)
+			return "Game already started";
 
-			if (time <= 0) time = 1;
-
-			countdownToStart = time;
-
-			return Constants.MSG_COLOR + "Game will start in " + ChatColour.WHITE + time + Constants.MSG_COLOR + " seconds";
-		}
-
-		return "Game already started";
+		countdownToStart = time <= 0 ? 1 : time;
+		return Constants.MSG_COLOR + "Game will start in " + ChatColour.WHITE + countdownToStart + Constants.MSG_COLOR + " seconds";
 	}
 
 	public void start()
@@ -176,16 +150,12 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		console.fine("stopping game");
 		playerHandler.end();
 
-		List<RunsafeEntity> entities = server.getWorld(worldName).getEntities();
-		areaHandler.removeEntities(entities);
-
-
+		areaHandler.removeEntities();
 		areaHandler.randomNextArea();
 		gamestarted = false;
 
 		resetWaittime();
 		resetRuntime();
-
 	}
 
 	@Override
@@ -198,19 +168,6 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		this.countdownToEnd = config.getConfigValueAsInt("runtime");
 		this.voteHandler.setMinPercentage(config.getConfigValueAsInt("vote.min-percent"));
 		this.voteHandler.setMinVotes(config.getConfigValueAsInt("vote.min-votes"));
-		this.worldName = config.getConfigValueAsString("world");
-		if (this.worldName == null)
-		{
-			worldName = "world";
-		}
-		areaHandler.setWorld(worldName);
-
-		areaHandler.setWaitRoomSpawn(new RunsafeLocation(
-			server.getWorld(this.worldName),
-			config.getConfigValueAsDouble("waitingroomspawn.x"),
-			config.getConfigValueAsDouble("waitingroomspawn.y"),
-			config.getConfigValueAsDouble("waitingroomspawn.z")
-		));
 		console.fine("finished");
 	}
 
@@ -226,7 +183,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 
 	public void sendMessage(String msg)
 	{
-		for (RunsafePlayer player : server.getWorld(worldName).getPlayers()) player.sendColouredMessage(msg);
+		for (RunsafePlayer player : areaHandler.getWorld().getPlayers())
+			player.sendColouredMessage(msg);
 	}
 
 	public void tick()
@@ -290,7 +248,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 				}
 				else
 					//moving all players not in creative mode into the waitroom
-					for (RunsafePlayer p : RunsafeServer.Instance.getWorld(worldName).getPlayers())
+					for (RunsafePlayer p : areaHandler.getWorld().getPlayers())
 						if (p.getGameMode() != GameMode.CREATIVE && !areaHandler.isInWaitRoom(p))
 							p.teleport(areaHandler.getWaitRoomSpawn());
 
@@ -341,15 +299,12 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 				this.countdownToEnd--;
 				if (countdownToEnd <= 0)
 				{
-
 					winner();
-
 					return;
-
 				}
 
 				// checking all players in world that are not creative mode, move them to the waiting room if not in game
-				for (RunsafePlayer p : RunsafeServer.Instance.getWorld(worldName).getPlayers())
+				for (RunsafePlayer p : areaHandler.getWorld().getPlayers())
 					if (!playerHandler.isIngame(p) && p.getGameMode() != GameMode.CREATIVE && !areaHandler.isInWaitRoom(p))
 						p.teleport(areaHandler.getWaitRoomSpawn());
 			}
@@ -370,17 +325,13 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 	{
 		if (this.enabled)
 		{
-
 			if (!playerHandler.isIngame(executor))
 			{
 				executor.teleport(areaHandler.getWaitRoomSpawn());
 				executor.setGameMode(GameMode.SURVIVAL);
 				return null;
 			}
-			else
-			{
-				return Constants.ERROR_COLOR + "You are already in game!";
-			}
+			return Constants.ERROR_COLOR + "You are already in game!";
 		}
 
 		return Constants.MSG_COLOR + "headhunters is not enabled";
@@ -417,9 +368,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 	private final VoteHandler voteHandler;
 	private final PlayerHandler playerHandler;
 	private final AreaHandler areaHandler;
-	private final WaitRoomRepository waitRoomRepository;
 	private final AreaRepository areaRepository;
-	private String worldName;
 	private boolean gamestarted;
 	private boolean enabled = false;
 	private IConfiguration config;

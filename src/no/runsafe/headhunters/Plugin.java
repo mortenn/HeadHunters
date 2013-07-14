@@ -4,7 +4,6 @@ import no.runsafe.framework.RunsafeConfigurablePlugin;
 import no.runsafe.framework.api.command.Command;
 import no.runsafe.headhunters.command.*;
 import no.runsafe.headhunters.database.AreaRepository;
-import no.runsafe.headhunters.database.WaitRoomRepository;
 import no.runsafe.headhunters.event.*;
 import no.runsafe.worldguardbridge.WorldGuardInterface;
 
@@ -18,7 +17,6 @@ public class Plugin extends RunsafeConfigurablePlugin
 
 		//database
 		this.addComponent(AreaRepository.class);
-		this.addComponent(WaitRoomRepository.class);
 
 		//handlers and managers
 		this.addComponent(EquipmentManager.class);

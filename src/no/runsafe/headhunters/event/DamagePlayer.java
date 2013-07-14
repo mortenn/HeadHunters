@@ -9,23 +9,17 @@ import org.bukkit.Effect;
 
 public class DamagePlayer implements IPlayerDamageEvent
 {
-	public DamagePlayer(AreaHandler areaHandler, PlayerHandler playerHandler)
+	public DamagePlayer(PlayerHandler playerHandler)
 	{
-		this.areaHandler = areaHandler;
 		this.playerHandler = playerHandler;
 	}
 
 	@Override
 	public void OnPlayerDamage(RunsafePlayer player, RunsafeEntityDamageEvent event)
 	{
-		if (player.getWorld().getName().equalsIgnoreCase(areaHandler.getWorld()) && playerHandler.isIngame(player))
-		{
-
+		if (playerHandler.isIngame(player))
 			player.getWorld().playEffect(player.getLocation(), Effect.getById(2001), 152);
-
-		}
 	}
 
-	private final AreaHandler areaHandler;
 	private final PlayerHandler playerHandler;
 }

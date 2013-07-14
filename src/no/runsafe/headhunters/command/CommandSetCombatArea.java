@@ -50,9 +50,7 @@ public class CommandSetCombatArea extends PlayerCommand
 
 		if (core.isEnabled()) return Constants.ERROR_COLOR + "Only use this when headhunters is disabled!";
 
-		String worldName = areaHandler.getWorld();
-
-		if (player.getWorld().getName().equalsIgnoreCase(worldName))
+		if (areaHandler.isInGameWorld(player))
 		{
 
 			List<String> regions = worldGuardInterface.getRegionsAtLocation(player.getLocation());

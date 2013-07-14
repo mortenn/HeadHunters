@@ -42,7 +42,7 @@ public class WaitRoomRepository extends Repository
 
 	public String getWaitRoom()
 	{
-		String query = "SELECT * FROM headhunters_waitroom";
+		String query = "SELECT areaname FROM headhunters_waitroom";
 		IRow row = database.QueryRow(query);
 		if (row == null || row == Set.Empty) return null;
 		else return row.String("AREANAME");
