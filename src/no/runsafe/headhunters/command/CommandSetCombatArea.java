@@ -19,17 +19,17 @@ public class CommandSetCombatArea extends PlayerCommand
 {
 
 
-    public CommandSetCombatArea(Core core, AreaHandler areaHandler, WorldGuardInterface worldGuardInterface,
-                                AreaRepository areaRepository, WaitRoomRepository waitRoomRepository)
+	public CommandSetCombatArea(Core core, AreaHandler areaHandler, WorldGuardInterface worldGuardInterface,
+															AreaRepository areaRepository, WaitRoomRepository waitRoomRepository)
 	{
 		super("combatarea", "Adds or removes the WorldGuard region you are in as a combat area.", "headhunters.regions.modify.areas", "p");
 		this.core = core;
 		this.worldGuardInterface = worldGuardInterface;
 		this.areaHandler = areaHandler;
-        this.areaRepository = areaRepository;
-        this.waitRoomRepository = waitRoomRepository;
+		this.areaRepository = areaRepository;
+		this.waitRoomRepository = waitRoomRepository;
 
-        this.captureTail();
+		this.captureTail();
 	}
 
 	@Override
@@ -65,9 +65,9 @@ public class CommandSetCombatArea extends PlayerCommand
 			ArrayList<String> areas = areaRepository.getAreas();
 			String thisRegion = regions.get(0);
 
-            String waitroom = waitRoomRepository.getWaitRoom();
-            if(waitroom.equalsIgnoreCase(thisRegion))
-                return Constants.ERROR_COLOR + "This region is registered as the waitroom";
+			String waitroom = waitRoomRepository.getWaitRoom();
+			if (waitroom.equalsIgnoreCase(thisRegion))
+				return Constants.ERROR_COLOR + "This region is registered as the waitroom";
 
 			if (add)
 			{
@@ -76,8 +76,8 @@ public class CommandSetCombatArea extends PlayerCommand
 					return Constants.ERROR_COLOR + "Region already exists";
 
 				areas.add(thisRegion);
-                areaHandler.loadAreas(areas);
-                areaRepository.addArea(thisRegion);
+				areaHandler.loadAreas(areas);
+				areaRepository.addArea(thisRegion);
 
 				return Constants.MSG_COLOR + "Added region &f" + thisRegion;
 			}
@@ -87,10 +87,10 @@ public class CommandSetCombatArea extends PlayerCommand
 					return Constants.ERROR_COLOR + "Region does not exist as a combat area.";
 
 				Util.arraylistRemoveIgnoreCase(areas, thisRegion);
-                areaHandler.loadAreas(areas);
-                areaRepository.delArea(thisRegion);
+				areaHandler.loadAreas(areas);
+				areaRepository.delArea(thisRegion);
 
-                return Constants.MSG_COLOR + "Succesfully removed region &f" + thisRegion;
+				return Constants.MSG_COLOR + "Succesfully removed region &f" + thisRegion;
 			}
 
 		}
@@ -98,11 +98,11 @@ public class CommandSetCombatArea extends PlayerCommand
 		{
 			return Constants.ERROR_COLOR + "Please move to the correct world";
 		}
-    }
+	}
 
 	private final Core core;
-    private final WorldGuardInterface worldGuardInterface;
+	private final WorldGuardInterface worldGuardInterface;
 	private final AreaHandler areaHandler;
-    private final WaitRoomRepository waitRoomRepository;
-    private final AreaRepository areaRepository;
+	private final WaitRoomRepository waitRoomRepository;
+	private final AreaRepository areaRepository;
 }

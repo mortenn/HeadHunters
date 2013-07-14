@@ -86,15 +86,15 @@ public class SimpleArea
 		return region.getMaximumPoint().getZ();
 	}
 
-    public RunsafeLocation getCenter()
-    {
-        return new RunsafeLocation(
-                world,
-                (getMaxX() -getMinX()) / 2,
-                (getMaxY() -getMinY()) / 2,
-                (getMaxZ() -getMinY()) / 2
-        );
-    }
+	public RunsafeLocation getCenter()
+	{
+		return new RunsafeLocation(
+			world,
+			(getMaxX() - getMinX()) / 2,
+			(getMaxY() - getMinY()) / 2,
+			(getMaxZ() - getMinY()) / 2
+		);
+	}
 
 	@Override
 	public String toString()

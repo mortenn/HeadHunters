@@ -6,7 +6,6 @@ import no.runsafe.framework.minecraft.Buff;
 import no.runsafe.framework.minecraft.entity.RunsafeItem;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerPickupItemEvent;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
-import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.PlayerHandler;
 import org.bukkit.Material;
 

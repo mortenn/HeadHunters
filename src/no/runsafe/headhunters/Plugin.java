@@ -13,21 +13,21 @@ public class Plugin extends RunsafeConfigurablePlugin
 	@Override
 	protected void PluginSetup()
 	{
-        //worldguard interface
-		this.addComponent(Instances.get("RunsafeWorldGuardBridge").getComponent(WorldGuardInterface.class));
+		//worldguard interface
+		this.addComponent(getFirstPluginAPI(WorldGuardInterface.class));
 
-        //database
-        this.addComponent(AreaRepository.class);
-        this.addComponent(WaitRoomRepository.class);
+		//database
+		this.addComponent(AreaRepository.class);
+		this.addComponent(WaitRoomRepository.class);
 
-        //handlers and managers
+		//handlers and managers
 		this.addComponent(EquipmentManager.class);
 		this.addComponent(RandomItem.class);
 		this.addComponent(AreaHandler.class);
 		this.addComponent(VoteHandler.class);
 		this.addComponent(PlayerHandler.class);
 
-        //core
+		//core
 		this.addComponent(Core.class);
 
 		// commands
@@ -47,7 +47,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 		command.addSubCommand(this.getInstance(CommandTeleport.class));
 		command.addSubCommand(this.getInstance(CommandForceSkip.class));
 		command.addSubCommand(this.getInstance(CommandConfig.class));
-        command.addSubCommand(this.getInstance(CommandSetWaitroom.class));
+		command.addSubCommand(this.getInstance(CommandSetWaitroom.class));
 
 		this.addComponent(command);
 

@@ -5,7 +5,6 @@ import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.AreaHandler;
 import no.runsafe.headhunters.Constants;
-import no.runsafe.headhunters.Core;
 
 import java.util.HashMap;
 

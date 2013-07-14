@@ -14,7 +14,7 @@ public class AreaHandler
 {
 
 
-    public AreaHandler()
+	public AreaHandler()
 	{
 		areas = new HashMap<Integer, SimpleArea>();
 		currentArea = 0;
@@ -29,19 +29,18 @@ public class AreaHandler
 		areas.clear();
 		int index = 0;
 		boolean first = true;
-        availableRegions = new StringBuilder();
+		availableRegions = new StringBuilder();
 
-        for (String area : areaList)
-        {
+		for (String area : areaList)
+		{
 
-            SimpleArea simpleArea = new SimpleArea(RunsafeServer.Instance.getWorld(world), area);
-            areas.put(index, simpleArea);
-            if (!first) availableRegions.append(",");
-            else first = false;
-            availableRegions.append(simpleArea.getRegionName());
-            index++;
-        }
-
+			SimpleArea simpleArea = new SimpleArea(RunsafeServer.Instance.getWorld(world), area);
+			areas.put(index, simpleArea);
+			if (!first) availableRegions.append(",");
+			else first = false;
+			availableRegions.append(simpleArea.getRegionName());
+			index++;
+		}
 
 
 	}
@@ -155,48 +154,49 @@ public class AreaHandler
 
 	}
 
-    public void setWaitRoom(String region)
-    {
-        waitRoom = new SimpleArea(RunsafeServer.Instance.getWorld(world), region);
-    }
+	public void setWaitRoom(String region)
+	{
+		waitRoom = new SimpleArea(RunsafeServer.Instance.getWorld(world), region);
+	}
 
-    public SimpleArea getWaitRoom(){
-        return waitRoom;
-    }
+	public SimpleArea getWaitRoom()
+	{
+		return waitRoom;
+	}
 
-    public boolean isInWaitRoom(RunsafePlayer player){
-        return waitRoom.pointInArea(player.getLocation());
-    }
+	public boolean isInWaitRoom(RunsafePlayer player)
+	{
+		return waitRoom.pointInArea(player.getLocation());
+	}
 
-    public RunsafeLocation getWaitRoomSpawn()
-    {
-        return waitroomSpawn;
-    }
+	public RunsafeLocation getWaitRoomSpawn()
+	{
+		return waitroomSpawn;
+	}
 
-    public ArrayList<RunsafePlayer> getWaitRoomPlayers()
-    {
-        return waitRoom.getPlayers();
-    }
+	public ArrayList<RunsafePlayer> getWaitRoomPlayers()
+	{
+		return waitRoom.getPlayers();
+	}
 
-    public ArrayList<RunsafePlayer> getWaitRoomPlayers(GameMode mode)
-    {
-        return waitRoom.getPlayers(mode);
-    }
+	public ArrayList<RunsafePlayer> getWaitRoomPlayers(GameMode mode)
+	{
+		return waitRoom.getPlayers(mode);
+	}
 
-    public void setWaitRoomSpawn(RunsafeLocation location)
-    {
-        waitroomSpawn = location;
-    }
+	public void setWaitRoomSpawn(RunsafeLocation location)
+	{
+		waitroomSpawn = location;
+	}
 
 	private final HashMap<Integer, SimpleArea> areas;
 	private StringBuilder availableRegions;
 	private int currentArea;
 	private int nextArea;
 	private String world = "world";
-    private SimpleArea waitRoom;
+	private SimpleArea waitRoom;
 	private ArrayList<String> __areas__;
-    private RunsafeLocation waitroomSpawn;
-
+	private RunsafeLocation waitroomSpawn;
 
 
 }

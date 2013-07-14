@@ -3,7 +3,6 @@ package no.runsafe.headhunters.command;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.headhunters.Constants;
-import no.runsafe.headhunters.Core;
 import no.runsafe.headhunters.PlayerHandler;
 import org.bukkit.craftbukkit.libs.joptsimple.internal.Strings;
 

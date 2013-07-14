@@ -6,7 +6,6 @@ import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.event.plugin.IPluginEnabled;
-
 import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.RunsafeServer;
@@ -26,7 +25,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 {
 	public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, VoteHandler voteHandler,
 							PlayerHandler playerHandler, AreaHandler areaHandler, WorldGuardInterface worldGuardInterface,
-                            AreaRepository areaRepository, WaitRoomRepository waitRoomRepository)
+							AreaRepository areaRepository, WaitRoomRepository waitRoomRepository)
 	{
 
 		this.config = config;
@@ -37,8 +36,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		this.voteHandler = voteHandler;
 		this.areaHandler = areaHandler;
 
-        this.waitRoomRepository = waitRoomRepository;
-        this.areaRepository = areaRepository;
+		this.waitRoomRepository = waitRoomRepository;
+		this.areaRepository = areaRepository;
 
 		this.gamestarted = false;
 
@@ -58,9 +57,9 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 
 	public boolean enable()
 	{
-        console.fine("enabling");
-        this.enabled = true;
-        if(loadAreas() != 0) return false;
+		console.fine("enabling");
+		this.enabled = true;
+		if (loadAreas() != 0) return false;
 		if (areaHandler.getAmountLoadedAreas() == 0)
 		{
 			return false;
@@ -75,27 +74,27 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		}
 	}
 
-    private int loadAreas()
-    {
-
-        console.fine("loading areas");
-        ArrayList<String> areas = areaRepository.getAreas();
-        String waitroom = waitRoomRepository.getWaitRoom();
-
-        if(areas.isEmpty())
-            return 1;
-        if(waitroom == null)
-            return 2;
-
-        areaHandler.loadAreas(areas);
-        areaHandler.setWaitRoom(waitroom);
-
-        return 0;
-    }
-
-    public void disable()
+	private int loadAreas()
 	{
-        console.fine("disabling");
+
+		console.fine("loading areas");
+		ArrayList<String> areas = areaRepository.getAreas();
+		String waitroom = waitRoomRepository.getWaitRoom();
+
+		if (areas.isEmpty())
+			return 1;
+		if (waitroom == null)
+			return 2;
+
+		areaHandler.loadAreas(areas);
+		areaHandler.setWaitRoom(waitroom);
+
+		return 0;
+	}
+
+	public void disable()
+	{
+		console.fine("disabling");
 		if (this.gamestarted)
 		{
 			this.end();
@@ -148,7 +147,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 
 	public void start()
 	{
-        console.fine("starting game");
+		console.fine("starting game");
 		if (areaHandler.getAmountLoadedAreas() == 0)
 		{
 			console.write("Can not start headhunters game; There are no areas");
@@ -174,7 +173,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 
 	public void end()
 	{
-        console.fine("stopping game");
+		console.fine("stopping game");
 		playerHandler.end();
 
 		List<RunsafeEntity> entities = server.getWorld(worldName).getEntities();
@@ -192,28 +191,28 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 	@Override
 	public void OnConfigurationChanged(IConfiguration configuration)
 	{
-        console.fine("loading config...");
+		console.fine("loading config...");
 		this.config = configuration;
-        this.enabled = config.getConfigValueAsBoolean("enabled");
-        this.countdownToStart = config.getConfigValueAsInt("waittime");
-        this.countdownToEnd = config.getConfigValueAsInt("runtime");
-        this.voteHandler.setMinPercentage(config.getConfigValueAsInt("vote.min-percent"));
-        this.voteHandler.setMinVotes(config.getConfigValueAsInt("vote.min-votes"));
-        this.worldName = config.getConfigValueAsString("world");
-        if (this.worldName == null)
-        {
-            worldName = "world";
-        }
-        areaHandler.setWorld(worldName);
+		this.enabled = config.getConfigValueAsBoolean("enabled");
+		this.countdownToStart = config.getConfigValueAsInt("waittime");
+		this.countdownToEnd = config.getConfigValueAsInt("runtime");
+		this.voteHandler.setMinPercentage(config.getConfigValueAsInt("vote.min-percent"));
+		this.voteHandler.setMinVotes(config.getConfigValueAsInt("vote.min-votes"));
+		this.worldName = config.getConfigValueAsString("world");
+		if (this.worldName == null)
+		{
+			worldName = "world";
+		}
+		areaHandler.setWorld(worldName);
 
-        areaHandler.setWaitRoomSpawn(new RunsafeLocation(
-                server.getWorld(this.worldName),
-                config.getConfigValueAsDouble("waitingroomspawn.x"),
-                config.getConfigValueAsDouble("waitingroomspawn.y"),
-                config.getConfigValueAsDouble("waitingroomspawn.z")
-        ));
-        console.fine("finished");
-    }
+		areaHandler.setWaitRoomSpawn(new RunsafeLocation(
+			server.getWorld(this.worldName),
+			config.getConfigValueAsDouble("waitingroomspawn.x"),
+			config.getConfigValueAsDouble("waitingroomspawn.y"),
+			config.getConfigValueAsDouble("waitingroomspawn.z")
+		));
+		console.fine("finished");
+	}
 
 	private void resetWaittime()
 	{
@@ -359,7 +358,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 
 	private void winner()
 	{
-        console.fine("checking for winner");
+		console.fine("checking for winner");
 		RunsafePlayer winPlayer = playerHandler.getCurrentLeader();
 		if (winPlayer != null)
 			server.broadcastMessage(String.format(Constants.GAME_WON, winPlayer.getPrettyName()));
@@ -404,10 +403,10 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 	@Override
 	public void OnPluginEnabled()
 	{
-        console.fine("enabling sequence");
-        if(this.enabled)
-            if(!enable())
-                disable();
+		console.fine("enabling sequence");
+		if (this.enabled)
+			if (!enable())
+				disable();
 
 		console.writeColoured((enabled) ? ConsoleColour.GREEN + "Enabled" : ConsoleColour.RED + "Disabled");
 		console.write(String.format("loaded %d areas", areaHandler.getAmountLoadedAreas()));
@@ -418,8 +417,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 	private final VoteHandler voteHandler;
 	private final PlayerHandler playerHandler;
 	private final AreaHandler areaHandler;
-    private final WaitRoomRepository waitRoomRepository;
-    private final AreaRepository areaRepository;
+	private final WaitRoomRepository waitRoomRepository;
+	private final AreaRepository areaRepository;
 	private String worldName;
 	private boolean gamestarted;
 	private boolean enabled = false;

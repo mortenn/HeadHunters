@@ -20,10 +20,10 @@ public class PlayerHandler
 		this.areaHandler = areaHandler;
 	}
 
-    public boolean isWinner()
-    {
-        return winner;
-    }
+	public boolean isWinner()
+	{
+		return winner;
+	}
 
 	public int getWinAmount()
 	{
