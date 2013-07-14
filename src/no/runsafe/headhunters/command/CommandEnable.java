@@ -1,6 +1,5 @@
 package no.runsafe.headhunters.command;
 
-
 import no.runsafe.framework.api.command.ExecutableCommand;
 import no.runsafe.framework.api.command.ICommandExecutor;
 import no.runsafe.framework.text.ChatColour;
@@ -20,15 +19,11 @@ public class CommandEnable extends ExecutableCommand
 	@Override
 	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
 	{
-
-		if (!this.core.enable())
-		{
-			core.disable();
-			return Constants.ERROR_COLOR + "There are no areas or no waitroom defined!";
-		}
-		else
+		if (this.core.enable())
 			return "Headhunters " + ChatColour.GREEN + "enabled";
 
+		core.disable();
+		return Constants.ERROR_COLOR + "There are no areas or no waitroom defined!";
 	}
 
 	private final Core core;

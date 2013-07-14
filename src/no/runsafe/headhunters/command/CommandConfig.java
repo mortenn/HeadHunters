@@ -21,9 +21,8 @@ public class CommandConfig extends ExecutableCommand
 	@Override
 	public String OnExecute(ICommandExecutor executor, HashMap<String, String> parameters)
 	{
-
-		if (core.isEnabled()) return Constants.ERROR_COLOR + "Disable headhunters first!";
-
+		if (core.isEnabled())
+			return Constants.ERROR_COLOR + "Disable headhunters first!";
 
 		String key = parameters.get("key");
 		String value = parameters.get("value");
@@ -32,8 +31,6 @@ public class CommandConfig extends ExecutableCommand
 			return "&cKey &f" + key + "&c does not exist";
 
 		config.setConfigValue(key, value);
-
-
 		return "&bSet &f" + key + "&b to &e" + value;
 	}
 

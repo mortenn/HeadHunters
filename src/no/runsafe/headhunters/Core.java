@@ -8,7 +8,6 @@ import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.api.event.plugin.IPluginEnabled;
 import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.minecraft.RunsafeServer;
-import no.runsafe.framework.minecraft.entity.RunsafeEntity;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import no.runsafe.framework.text.ChatColour;
 import no.runsafe.framework.text.ConsoleColour;
@@ -17,7 +16,6 @@ import no.runsafe.worldguardbridge.WorldGuardInterface;
 import org.bukkit.GameMode;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Core implements IConfigurationChanged, IPluginEnabled
 {
@@ -30,9 +28,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		this.playerHandler = playerHandler;
 		this.voteHandler = voteHandler;
 		this.areaHandler = areaHandler;
-
 		this.areaRepository = areaRepository;
-
 		this.gamestarted = false;
 
 		SimpleArea.setWorldGuardInterface(worldGuardInterface);

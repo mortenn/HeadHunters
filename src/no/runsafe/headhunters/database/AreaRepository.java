@@ -30,7 +30,6 @@ public class AreaRepository extends Repository
 	@Override
 	public HashMap<Integer, List<String>> getSchemaUpdateQueries()
 	{
-
 		console.fine("AreaRepository - schema updates");
 		HashMap<Integer, List<String>> exec = new HashMap<Integer, List<String>>();
 		String query = "CREATE TABLE IF NOT EXISTS `headhunters_areas` (\n" +
@@ -62,8 +61,8 @@ public class AreaRepository extends Repository
 
 	public boolean addArea(String name)
 	{
-
-		if (areaExists(name)) return false;
+		if (areaExists(name))
+			return false;
 
 		String query = String.format("INSERT INTO headhunters_areas (`ID`, `AREANAME`) VALUES (NULL, '%s');", name);
 		console.fine(String.format("Adding %s to the areas", name));
@@ -74,7 +73,8 @@ public class AreaRepository extends Repository
 
 	public boolean delArea(String name)
 	{
-		if (!areaExists(name)) return false;
+		if (!areaExists(name))
+			return false;
 
 		String query = String.format("DELETE FROM `headhunters_areas` WHERE `AREANAME` = '%s';", name);
 		console.fine(String.format("deleting %s from the areas", name));

@@ -14,7 +14,6 @@ public class PlayerHandler
 {
 	public PlayerHandler(EquipmentManager manager, AreaHandler areaHandler)
 	{
-
 		playerData = new HashMap<String, HashMap<String, Object>>();
 		this.equipmentManager = manager;
 		this.areaHandler = areaHandler;
@@ -69,13 +68,11 @@ public class PlayerHandler
 
 	public void addPlayer(RunsafePlayer player)
 	{
-
 		HashMap<String, Object> data = new HashMap<String, Object>();
 		data.put("remove", false);
 		data.put("player", player);
 
 		playerData.put(player.getName(), data);
-
 	}
 
 	public void addPlayers(ArrayList<RunsafePlayer> players)
@@ -85,13 +82,11 @@ public class PlayerHandler
 
 	public void teleportAllPlayers(RunsafeLocation location)
 	{
-
 		for (String k : playerData.keySet())
 		{
 			if (!(Boolean) playerData.get(k).get("remove"))
 				((RunsafePlayer) playerData.get(k).get("player")).teleport(location);
 		}
-
 	}
 
 	public void teleport()
@@ -194,7 +189,6 @@ public class PlayerHandler
 		this.teleportAllPlayers(areaHandler.getWaitRoomSpawn());
 		this.unEquipAll();
 		this.reset();
-
 	}
 
 	public RunsafePlayer getCurrentLeader()

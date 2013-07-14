@@ -11,7 +11,6 @@ import java.util.HashMap;
 
 public class CommandVote extends PlayerCommand
 {
-
 	public CommandVote(AreaHandler areaHandler, VoteHandler voteHandler, Core core)
 	{
 		super("vote", "Vote for a different next map", "headhunters.play");

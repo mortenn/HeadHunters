@@ -27,7 +27,6 @@ public class CommandTeleport extends PlayerCommand
 	@Override
 	public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters)
 	{
-
 		if (playerHandler.isIngame(executor))
 		{
 			return Constants.ERROR_COLOR + "You can not use this command while in game!";

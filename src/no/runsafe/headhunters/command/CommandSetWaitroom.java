@@ -39,7 +39,6 @@ public class CommandSetWaitroom extends PlayerCommand
 			return "Region is registered as a combat region";
 
 		areaHandler.setWaitRoom(thisRegion);
-
 		return "&aSuccesfully set headhunters waitroom as &f" + thisRegion;
 	}
 

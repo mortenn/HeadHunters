@@ -12,7 +12,6 @@ public class CommandStart extends PlayerCommand
 	{
 		super("start", "Forces headhunters match to start", "headhunters.game-control.start", "time");
 		this.core = core;
-
 	}
 
 	@Override

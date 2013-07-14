@@ -15,7 +15,6 @@ public class CommandShowIngame extends PlayerCommand
 	public CommandShowIngame(PlayerHandler playerHandler)
 	{
 		super("show", "shows ingame players", "headhunters.play");
-
 		this.playerHandler = playerHandler;
 	}
 

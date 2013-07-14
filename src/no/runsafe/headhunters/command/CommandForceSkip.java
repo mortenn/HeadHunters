@@ -22,7 +22,6 @@ public class CommandForceSkip extends PlayerCommand
 	@Override
 	public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters)
 	{
-
 		if (core.isEnabled())
 		{
 			String nextMap = parameters.get("map");

@@ -61,8 +61,6 @@ public class WaitRoomRepository extends Repository
 		database.Update(query);
 	}
 
-
 	private final IDatabase database;
 	private final IOutput console;
-
 }

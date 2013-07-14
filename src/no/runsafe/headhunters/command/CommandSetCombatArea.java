@@ -17,8 +17,6 @@ import java.util.List;
 
 public class CommandSetCombatArea extends PlayerCommand
 {
-
-
 	public CommandSetCombatArea(Core core, AreaHandler areaHandler, WorldGuardInterface worldGuardInterface,
 															AreaRepository areaRepository, WaitRoomRepository waitRoomRepository)
 	{
@@ -28,7 +26,6 @@ public class CommandSetCombatArea extends PlayerCommand
 		this.areaHandler = areaHandler;
 		this.areaRepository = areaRepository;
 		this.waitRoomRepository = waitRoomRepository;
-
 		this.captureTail();
 	}
 
@@ -90,7 +87,6 @@ public class CommandSetCombatArea extends PlayerCommand
 
 				return Constants.MSG_COLOR + "Succesfully removed region &f" + thisRegion;
 			}
-
 		}
 		else
 		{

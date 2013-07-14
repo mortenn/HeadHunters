@@ -17,10 +17,7 @@ public class CommandJoin extends PlayerCommand
 	@Override
 	public String OnExecute(RunsafePlayer executor, HashMap<String, String> parameters)
 	{
-
 		return this.core.join(executor);
-
-
 	}
 
 	private final Core core;
