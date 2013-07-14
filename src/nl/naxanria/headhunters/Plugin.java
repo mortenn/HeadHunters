@@ -61,6 +61,5 @@ public class Plugin extends RunsafeConfigurablePlugin
 		this.addComponent(BlockPlace.class);
 		this.addComponent(DamagePlayer.class);
 
-
 	}
 }

@@ -38,7 +38,10 @@ public class PlayerHandler
 	{
 		if (isIngame(player))
 		{
+
 			playerData.get(player.getName()).put("remove", true);
+            if(player.getPassenger() != null)
+
 			unEquip(player);
 			//Todo: add dropping all usable items
 			RunsafeMeta heads = Item.Decoration.Head.Human.getItem();

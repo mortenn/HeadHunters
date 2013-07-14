@@ -2,6 +2,7 @@ package nl.naxanria.headhunters.event;
 
 import net.minecraft.server.v1_6_R2.Packet205ClientCommand;
 import nl.naxanria.headhunters.Core;
+import nl.naxanria.headhunters.PlayerHandler;
 import nl.naxanria.headhunters.RandomItem;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.event.player.IPlayerDeathEvent;
@@ -9,7 +10,6 @@ import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerDeathEvent;
 import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
-import nl.naxanria.headhunters.PlayerHandler;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
 
 import java.util.List;

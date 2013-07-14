@@ -54,10 +54,14 @@ public class RandomItem
 
 		RunsafeMeta woodTumbler = Item.Combat.Sword.Wood.getItem();
 		woodTumbler.setDisplayName("§6Wood Tumbler");
-
 		woodTumbler.setDurability((byte) 57);
 		Enchant.Knockback.power(10).applyTo(woodTumbler);
 
+        RunsafeMeta fishingrod = Item.Tool.FishingRod.getItem();
+        fishingrod.setDisplayName("§6Un-Controller");
+        //todo: lore text
+
+        //itemMap.put(fishingrod, 1);
 		itemMap.put(apple, 10);
 		itemMap.put(sugar, 9);
 		itemMap.put(slimeBall, 5);

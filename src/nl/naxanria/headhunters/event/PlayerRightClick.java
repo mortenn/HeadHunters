@@ -27,7 +27,7 @@ public class PlayerRightClick implements IPlayerRightClick
 	{
 		int range = 5;
 		int roll = 95;
-        RunsafeWorld world = server.getWorld(areaHandler.getWorld());
+        RunsafeWorld world = areaHandler.getWorld();
 
 		if (playerHandler.isIngame(player))
 		{

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class Core implements IConfigurationChanged, IPluginEnabled
 {
-	public Core(IConfiguration config, IOutput console, IScheduler scheduler, RunsafeServer server, VoteHandler voteHandler,
+	public Core(IOutput console, IScheduler scheduler, RunsafeServer server, VoteHandler voteHandler,
 							PlayerHandler playerHandler, AreaHandler areaHandler, WorldGuardInterface worldGuardInterface,
 							AreaRepository areaRepository)
 	{
@@ -365,7 +365,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 	private final PlayerHandler playerHandler;
 	private final AreaHandler areaHandler;
 	private final AreaRepository areaRepository;
-	private boolean gamestarted;
+	private boolean gamestarted = false;
 	private boolean enabled = false;
 	private IConfiguration config;
 	private int countdownToStart = -1;
