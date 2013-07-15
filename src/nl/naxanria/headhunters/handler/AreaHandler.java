@@ -1,7 +1,9 @@
-package nl.naxanria.headhunters;
+package nl.naxanria.headhunters.handler;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
+import nl.naxanria.headhunters.SimpleArea;
+import nl.naxanria.headhunters.Util;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.minecraft.RunsafeLocation;

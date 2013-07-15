@@ -1,10 +1,10 @@
 package nl.naxanria.headhunters.event;
 
-import nl.naxanria.headhunters.PlayerHandler;
+import nl.naxanria.headhunters.handler.PlayerHandler;
 import no.runsafe.framework.api.event.player.IPlayerRespawn;
 import no.runsafe.framework.minecraft.RunsafeLocation;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
-import nl.naxanria.headhunters.AreaHandler;
+import nl.naxanria.headhunters.handler.AreaHandler;
 
 public class PlayerRespawn implements IPlayerRespawn
 {

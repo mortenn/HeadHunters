@@ -3,7 +3,7 @@ package nl.naxanria.headhunters.event;
 import no.runsafe.framework.api.event.player.IPlayerDamageEvent;
 import no.runsafe.framework.minecraft.event.entity.RunsafeEntityDamageEvent;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
-import nl.naxanria.headhunters.PlayerHandler;
+import nl.naxanria.headhunters.handler.PlayerHandler;
 import org.bukkit.Effect;
 
 public class DamagePlayer implements IPlayerDamageEvent

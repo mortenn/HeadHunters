@@ -1,6 +1,6 @@
 package nl.naxanria.headhunters.command;
 
-import nl.naxanria.headhunters.AreaHandler;
+import nl.naxanria.headhunters.handler.AreaHandler;
 import nl.naxanria.headhunters.Constants;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;

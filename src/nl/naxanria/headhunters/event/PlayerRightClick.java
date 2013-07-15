@@ -6,8 +6,8 @@ import no.runsafe.framework.minecraft.*;
 import no.runsafe.framework.minecraft.block.RunsafeBlock;
 import no.runsafe.framework.minecraft.item.meta.RunsafeMeta;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
-import nl.naxanria.headhunters.AreaHandler;
-import nl.naxanria.headhunters.PlayerHandler;
+import nl.naxanria.headhunters.handler.AreaHandler;
+import nl.naxanria.headhunters.handler.PlayerHandler;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 

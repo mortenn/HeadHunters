@@ -1,5 +1,9 @@
-package nl.naxanria.headhunters;
+package nl.naxanria.headhunters.handler;
 
+import nl.naxanria.headhunters.Constants;
+import nl.naxanria.headhunters.Util;
+import nl.naxanria.headhunters.handler.AreaHandler;
+import nl.naxanria.headhunters.handler.EquipmentManager;
 import no.runsafe.framework.minecraft.Buff;
 import no.runsafe.framework.minecraft.Item;
 import no.runsafe.framework.minecraft.RunsafeLocation;
@@ -12,11 +16,12 @@ import java.util.HashMap;
 
 public class PlayerHandler
 {
-	public PlayerHandler(EquipmentManager manager, AreaHandler areaHandler)
+	public PlayerHandler(EquipmentManager manager, AreaHandler areaHandler, ScoreboardHandler scoreboardHandler)
 	{
 		playerData = new HashMap<String, HashMap<String, Object>>();
 		this.equipmentManager = manager;
 		this.areaHandler = areaHandler;
+        this.scoreboardHandler = scoreboardHandler;
 	}
 
 	public boolean isWinner()
@@ -40,7 +45,8 @@ public class PlayerHandler
 		{
 
 			playerData.get(player.getName()).put("remove", true);
-            if(player.getPassenger() != null)
+
+            scoreboardHandler.removeScoreBoard(player);
 
 			unEquip(player);
 			//Todo: add dropping all usable items
@@ -76,6 +82,7 @@ public class PlayerHandler
 		data.put("player", player);
 
 		playerData.put(player.getName(), data);
+        scoreboardHandler.addScoreboard(player);
 	}
 
 	public void addPlayers(ArrayList<RunsafePlayer> players)
@@ -137,6 +144,12 @@ public class PlayerHandler
 		winner = false;
 	}
 
+    public void resetScoreboard()
+    {
+        for(String k : playerData.keySet())
+            scoreboardHandler.removeScoreBoard((RunsafePlayer) playerData.get(k).get("player"));
+    }
+
 	public ArrayList<String> tick()
 	{
 		ArrayList<String> out = new ArrayList<String>();
@@ -153,6 +166,7 @@ public class PlayerHandler
 					currLeader = player;
 					currLAmount = amount;
 				}
+                scoreboardHandler.updateScoreboard(player, amount);
 				player.setSaturation(10f);
 				if (!player.getWorld().getName().equalsIgnoreCase(getWorldName()))
 				{
@@ -221,6 +235,7 @@ public class PlayerHandler
 	private final AreaHandler areaHandler;
 	private final HashMap<String, HashMap<String, Object>> playerData;
 	private final int leaderAmount = -1;
+    private final ScoreboardHandler scoreboardHandler;
 	private final EquipmentManager equipmentManager;
 	Boolean winner = false;
 	private RunsafePlayer leader;

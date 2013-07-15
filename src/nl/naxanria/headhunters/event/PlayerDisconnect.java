@@ -2,7 +2,7 @@ package nl.naxanria.headhunters.event;
 
 import no.runsafe.framework.api.event.player.IPlayerQuitEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerQuitEvent;
-import nl.naxanria.headhunters.PlayerHandler;
+import nl.naxanria.headhunters.handler.PlayerHandler;
 
 public class PlayerDisconnect implements IPlayerQuitEvent
 {

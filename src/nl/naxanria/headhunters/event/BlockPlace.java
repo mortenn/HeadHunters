@@ -1,8 +1,8 @@
 package nl.naxanria.headhunters.event;
 
-import nl.naxanria.headhunters.AreaHandler;
+import nl.naxanria.headhunters.handler.AreaHandler;
 import nl.naxanria.headhunters.Core;
-import nl.naxanria.headhunters.PlayerHandler;
+import nl.naxanria.headhunters.handler.PlayerHandler;
 import no.runsafe.framework.api.event.block.IBlockPlace;
 import no.runsafe.framework.minecraft.block.RunsafeBlock;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;

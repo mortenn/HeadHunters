@@ -5,7 +5,7 @@ import nl.naxanria.headhunters.Util;
 import nl.naxanria.headhunters.database.AreaRepository;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
-import nl.naxanria.headhunters.AreaHandler;
+import nl.naxanria.headhunters.handler.AreaHandler;
 import no.runsafe.worldguardbridge.WorldGuardInterface;
 
 import java.util.ArrayList;

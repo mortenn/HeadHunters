@@ -3,8 +3,8 @@ package nl.naxanria.headhunters.event;
 import no.runsafe.framework.api.event.player.IPlayerTeleportEvent;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerTeleportEvent;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
-import nl.naxanria.headhunters.AreaHandler;
-import nl.naxanria.headhunters.PlayerHandler;
+import nl.naxanria.headhunters.handler.AreaHandler;
+import nl.naxanria.headhunters.handler.PlayerHandler;
 
 public class PlayerTeleport implements IPlayerTeleportEvent
 {

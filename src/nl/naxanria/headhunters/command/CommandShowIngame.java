@@ -1,7 +1,7 @@
 package nl.naxanria.headhunters.command;
 
 import nl.naxanria.headhunters.Constants;
-import nl.naxanria.headhunters.PlayerHandler;
+import nl.naxanria.headhunters.handler.PlayerHandler;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import org.bukkit.craftbukkit.libs.joptsimple.internal.Strings;

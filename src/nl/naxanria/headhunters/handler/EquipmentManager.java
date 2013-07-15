@@ -1,4 +1,4 @@
-package nl.naxanria.headhunters;
+package nl.naxanria.headhunters.handler;
 
 import no.runsafe.framework.minecraft.Enchant;
 import no.runsafe.framework.minecraft.Item;

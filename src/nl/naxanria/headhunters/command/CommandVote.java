@@ -2,10 +2,10 @@ package nl.naxanria.headhunters.command;
 
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
-import nl.naxanria.headhunters.AreaHandler;
+import nl.naxanria.headhunters.handler.AreaHandler;
 import nl.naxanria.headhunters.Constants;
 import nl.naxanria.headhunters.Core;
-import nl.naxanria.headhunters.VoteHandler;
+import nl.naxanria.headhunters.handler.VoteHandler;
 
 import java.util.HashMap;
 

@@ -6,7 +6,7 @@ import no.runsafe.framework.minecraft.Buff;
 import no.runsafe.framework.minecraft.entity.RunsafeItem;
 import no.runsafe.framework.minecraft.event.player.RunsafePlayerPickupItemEvent;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
-import nl.naxanria.headhunters.PlayerHandler;
+import nl.naxanria.headhunters.handler.PlayerHandler;
 import org.bukkit.Material;
 
 public class PlayerItemPickUp implements IPlayerPickupItemEvent

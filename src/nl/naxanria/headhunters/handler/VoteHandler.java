@@ -1,5 +1,6 @@
-package nl.naxanria.headhunters;
+package nl.naxanria.headhunters.handler;
 
+import nl.naxanria.headhunters.Constants;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 
 import java.util.ArrayList;

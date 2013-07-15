@@ -2,6 +2,9 @@ package nl.naxanria.headhunters;
 
 
 import nl.naxanria.headhunters.database.WaitRoomRepository;
+import nl.naxanria.headhunters.handler.AreaHandler;
+import nl.naxanria.headhunters.handler.PlayerHandler;
+import nl.naxanria.headhunters.handler.VoteHandler;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.IScheduler;

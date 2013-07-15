@@ -2,7 +2,7 @@ package nl.naxanria.headhunters.event;
 
 import net.minecraft.server.v1_6_R2.Packet205ClientCommand;
 import nl.naxanria.headhunters.Core;
-import nl.naxanria.headhunters.PlayerHandler;
+import nl.naxanria.headhunters.handler.PlayerHandler;
 import nl.naxanria.headhunters.RandomItem;
 import no.runsafe.framework.api.IScheduler;
 import no.runsafe.framework.api.event.player.IPlayerDeathEvent;

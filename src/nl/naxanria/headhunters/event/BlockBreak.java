@@ -4,8 +4,8 @@ import nl.naxanria.headhunters.Core;
 import no.runsafe.framework.api.event.block.IBlockBreakEvent;
 import no.runsafe.framework.minecraft.event.block.RunsafeBlockBreakEvent;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
-import nl.naxanria.headhunters.AreaHandler;
-import nl.naxanria.headhunters.PlayerHandler;
+import nl.naxanria.headhunters.handler.AreaHandler;
+import nl.naxanria.headhunters.handler.PlayerHandler;
 
 public class BlockBreak implements IBlockBreakEvent
 {

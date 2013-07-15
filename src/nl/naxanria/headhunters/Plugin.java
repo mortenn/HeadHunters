@@ -4,6 +4,7 @@ import nl.naxanria.headhunters.command.*;
 import nl.naxanria.headhunters.database.AreaRepository;
 import nl.naxanria.headhunters.database.WaitRoomRepository;
 import nl.naxanria.headhunters.event.*;
+import nl.naxanria.headhunters.handler.*;
 import no.runsafe.framework.RunsafeConfigurablePlugin;
 import no.runsafe.framework.api.command.Command;
 import no.runsafe.worldguardbridge.WorldGuardInterface;
@@ -21,6 +22,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 		this.addComponent(WaitRoomRepository.class);
 
 		//handlers and managers
+        this.addComponent(ScoreboardHandler.class);
 		this.addComponent(EquipmentManager.class);
 		this.addComponent(RandomItem.class);
 		this.addComponent(AreaHandler.class);
