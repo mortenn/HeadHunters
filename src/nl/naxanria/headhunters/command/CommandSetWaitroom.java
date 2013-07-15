@@ -3,6 +3,7 @@ package nl.naxanria.headhunters.command;
 import nl.naxanria.headhunters.Constants;
 import nl.naxanria.headhunters.Util;
 import nl.naxanria.headhunters.database.AreaRepository;
+import nl.naxanria.headhunters.database.WaitRoomRepository;
 import no.runsafe.framework.api.command.player.PlayerCommand;
 import no.runsafe.framework.minecraft.player.RunsafePlayer;
 import nl.naxanria.headhunters.handler.AreaHandler;
@@ -14,12 +15,13 @@ import java.util.List;
 
 public class CommandSetWaitroom extends PlayerCommand
 {
-	public CommandSetWaitroom(AreaHandler areaHandler, WorldGuardInterface worldGuardInterface, AreaRepository areaRepository)
+	public CommandSetWaitroom(AreaHandler areaHandler, WorldGuardInterface worldGuardInterface, AreaRepository areaRepository, WaitRoomRepository waitRoomRepository)
 	{
 		super("waitroom", "Define a region as the wait room", "headhunters.regions.modify.waitroom");
 		this.areaHandler = areaHandler;
 		this.worldGuardInterface = worldGuardInterface;
 		this.areaRepository = areaRepository;
+		this.waitRoomRepository = waitRoomRepository;
 	}
 
 	@Override
@@ -36,9 +38,11 @@ public class CommandSetWaitroom extends PlayerCommand
 			return "Multiple regions found";
 
 		String thisRegion = region.get(0);
+
 		if (Util.arrayListContainsIgnoreCase(areas, thisRegion))
 			return "Region is registered as a combat region";
 
+		waitRoomRepository.setWaitRoom(thisRegion);
 		areaHandler.setWaitRoom(thisRegion);
 		return "&aSuccesfully set headhunters waitroom as &f" + thisRegion;
 	}
@@ -46,4 +50,5 @@ public class CommandSetWaitroom extends PlayerCommand
 	private final AreaHandler areaHandler;
 	private final WorldGuardInterface worldGuardInterface;
 	private final AreaRepository areaRepository;
+	private final WaitRoomRepository waitRoomRepository;
 }

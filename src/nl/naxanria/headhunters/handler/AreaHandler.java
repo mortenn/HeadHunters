@@ -160,8 +160,6 @@ public class AreaHandler implements IConfigurationChanged
 		if (waitRoom.getRegionName().equalsIgnoreCase(region))
 			return;
 		waitRoom = new SimpleArea(world, region);
-		configuration.setConfigValue("waitingarea", region);
-		configuration.save();
 	}
 
 	public boolean isInGameWorld(RunsafePlayer player)
