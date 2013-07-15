@@ -34,7 +34,8 @@ public class CommandTeleport extends PlayerCommand
 
 		String region = parameters.get("region");
 		int regionId = areaHandler.getAreaByName(region);
-		if (regionId == -1) return getUsageCommandParams();
+		if (regionId == -1)
+			return getUsageCommandParams();
 		areaHandler.teleport(regionId, executor);
 		executor.setGameMode(GameMode.CREATIVE);
 		return null;

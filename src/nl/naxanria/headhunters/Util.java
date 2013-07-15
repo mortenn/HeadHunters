@@ -12,7 +12,6 @@ public class Util
 {
 	public static int getRandom(int min, int max)
 	{
-
 		if (min > max)
 		{
 			int t = min;
@@ -30,7 +29,6 @@ public class Util
 
 	public static int getRandom(int min, int max, int not)
 	{
-
 		if (min > max)
 		{
 			int t = min;
@@ -46,7 +44,8 @@ public class Util
 		if (max - min == 0 || max - min == 1) return max - min;
 
 		int r = random.nextInt(max - min) + min;
-		if (r == not) r = getRandom(min, max, not);
+		if (r == not)
+            r = getRandom(min, max, not);
 
 		return r;
 	}
@@ -54,26 +53,6 @@ public class Util
 	public static boolean actPercentage(int percentage)
 	{
 		return (getRandom(0, 100) < percentage);
-	}
-
-	public static double flatDistance(double x, double y)
-	{
-		return x < y ? y - x : x - y;
-	}
-
-	public static double distance(RunsafeLocation loc1, RunsafeLocation loc2)
-	{
-
-		return Math.sqrt(
-			Math.pow(flatDistance(loc1.getX(), loc2.getX()), 2) +
-				Math.pow(flatDistance(loc1.getY(), loc2.getY()), 2) +
-				Math.pow(flatDistance(loc1.getZ(), loc2.getZ()), 2)
-		);
-	}
-
-	public static String prettyLocation(RunsafeLocation location)
-	{
-		return String.format("&a%d %d %d", location.getBlockX(), location.getBlockY(), location.getBlockZ());
 	}
 
 	public static int amountMaterial(RunsafePlayer player, RunsafeMeta search)
@@ -100,7 +79,7 @@ public class Util
 		return false;
 	}
 
-	public static void arraylistRemoveIgnoreCase(ArrayList<String> arrayList, String removal)
+	public static void arrayListRemoveIgnoreCase(ArrayList<String> arrayList, String removal)
 	{
 		ArrayList<String> copy = Lists.newArrayList(arrayList);
 		for (String key : copy)
@@ -111,8 +90,8 @@ public class Util
 				return;
 			}
 		}
-
 	}
 
 	static final Random random = new Random(System.currentTimeMillis());
+
 }

@@ -226,9 +226,12 @@ public class PlayerHandler
 	{
 		ArrayList<RunsafePlayer> players = new ArrayList<RunsafePlayer>();
 		for (String k : playerData.keySet())
+        {
+            RunsafePlayer player = (RunsafePlayer) playerData.get(k).get("player");
 			if (!(Boolean) playerData.get(k).get("remove") &&
-				Util.distance(location, ((RunsafePlayer) playerData.get(k).get("player")).getLocation()) < range)
-				players.add((RunsafePlayer) playerData.get(k).get("player"));
+				location.distance(player.getLocation()) < range)
+				players.add(player);
+        }
 		return players;
 	}
 

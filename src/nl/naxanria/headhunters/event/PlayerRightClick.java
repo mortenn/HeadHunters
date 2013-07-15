@@ -32,15 +32,12 @@ public class PlayerRightClick implements IPlayerRightClick
 		if (playerHandler.isIngame(player))
 		{
 			boolean used = false;
-
 			if (usingItem != null)
 			{
 				RunsafeLocation location = (targetBlock != null) ? targetBlock.getLocation() : player.getLocation();
-
 				int itemID = usingItem.getItemId();
 				if (itemID == Material.SLIME_BALL.getId())
 				{
-
 					//visual effect...
 					world.playEffect(location, Effect.POTION_BREAK, 16426);
 
@@ -53,11 +50,9 @@ public class PlayerRightClick implements IPlayerRightClick
 
 						}
 					used = true;
-
 				}
 				else if (itemID == Material.MAGMA_CREAM.getId())
 				{
-
 					ArrayList<RunsafePlayer> hitPlayers = playerHandler.getIngamePlayers(location, range);
 					for (RunsafePlayer hitPlayer : hitPlayers)
 						if (!hitPlayer.getName().equalsIgnoreCase(player.getName()))
@@ -67,7 +62,6 @@ public class PlayerRightClick implements IPlayerRightClick
 							hitPlayer.setFireTicks(90);
 						}
 					used = true;
-
 				}
 				else if (itemID == Material.NETHER_STAR.getId())
 				{
@@ -85,19 +79,16 @@ public class PlayerRightClick implements IPlayerRightClick
 					{
 						world.createExplosion(player.getLocation(), 2f, false, false);
 					}
-
 				}
 				else if (itemID == Material.BLAZE_ROD.getId())
 				{
-
 					player.Launch(Material.FIREBALL.name());
 					world.playSound(location, Sound.Creature.Ghast.Fireball, 1f, 1f);
 					used = true;
-
 				}
 				else if (itemID == Material.INK_SACK.getId())
 				{
-                    world.playSound(location, Sound.Environment.Splash, 1f, 1f);
+          world.playSound(location, Sound.Environment.Splash, 1f, 1f);
 					ArrayList<RunsafePlayer> hitPlayers = playerHandler.getIngamePlayers(location, range);
 					for (RunsafePlayer hitPlayer : hitPlayers)
 						if (!hitPlayer.getName().equalsIgnoreCase(player.getName()))
@@ -119,15 +110,12 @@ public class PlayerRightClick implements IPlayerRightClick
 			{
 				RunsafeMeta items = player.getItemInHand();
 				items.setAmount(items.getAmount() - 1);
-
 				player.getInventory().setItemInHand(items);
 			}
 
 			return !used;
 		}
-
 		return true;
-
 	}
 
 	private final RunsafeServer server;

@@ -28,7 +28,7 @@ public class CommandForceSkip extends PlayerCommand
 			int nextMapIndex;
 			if (nextMap.equalsIgnoreCase("random"))
 				if (areaHandler.getAmountLoadedAreas() > 1) areaHandler.randomNextArea();
-				else return Constants.ERROR_COLOR + "Define atleast 2 areas to be able to use random.";
+				else return Constants.ERROR_COLOR + "Define at least 2 areas to be able to use random.";
 
 			else if ((nextMapIndex = areaHandler.getAreaByName(nextMap)) != -1)
 				areaHandler.setNextArea(nextMapIndex);

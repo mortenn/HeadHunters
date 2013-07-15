@@ -29,7 +29,6 @@ public class ScoreboardHandler {
         rawPlayer.setScoreboard(emptyScoreboard);
     }
 
-
     public void updateScoreboard(RunsafePlayer player, int heads)
     {
         Player rawPlayer = (Player) player.getRaw();

@@ -44,8 +44,9 @@ public class WaitRoomRepository extends Repository
 	{
 		String query = "SELECT areaname FROM headhunters_waitroom";
 		IRow row = database.QueryRow(query);
-		if (row == null || row == Set.Empty) return null;
-		else return row.String("AREANAME");
+		if (row == null || row == Set.Empty)
+            return null;
+        return row.String("AREANAME");
 	}
 
 	private void delWaitRoom()

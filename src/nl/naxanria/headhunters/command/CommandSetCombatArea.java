@@ -41,9 +41,12 @@ public class CommandSetCombatArea extends PlayerCommand
 		boolean add;
 
 		String arg = parameters.get("p");
-		if (arg.equalsIgnoreCase("add")) add = true;
-		else if (arg.equalsIgnoreCase("del")) add = false;
-		else return this.getUsage(player);
+		if (arg.equalsIgnoreCase("add"))
+			add = true;
+		else if (arg.equalsIgnoreCase("del"))
+			add = false;
+		else
+			return this.getUsage(player);
 
 		if (core.isEnabled()) return Constants.ERROR_COLOR + "Only use this when headhunters is disabled!";
 
@@ -81,7 +84,7 @@ public class CommandSetCombatArea extends PlayerCommand
 				if (!Util.arrayListContainsIgnoreCase(areas, thisRegion))
 					return Constants.ERROR_COLOR + "Region does not exist as a combat area.";
 
-				Util.arraylistRemoveIgnoreCase(areas, thisRegion);
+				Util.arrayListRemoveIgnoreCase(areas, thisRegion);
 				areaHandler.loadAreas(areas);
 				areaRepository.delArea(thisRegion);
 

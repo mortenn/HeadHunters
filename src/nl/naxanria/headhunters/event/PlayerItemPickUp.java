@@ -31,7 +31,6 @@ public class PlayerItemPickUp implements IPlayerPickupItemEvent
 			boolean used = false;
 			if (itemID == Material.GOLDEN_APPLE.getId())
 			{
-
 				Buff.Healing.Regeneration.amplification(2).duration(6).applyTo(player);
 				used = true;
 			}

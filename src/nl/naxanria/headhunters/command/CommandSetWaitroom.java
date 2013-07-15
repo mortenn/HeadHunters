@@ -30,8 +30,10 @@ public class CommandSetWaitroom extends PlayerCommand
 
 		ArrayList<String> areas = areaRepository.getAreas();
 		List<String> region = worldGuardInterface.getRegionsAtLocation(executor.getLocation());
-		if (region.size() == 0) return "No region found";
-		if (region.size() > 1) return "Multiple regions found";
+		if (region.size() == 0)
+			return "No region found";
+		if (region.size() > 1)
+			return "Multiple regions found";
 
 		String thisRegion = region.get(0);
 		if (Util.arrayListContainsIgnoreCase(areas, thisRegion))

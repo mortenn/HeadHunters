@@ -39,8 +39,10 @@ public class VoteHandler
 
 	public String vote(RunsafePlayer player)
 	{
-		if (!canVote) return Constants.MSG_CANT_VOTE;
-		if (votedPlayers.contains(player.getName())) return Constants.MSG_ALREADY_VOTED;
+		if (!canVote)
+			return Constants.MSG_CANT_VOTE;
+		if (votedPlayers.contains(player.getName()))
+			return Constants.MSG_ALREADY_VOTED;
 		votedPlayers.add(player.getName());
 		return Constants.MSG_VOTE_CAST;
 	}
