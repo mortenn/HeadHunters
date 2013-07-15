@@ -1,6 +1,7 @@
 package nl.naxanria.headhunters;
 
 
+import nl.naxanria.headhunters.database.WaitRoomRepository;
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.IOutput;
 import no.runsafe.framework.api.IScheduler;
@@ -19,9 +20,10 @@ import java.util.ArrayList;
 
 public class Core implements IConfigurationChanged, IPluginEnabled
 {
-	public Core(IOutput console, IScheduler scheduler, RunsafeServer server, VoteHandler voteHandler,
+
+    public Core(IOutput console, IScheduler scheduler, RunsafeServer server, VoteHandler voteHandler,
 							PlayerHandler playerHandler, AreaHandler areaHandler, WorldGuardInterface worldGuardInterface,
-							AreaRepository areaRepository)
+							AreaRepository areaRepository, WaitRoomRepository waitRoomRepository)
 	{
 		this.console = console;
 		this.server = server;
@@ -30,7 +32,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		this.areaHandler = areaHandler;
 		this.areaRepository = areaRepository;
 		this.gamestarted = false;
-
+        this.waitRoomRepository = waitRoomRepository;
 		SimpleArea.setWorldGuardInterface(worldGuardInterface);
 
 		scheduler.startSyncRepeatingTask(
@@ -52,7 +54,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		if (loadAreas() != 0) return false;
 		if (areaHandler.getAmountLoadedAreas() == 0)
 			return false;
-
+        if (!initWaitRoom())
+            return false;
 		this.config.setConfigValue("enabled", true);
 		this.config.save();
 
@@ -60,7 +63,12 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		return true;
 	}
 
-	private int loadAreas()
+    private boolean initWaitRoom()
+    {
+        return areaHandler.initWaitRoom(waitRoomRepository.getWaitRoom());
+    }
+
+    private int loadAreas()
 	{
 		console.fine("loading areas");
 		ArrayList<String> areas = areaRepository.getAreas();
@@ -68,6 +76,8 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 		if (areas.isEmpty())
 			return 1;
 		areaHandler.loadAreas(areas);
+        console.write("loaded " + areas.size() + "areas");
+
 		return 0;
 	}
 
@@ -365,6 +375,7 @@ public class Core implements IConfigurationChanged, IPluginEnabled
 	private final PlayerHandler playerHandler;
 	private final AreaHandler areaHandler;
 	private final AreaRepository areaRepository;
+    private final WaitRoomRepository waitRoomRepository;
 	private boolean gamestarted = false;
 	private boolean enabled = false;
 	private IConfiguration config;

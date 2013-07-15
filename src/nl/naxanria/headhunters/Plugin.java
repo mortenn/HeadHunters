@@ -2,6 +2,7 @@ package nl.naxanria.headhunters;
 
 import nl.naxanria.headhunters.command.*;
 import nl.naxanria.headhunters.database.AreaRepository;
+import nl.naxanria.headhunters.database.WaitRoomRepository;
 import nl.naxanria.headhunters.event.*;
 import no.runsafe.framework.RunsafeConfigurablePlugin;
 import no.runsafe.framework.api.command.Command;
@@ -17,6 +18,7 @@ public class Plugin extends RunsafeConfigurablePlugin
 
 		//database
 		this.addComponent(AreaRepository.class);
+		this.addComponent(WaitRoomRepository.class);
 
 		//handlers and managers
 		this.addComponent(EquipmentManager.class);

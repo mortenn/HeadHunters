@@ -1,5 +1,7 @@
 package nl.naxanria.headhunters;
 
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+
 import no.runsafe.framework.api.IConfiguration;
 import no.runsafe.framework.api.event.plugin.IConfigurationChanged;
 import no.runsafe.framework.minecraft.RunsafeLocation;
@@ -138,6 +140,19 @@ public class AreaHandler implements IConfigurationChanged
 					entity.remove();
 	}
 
+    public boolean initWaitRoom(String region)
+    {
+        if(region == null)
+            return false;
+        ProtectedRegion pRegion = SimpleArea.getWorldGuardInterface().getRegion(world, region);
+        if(pRegion == null)
+            return false;
+
+        waitRoom = new SimpleArea(world, pRegion);
+
+        return true;
+    }
+
 	public void setWaitRoom(String region)
 	{
 		if (waitRoom.getRegionName().equalsIgnoreCase(region))
@@ -186,7 +201,6 @@ public class AreaHandler implements IConfigurationChanged
 	{
 		this.configuration = configuration;
 		world = RunsafeServer.Instance.getWorld(configuration.getConfigValueAsString("world"));
-		waitRoom = new SimpleArea(world, configuration.getConfigValueAsString("waitroom"));
 		setWaitRoomSpawn(
 			new RunsafeLocation(
 				world,

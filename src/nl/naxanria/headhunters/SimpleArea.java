@@ -21,12 +21,17 @@ public class SimpleArea
 		if (worldGuardInterface != null && worldGuardInterface.serverHasWorldGuard())
 		{
 			region = worldGuardInterface.getRegion(world, regionName);
-
 		}
 	}
 
+    public SimpleArea(RunsafeWorld world, ProtectedRegion region)
+    {
+        this.world = world;
+        this.regionName = region.getId();
+        this.region = region;
+    }
 
-	public boolean pointInArea(RunsafeLocation location)
+    public boolean pointInArea(RunsafeLocation location)
 	{
 		return pointInArea(location.getBlockX(), location.getBlockY(), location.getBlockZ());
 	}
@@ -167,7 +172,12 @@ public class SimpleArea
 		SimpleArea.worldGuardInterface = worldGuardInterface;
 	}
 
-	private static WorldGuardInterface worldGuardInterface;
+    public static WorldGuardInterface getWorldGuardInterface()
+    {
+        return worldGuardInterface;
+    }
+
+    private static WorldGuardInterface worldGuardInterface;
 	private ProtectedRegion region;
 	private final RunsafeWorld world;
 	private final String regionName;
