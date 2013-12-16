@@ -12,7 +12,7 @@ import no.runsafe.worldguardbridge.WorldGuardInterface;
 public class Plugin extends RunsafeConfigurablePlugin
 {
 	@Override
-	protected void PluginSetup()
+	protected void pluginSetup()
 	{
 		//worldguard interface
 		this.addComponent(getFirstPluginAPI(WorldGuardInterface.class));
